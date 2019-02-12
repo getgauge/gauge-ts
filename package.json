@@ -2,10 +2,10 @@
   "name": "gauge-ts",
   "version": "0.0.1",
   "description": "Typescript language runner for gauge",
-  "main": "./lib/decorator.js",
-  "types": "./lib/decorators.d.ts",
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
   "scripts": {
-    "build": "tsc",
+    "build": "rm -rf lib && tsc && cp src/messages.js lib/",
     "test": "mocha --reporter spec",
     "cover": "istanbul cover node_modules/mocha/bin/_mocha test/*.js -- -R spec"
   },
@@ -22,15 +22,8 @@
   "bugs": {
     "url": "https://github.com/bugdiver/gauge-ts/issues"
   },
-  "devDependencies": {
-    "@types/chai": "^4.0.4",
-    "@types/mocha": "^2.2.43",
-    "chai": "^4.1.2",
-    "coveralls": "^3.0.0",
-    "istanbul": "^0.4.5",
-    "mocha": "^4.0.1"
-  },
   "dependencies": {
+    "protobufjs": "^6.8.8",
     "ts-node": "^3.3.0",
     "typescript": "^2.5.3"
   }

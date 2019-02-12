@@ -1,3 +1,4 @@
 #! /bin/sh
 
-$GAUGE_PROJECT_ROOT/node_modules/.bin/gauge_ts $1
+cd $GAUGE_PROJECT_ROOT
+npx gauge_ts $@
