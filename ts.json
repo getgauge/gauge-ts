@@ -1,0 +1,20 @@
+{
+  "id": "ts",
+  "version": "0.0.1",
+  "description": "typescript support for gauge",
+  "run": {
+    "linux": [
+      "./launcher.sh",
+      "--start"
+    ],
+    "darwin": [
+      "./launcher.sh",
+      "--start"
+    ]
+  },
+  "init": {},
+  "gaugeVersionSupport": {
+    "minimum": "1.0.0",
+    "maximum": ""
+  }
+}
