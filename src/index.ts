@@ -1,7 +1,8 @@
-export function Step(stepTexts: string | Array<string>) {
+import registry from './models/StepRegistry';
+import { StepRegistryEntry } from './models/StepRegistryEntry';
+
+export function Step(stepText: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        console.log(stepTexts);
-        console.log(propertyKey);
-        console.log(descriptor);
+        registry.add(stepText.replace(/(<.*?>)/g, "{}"), new StepRegistryEntry(descriptor.value));
     };
 }

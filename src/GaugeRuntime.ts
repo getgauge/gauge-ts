@@ -1,3 +1,8 @@
+import { GaugeListener } from "./connection/GaugeListener";
+import { ImplementationLoader } from "./loader/ImplementationLoader";
+import { MessageProcessorFactory } from "./processors/MessageProcessorFactory";
+import { GaugeProjectBuilder } from "./loader/GaugeProjectBuilder";
+
 export class GaugeRuntime {
 
     private readonly _state: string;
@@ -17,7 +22,11 @@ export class GaugeRuntime {
     }
 
     public startRunner() {
-        console.log('staritng the runner');
+        let loader = new ImplementationLoader(new GaugeProjectBuilder());
+        loader.loadImplementations();
+        let factory = new MessageProcessorFactory(loader);
+        let listener = new GaugeListener(factory);
+        listener.pollForMessages();
     }
 
     public initProject() {
@@ -27,4 +36,6 @@ export class GaugeRuntime {
     public printUsage() {
         throw new Error("Method not implemented.");
     }
+
 }
+

@@ -23,8 +23,14 @@
     "url": "https://github.com/bugdiver/gauge-ts/issues"
   },
   "dependencies": {
+    "fs-extra": "^7.0.1",
+    "klaw-sync": "^6.0.0",
     "protobufjs": "^6.8.8",
     "ts-node": "^3.3.0",
-    "typescript": "^2.5.3"
+    "typescript": "^3.3.3"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.5",
+    "@types/klaw-sync": "^6.0.0"
   }
 }

@@ -1,2 +1,6 @@
-lib
 test
+src
+gauge-proto
+deploy
+artifacts
+*.sh
