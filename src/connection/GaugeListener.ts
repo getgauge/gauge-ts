@@ -13,8 +13,8 @@ export class GaugeListener {
         this._processorFactory.on('messageProcessed', (message: gauge.messages.IMessage) => {
             connection.write(message);
         });
-        connection.on('messageReceived', (message: gauge.messages.IMessage) => {
-            this._processorFactory.process(message);
+        connection.on('messageReceived', async (message: gauge.messages.IMessage) => {
+            await this._processorFactory.process(message);
         });
         connection.start();
     }

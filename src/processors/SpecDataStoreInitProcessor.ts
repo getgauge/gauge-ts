@@ -6,7 +6,7 @@ export class SpecDataStoreInitProcessor extends BaseDataStoreInitProcessor {
         super(DataStoreType.Spec);
     }
 
-    public process(message: gauge.messages.IMessage): gauge.messages.IMessage {
-        return super.process(message);
+    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
+        return await super.process(message);
     }
 }

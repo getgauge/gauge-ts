@@ -4,10 +4,10 @@ import { DataStoreType } from "./DataStoreType";
 
 export abstract class BaseDataStoreInitProcessor implements IMessageProcessor {
     private readonly _storeType: any;
-    protected constructor(storeType: DataStoreType){
+    protected constructor(storeType: DataStoreType) {
         this._storeType = storeType;
     }
-    process(message: gauge.messages.IMessage): gauge.messages.IMessage {
+    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
         return new gauge.messages.Message({
             messageId: message.messageId,
             messageType: gauge.messages.Message.MessageType.ExecutionStatusResponse,

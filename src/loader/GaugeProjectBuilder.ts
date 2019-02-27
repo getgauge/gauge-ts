@@ -1,5 +1,5 @@
-import { mkdirSync, readFileSync, writeFileSync , ensureFileSync } from "fs-extra";
-import { basename, join,normalize, extname } from "path";
+import { ensureFileSync, readFileSync, writeFileSync } from "fs-extra";
+import { basename, join } from "path";
 import { ModuleKind, ModuleResolutionKind, ScriptTarget, transpileModule, TranspileOptions } from "typescript";
 import { getListOfFiles } from "../utils/fileUtils";
 
@@ -25,8 +25,11 @@ export class GaugeProjectBuilder {
             let c = readFileSync(file, 'UTF-8');
             let transpiled = transpileModule(c, this._compilerOptions);
             if (transpiled.diagnostics && transpiled.diagnostics.length) {
-                console.log(transpiled.diagnostics);
-                console.log("Wrong");
+                console.log('Failed to compile..');
+                transpiled.diagnostics.forEach((d) => {
+                    console.log(d.toString());
+                })
+                process.exit(1);
             }else {
                 let pr = process.env.GAUGE_PROJECT_ROOT as string;
                 let out = join(pr ,'lib', basename(file).replace('.ts', '.js'));

@@ -1,15 +1,20 @@
 import { gauge } from "../messages";
 import registry from '../models/StepRegistry';
 import { IMessageProcessor } from "./IMessageProcessor";
+import { isAsync } from "../utils/fileUtils";
 
 export class StepExecutionProcessor implements IMessageProcessor {
-    public process(message: gauge.messages.IMessage): gauge.messages.IMessage {
+    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
         let r = message.executeStepRequest as gauge.messages.ExecuteStepRequest;
-        let m = registry.get(r.parsedStepText)
+        let mi = registry.get(r.parsedStepText)
         try {
-            m.getMethod().apply({}, r.parameters.map((item) => {
+            let m = mi.getMethod();
+            let promise = m.apply(mi.getInstance(), r.parameters.map((item) => {
                 return item.value ? item.value : item.table;
             }))
+            if (isAsync(m)) {
+                await promise;
+            }
             return new gauge.messages.Message({
                 messageId: message.messageId,
                 messageType: gauge.messages.Message.MessageType.ExecutionStatusResponse,
@@ -28,7 +33,8 @@ export class StepExecutionProcessor implements IMessageProcessor {
                     executionResult: new gauge.messages.ProtoExecutionResult({
                         failed: true,
                         executionTime: 0,
-                        errorMessage: error
+                        errorMessage: error.message,
+                        stackTrace: error.stack
                     })
                 })
             });

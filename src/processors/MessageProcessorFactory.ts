@@ -10,11 +10,10 @@ import { StepExecutionProcessor } from "./StepExecutionProcessor";
 
 export class MessageProcessorFactory extends EventEmitter {
 
-    private readonly _loader: ImplementationLoader;
-    private _processors: Map<gauge.messages.Message.MessageType | null | undefined, IMessageProcessor>;
-    constructor(loader: ImplementationLoader) {
+    private _processors: Map<gauge.messages.Message.MessageType , IMessageProcessor>;
+
+    constructor() {
         super();
-        this._loader = loader;
         this._processors = new Map([
             [gauge.messages.Message.MessageType.StepValidateRequest, new ValidationProcessor()],
             [gauge.messages.Message.MessageType.SuiteDataStoreInit, new SuiteDataStoreInitProcessor()],
@@ -32,13 +31,13 @@ export class MessageProcessorFactory extends EventEmitter {
         ])
     }
 
-    public process(message: gauge.messages.IMessage): any {
+    public async process(message: gauge.messages.IMessage) {
         if (message.messageType === gauge.messages.Message.MessageType.KillProcessRequest) {
             process.exit();
         }
-        let processor = this._processors.get(message.messageType);
+        let processor = this._processors.get(message.messageType as gauge.messages.Message.MessageType);
         if (processor) {
-            let res = processor.process(message);
+            let res = await processor.process(message);
             this.emit('messageProcessed', res);
         } else {
             throw new Error('Unknown message type ' + message.messageType);

@@ -16,7 +16,6 @@ export class GaugeConnection extends EventEmitter {
 
     public start() {
         this._socket.connect(this.getGaugeInternalPort(), this._host);
-        console.log("connected at port", this.getGaugeInternalPort());
         this._socket.on('data', (data: any) => {
             this.messageHandler(data);
         });

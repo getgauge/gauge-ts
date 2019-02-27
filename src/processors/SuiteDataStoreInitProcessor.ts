@@ -8,7 +8,7 @@ export class SuiteDataStoreInitProcessor extends BaseDataStoreInitProcessor {
         super(DataStoreType.Suite);
     }
 
-    public process(message: gauge.messages.IMessage): gauge.messages.IMessage {
-        return super.process(message);
+    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
+        return await super.process(message);
     }
 }

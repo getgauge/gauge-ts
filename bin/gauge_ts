@@ -1,4 +1,4 @@
 #!/usr/bin/env node
 let { GaugeRuntime } = require('../lib/GaugeRuntime');
-let runner = new GaugeRuntime(process.argv[2]);
+let runner = new GaugeRuntime();
 runner.start();

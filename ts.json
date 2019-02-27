@@ -4,15 +4,24 @@
   "description": "typescript support for gauge",
   "run": {
     "linux": [
-      "./launcher.sh",
+      "./launcher.js",
       "--start"
     ],
     "darwin": [
-      "./launcher.sh",
+      "./launcher.js",
       "--start"
     ]
   },
-  "init": {},
+  "init": {
+    "linux": [
+      "./launcher.js",
+      "--init"
+    ],
+    "darwin": [
+      "./launcher.js",
+      "--init"
+    ]
+  },
   "gaugeVersionSupport": {
     "minimum": "1.0.0",
     "maximum": ""

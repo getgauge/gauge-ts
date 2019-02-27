@@ -11,7 +11,7 @@ function collectFilesIn(dir: any) {
         filter: function (item: { path: any; }) {
             return isJSFile(item.path);
         },
-        traverseAll:true
+        traverseAll: true
     }).map(function (item: { path: any; }) {
         return item.path;
     });
@@ -39,3 +39,6 @@ export function getListOfFiles() {
     return results;
 }
 
+export function isAsync(m: Function): boolean {
+    return m instanceof (async () => { }).constructor;
+}
