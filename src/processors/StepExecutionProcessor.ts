@@ -1,43 +1,52 @@
 import { gauge } from "../messages";
 import registry from '../models/StepRegistry';
-import { IMessageProcessor } from "./IMessageProcessor";
-import { isAsync } from "../utils/fileUtils";
 
-export class StepExecutionProcessor implements IMessageProcessor {
+import { ExecutionProcessor } from "./ExecutionProcessor";
+import { MessageStore } from "../stores/MessageStore";
+import { Screenshot } from "../screenshot/Screenshot";
+import { ScreenshotStore } from "../stores/ScreenshotStore";
+
+export class StepExecutionProcessor extends ExecutionProcessor {
+
     public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        let r = message.executeStepRequest as gauge.messages.ExecuteStepRequest;
-        let mi = registry.get(r.parsedStepText)
+        let req = message.executeStepRequest as gauge.messages.ExecuteStepRequest;
+        if (!registry.isImplemented(req.parsedStepText))
+            return Promise.resolve(this.executionError("Step Implementation not found", message));
+        let result = await this.execute(req);
+        return this.wrapInMessage(result, message);
+    }
+
+    private async execute(req: gauge.messages.ExecuteStepRequest): Promise<gauge.messages.ProtoExecutionResult> {
+        let start = Date.now();
+        let result = new gauge.messages.ProtoExecutionResult();
+        result.failed = false;
         try {
-            let m = mi.getMethod();
-            let promise = m.apply(mi.getInstance(), r.parameters.map((item) => {
-                return item.value ? item.value : item.table;
-            }))
-            if (isAsync(m)) {
-                await promise;
-            }
-            return new gauge.messages.Message({
-                messageId: message.messageId,
-                messageType: gauge.messages.Message.MessageType.ExecutionStatusResponse,
-                executionStatusResponse: new gauge.messages.ExecutionStatusResponse({
-                    executionResult: new gauge.messages.ProtoExecutionResult({
-                        failed: false,
-                        executionTime: 0
-                    })
-                })
-            });
+            let mi = registry.get(req.parsedStepText) // validate mismatch param count
+            let params = req.parameters.map((item) => { return item.value ? item.value : item.table });
+            await this.executeMethod(mi.getInstance(), mi.getMethod(), params);
         } catch (error) {
-            return new gauge.messages.Message({
-                messageId: message.messageId,
-                messageType: gauge.messages.Message.MessageType.ExecutionStatusResponse,
-                executionStatusResponse: new gauge.messages.ExecutionStatusResponse({
-                    executionResult: new gauge.messages.ProtoExecutionResult({
-                        failed: true,
-                        executionTime: 0,
-                        errorMessage: error.message,
-                        stackTrace: error.stack
-                    })
-                })
-            });
+            result.failed = true;
+            result.recoverableError = false;
+            result.errorMessage = error.message;
+            result.stackTrace = error.stack;
+            if (process.env.screenshot_on_failure !== "false") {
+                let s = await Screenshot.capture();
+                result.screenShot = s;
+                result.failureScreenshot = s;
+            }
         }
+        result.executionTime = Date.now() - start;
+        result.message = MessageStore.pendingMessages();;
+        result.screenshots = ScreenshotStore.pendingScreenshots();
+        return result;
+    }
+
+    private executionError(message: string, req: gauge.messages.IMessage): gauge.messages.IMessage {
+        var result = new gauge.messages.ProtoExecutionResult();
+        result.failed = true;
+        result.recoverableError = false;
+        result.executionTime = 0;
+        result.errorMessage = message;
+        return this.wrapInMessage(result, req);
     }
 }

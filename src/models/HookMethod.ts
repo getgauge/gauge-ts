@@ -1,5 +1,7 @@
-export class StepRegistryEntry {
+export class HookMethod {
+
     private readonly _method: Function;
+
     private _instance: object;
 
     constructor(method: Function, target: object) {
@@ -15,5 +17,3 @@ export class StepRegistryEntry {
         return this._instance;
     }
 }
-
-

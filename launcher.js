@@ -92,7 +92,11 @@ if (process.argv[2] === "--init") {
 }
 
 else if (process.argv[2] === "--start") {
-  var runner = cp.spawn('npx', ['gauge_ts'], {
+  var script = `import {GaugeRuntime} from "gauge-ts/dist/GaugeRuntime";`
+    + `let runner = new GaugeRuntime();`
+    + `runner.start();`
+  var options = `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`
+  var runner = cp.spawn('npx', ['ts-node', '-O', options, '-e', script], {
     env: process.env,
     silent: false,
     stdio: "inherit",
