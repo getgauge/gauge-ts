@@ -2,9 +2,6 @@ import { EventEmitter } from "events";
 import { gauge } from "../messages";
 import { IMessageProcessor } from "./IMessageProcessor";
 import { ValidationProcessor } from "./ValidationProcessor";
-import { SuiteDataStoreInitProcessor } from "./SuiteDataStoreInitProcessor";
-import { SpecDataStoreInitProcessor } from "./SpecDataStoreInitProcessor";
-import { ScenarioDataStoreInitProcessor } from "./ScenarioDataStoreInitProcessor";
 import { StepExecutionProcessor } from "./StepExecutionProcessor";
 import { ExecutionStartingProcessor } from "./ExecutionStartingProcessor";
 import { SpecExecutionStartingProcessor } from "./SpecExecutionStartingProcessor";
@@ -14,6 +11,7 @@ import { StepExecutionEndingProcessor } from "./StepExecutionEndingProcessor";
 import { ScenarioExecutionEndingProcessor } from "./ScenarioExecutionEndingProcessor";
 import { SpecExecutionEndingProcessor } from "./SpecExecutionEndingProcessor";
 import { ExecutionEndingProcessor } from "./ExecutionEndingProcessor";
+import { DataStoreInitProcessor } from "./DataStoreInitProcessor";
 
 export class MessageProcessorFactory extends EventEmitter {
 
@@ -24,9 +22,9 @@ export class MessageProcessorFactory extends EventEmitter {
         this._processors = new Map([
             [gauge.messages.Message.MessageType.StepValidateRequest, new ValidationProcessor()],
 
-            [gauge.messages.Message.MessageType.SuiteDataStoreInit, new SuiteDataStoreInitProcessor()],
-            [gauge.messages.Message.MessageType.SpecDataStoreInit, new SpecDataStoreInitProcessor()],
-            [gauge.messages.Message.MessageType.ScenarioDataStoreInit, new ScenarioDataStoreInitProcessor()],
+            [gauge.messages.Message.MessageType.SuiteDataStoreInit, new DataStoreInitProcessor()],
+            [gauge.messages.Message.MessageType.SpecDataStoreInit, new DataStoreInitProcessor()],
+            [gauge.messages.Message.MessageType.ScenarioDataStoreInit, new DataStoreInitProcessor()],
 
             [gauge.messages.Message.MessageType.ExecutionStarting, new ExecutionStartingProcessor()],
             [gauge.messages.Message.MessageType.SpecExecutionStarting, new SpecExecutionStartingProcessor()],

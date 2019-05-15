@@ -6,6 +6,7 @@ import { HookMethod } from './models/HookMethod';
 import { MessageStore } from './stores/MessageStore';
 import { Screenshot } from './screenshot/Screenshot';
 import { ScreenshotStore } from './stores/ScreenshotStore';
+import { DataStoreFactory as _dataStoreFactory } from './stores/DataStoreFactory';
 
 export function Step(stepText: string) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
@@ -75,3 +76,5 @@ export class Gauge {
         MessageStore.addMessage(message);
     }
 }
+
+export const DataStoreFactory = _dataStoreFactory;
