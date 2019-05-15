@@ -7,10 +7,17 @@ import { MessageStore } from './stores/MessageStore';
 import { Screenshot } from './screenshot/Screenshot';
 import { ScreenshotStore } from './stores/ScreenshotStore';
 import { DataStoreFactory as _dataStoreFactory } from './stores/DataStoreFactory';
+import { AssertionError } from 'assert';
 
 export function Step(stepText: string) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
         stepRegistry.add(stepText.replace(/(<.*?>)/g, "{}"), new StepRegistryEntry(descriptor.value, target));
+    };
+}
+
+export function ContinueOnFailure(exceptions?: Array<string>) {
+    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+        stepRegistry.addContinueOnFailure(descriptor.value, exceptions);
     };
 }
 

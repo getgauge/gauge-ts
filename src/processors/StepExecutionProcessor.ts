@@ -20,13 +20,16 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         let start = Date.now();
         let result = new gauge.messages.ProtoExecutionResult();
         result.failed = false;
+        let mi = registry.get(req.parsedStepText) // validate mismatch param count
         try {
-            let mi = registry.get(req.parsedStepText) // validate mismatch param count
             let params = req.parameters.map((item) => { return item.value ? item.value : item.table });
             await this.executeMethod(mi.getInstance(), mi.getMethod(), params);
         } catch (error) {
             result.failed = true;
-            result.recoverableError = false;
+            let cofErrors = registry.getContinueOnFailure(mi.getMethod());
+            if (cofErrors && cofErrors.includes(error.constructor.name)) {
+                result.recoverableError = true;
+            }
             result.errorMessage = error.message;
             result.stackTrace = error.stack;
             if (process.env.screenshot_on_failure !== "false") {
