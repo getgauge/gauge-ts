@@ -20,9 +20,13 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         let start = Date.now();
         let result = new gauge.messages.ProtoExecutionResult();
         result.failed = false;
-        let mi = registry.get(req.parsedStepText) // validate mismatch param count
+        let mi = registry.get(req.parsedStepText)
+        let params = req.parameters.map((item) => { return item.value ? item.value : item.table });
         try {
-            let params = req.parameters.map((item) => { return item.value ? item.value : item.table });
+            if (mi.getMethod().length !== params.length) {
+                throw new Error(`Argument length mismatch for \`${req.actualStepText}\`.` +
+                    ` Actual Count: [${mi.getMethod().length}], Exepected Count: [${params.length}]`)
+            }
             await this.executeMethod(mi.getInstance(), mi.getMethod(), params);
         } catch (error) {
             result.failed = true;

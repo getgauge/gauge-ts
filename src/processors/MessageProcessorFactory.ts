@@ -42,7 +42,7 @@ export class MessageProcessorFactory extends EventEmitter {
 
     public async process(message: gauge.messages.IMessage) {
         if (message.messageType === gauge.messages.Message.MessageType.KillProcessRequest) {
-            process.exit();
+            process.exit(0);
         }
         let processor = this._processors.get(message.messageType as gauge.messages.Message.MessageType);
         if (processor) {

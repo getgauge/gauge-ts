@@ -1,5 +1,4 @@
 # TODO
-* Mismatch param count
 * LSP support (for vscode using GRPC)
 * Refactoring support
 * `this` Support
