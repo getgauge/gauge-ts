@@ -7,7 +7,7 @@ import { MessageStore } from './stores/MessageStore';
 import { Screenshot } from './screenshot/Screenshot';
 import { ScreenshotStore } from './stores/ScreenshotStore';
 import { DataStoreFactory as _dataStoreFactory } from './stores/DataStoreFactory';
-import { AssertionError } from 'assert';
+import { Operator as _operator } from './models/Operator';
 
 export function Step(stepText: string) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
@@ -45,9 +45,9 @@ export function AfterSpec() {
     };
 }
 
-export function BeforeScenario() {
+export function BeforeScenario(options?: { tags: Array<string>, operator?: _operator }) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-        hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(descriptor.value, target))
+        hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(descriptor.value, target, options))
     };
 }
 
@@ -84,4 +84,5 @@ export class Gauge {
     }
 }
 
+export const Operator = _operator;
 export const DataStoreFactory = _dataStoreFactory;

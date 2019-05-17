@@ -22,11 +22,14 @@ export class HookRegistry {
         (this._hooks.get(type) as Array<HookMethod>).push(method);
     }
 
-    public get(type: HookType): Array<HookMethod> {
-        return this._hooks.get(type) as Array<HookMethod>;
+    public get(type: HookType, tags: Array<string>): Array<HookMethod> {
+        let hooks = this._hooks.get(type) as Array<HookMethod>;
+        if (!tags.length) return hooks.filter((hook) => { return hook.getTags().length === 0 });
+        return hooks.filter((hook) => {
+            return hook.getTags().some((t) => { return tags.includes(t) })
+        })
     }
 }
-
 
 const hookRegistry = new HookRegistry();
 export default hookRegistry;

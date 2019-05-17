@@ -5,12 +5,14 @@ import { ExecutionProcessor } from "./ExecutionProcessor";
 import { MessageStore } from "../stores/MessageStore";
 import { Screenshot } from "../screenshot/Screenshot";
 import { ScreenshotStore } from "../stores/ScreenshotStore";
+import { HookMethod } from "../models/HookMethod";
 
 export abstract class HookExecutionProcessor extends ExecutionProcessor {
 
     abstract hookType: HookType;
 
     abstract getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo;
+    abstract getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod>;
 
     async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
         let res = await this.executeHooks(message);
@@ -20,7 +22,7 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     public async executeHooks(req: gauge.messages.IMessage): Promise<gauge.messages.ProtoExecutionResult> {
         let start = Date.now();
         let context = this.getExecutionInfo(req);
-        let hooks = hookRegistry.get(this.hookType);
+        let hooks = this.getApplicableHooks(req)
         let result = new gauge.messages.ProtoExecutionResult();
         result.failed = false;
         try {
