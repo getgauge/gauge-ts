@@ -1,4 +1,4 @@
 export enum Operator {
-    Or,
-    And
+    And,
+    Or
 }

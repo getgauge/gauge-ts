@@ -1,5 +1,6 @@
 import { HookType } from "./HookType";
 import { HookMethod } from "./HookMethod";
+import { Operator } from "./Operator";
 
 
 export class HookRegistry {
@@ -26,8 +27,22 @@ export class HookRegistry {
         let hooks = this._hooks.get(type) as Array<HookMethod>;
         if (!tags.length) return hooks.filter((hook) => { return hook.getTags().length === 0 });
         return hooks.filter((hook) => {
-            return hook.getTags().some((t) => { return tags.includes(t) })
+            let hookTags = hook.getTags();
+            let operator = hook.getTagAggregationOperator();
+            if (!hookTags.length) return true;
+            let matched = this.hasIntersection(tags, hookTags);
+            switch (operator) {
+                case Operator.And:
+                    return matched === hookTags.length;
+                case Operator.Or:
+                    return matched > 0;
+            }
+            return false;
         })
+    }
+
+    private hasIntersection(tags: string[], hookTags: string[]): number {
+        return tags.filter((t) => { return hookTags.includes(t); }).length
     }
 }
 

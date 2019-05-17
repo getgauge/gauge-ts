@@ -1,8 +1,7 @@
 # TODO
-* Operator support in tagged hook execution
+* Mismatch param count
 * LSP support (for vscode using GRPC)
 * Refactoring support
-* Mismatch param count
 * `this` Support
 * Typed ExecutionContext
 * Better project creation
