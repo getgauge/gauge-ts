@@ -1,11 +1,16 @@
-import { StepRegistryEntry } from "./StepRegistryEntry";
 import { AssertionError } from "assert";
+import { StepRegistryEntry } from "./StepRegistryEntry";
 
 
 export class StepRegistry {
 
-    private _registry: Map<string, Array<StepRegistryEntry>> = new Map();
-    private _continuOnFailureFuncs: Map<Function, Array<string>> = new Map();
+    private _registry: Map<string, Array<StepRegistryEntry>>;
+    private _continuOnFailureFuncs: Map<Function, Array<string>>;
+
+    constructor() {
+        this._registry = new Map();
+        this._continuOnFailureFuncs = new Map();
+    }
 
     public get(text: string): StepRegistryEntry {
         return (this._registry.get(text) as Array<StepRegistryEntry>)[0];
@@ -37,6 +42,11 @@ export class StepRegistry {
     public getContinueOnFailure(func: Function): Array<string> {
         if (this._continuOnFailureFuncs.has(func)) return this._continuOnFailureFuncs.get(func) as Array<string>;
         return [];
+    }
+
+    public clear() {
+        this._registry.clear();
+        this._continuOnFailureFuncs.clear();
     }
 }
 

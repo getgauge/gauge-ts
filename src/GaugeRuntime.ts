@@ -1,17 +1,12 @@
 import { GaugeListener } from "./connection/GaugeListener";
+import { StaticLoader } from "./loader/StaticLoader";
 import { MessageProcessorFactory } from "./processors/MessageProcessorFactory";
-import { getListOfFiles } from "./utils/fileUtils";
 
 export class GaugeRuntime {
 
-    private async loadImplementations() {
-        for (const file of getListOfFiles()) {
-            await import(file);
-        }
-    }
-
     public async start() {
-        await this.loadImplementations();
+        let loader = new StaticLoader();
+        loader.loadImplementations();
         let factory = new MessageProcessorFactory();
         let listener = new GaugeListener(factory);
         listener.pollForMessages();

@@ -1,15 +1,16 @@
 import { existsSync } from 'fs';
 import { extname, join } from 'path';
+import { Extension } from 'typescript';
 let klawSync = require('klaw-sync');
 
-function isJSFile(file: any) {
-    return extname(file) === ".ts";
+function isTSFile(file: any) {
+    return extname(file) === Extension.Ts;
 }
 
 function collectFilesIn(dir: any) {
     return klawSync(dir, {
         filter: function (item: { path: any; }) {
-            return isJSFile(item.path);
+            return isTSFile(item.path);
         },
         traverseAll: true
     }).map(function (item: { path: any; }) {

@@ -1,17 +1,23 @@
-import stepRegistry from './models/StepRegistry';
-import { StepRegistryEntry } from './models/StepRegistryEntry';
+import { HookMethod } from './models/HookMethod';
 import hookRegistry from './models/HookRegistry';
 import { HookType } from './models/HookType';
-import { HookMethod } from './models/HookMethod';
-import { MessageStore } from './stores/MessageStore';
-import { Screenshot } from './screenshot/Screenshot';
-import { ScreenshotStore } from './stores/ScreenshotStore';
-import { DataStoreFactory as _dataStoreFactory } from './stores/DataStoreFactory';
 import { Operator as _operator } from './models/Operator';
+import stepRegistry from './models/StepRegistry';
+import { StepRegistryEntry } from './models/StepRegistryEntry';
+import { Screenshot } from './screenshot/Screenshot';
+import { DataStoreFactory as _dataStoreFactory } from './stores/DataStoreFactory';
+import { MessageStore } from './stores/MessageStore';
+import { ScreenshotStore } from './stores/ScreenshotStore';
 
 export function Step(stepText: string) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-        stepRegistry.add(stepText.replace(/(<.*?>)/g, "{}"), new StepRegistryEntry(descriptor.value, target));
+        let stepValue = stepText.replace(/(<.*?>)/g, "{}");
+        stepRegistry.add(stepValue, new StepRegistryEntry(
+            stepText,
+            stepValue,
+            descriptor.value,
+            target,
+            process.env.STEP_FILE_PATH));
     };
 }
 

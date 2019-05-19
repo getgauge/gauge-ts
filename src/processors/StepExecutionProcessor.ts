@@ -22,15 +22,16 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         result.failed = false;
         let mi = registry.get(req.parsedStepText)
         let params = req.parameters.map((item) => { return item.value ? item.value : item.table });
+        let method = mi.getMethod() as Function;
         try {
-            if (mi.getMethod().length !== params.length) {
+            if (method.length !== params.length) {
                 throw new Error(`Argument length mismatch for \`${req.actualStepText}\`.` +
-                    ` Actual Count: [${mi.getMethod().length}], Exepected Count: [${params.length}]`)
+                    ` Actual Count: [${method.length}], Exepected Count: [${params.length}]`)
             }
-            await this.executeMethod(mi.getInstance(), mi.getMethod(), params);
+            await this.executeMethod(mi.getInstance() as object, method, params);
         } catch (error) {
             result.failed = true;
-            let cofErrors = registry.getContinueOnFailure(mi.getMethod());
+            let cofErrors = registry.getContinueOnFailure(method);
             if (cofErrors && cofErrors.includes(error.constructor.name)) {
                 result.recoverableError = true;
             }

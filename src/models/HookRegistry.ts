@@ -1,9 +1,10 @@
-import { HookType } from "./HookType";
 import { HookMethod } from "./HookMethod";
+import { HookType } from "./HookType";
 import { Operator } from "./Operator";
 
 
 export class HookRegistry {
+
     private _hooks: Map<HookType, Array<HookMethod>>;
 
     constructor() {
@@ -25,6 +26,7 @@ export class HookRegistry {
 
     public get(type: HookType, tags: Array<string>): Array<HookMethod> {
         let hooks = this._hooks.get(type) as Array<HookMethod>;
+        if(!hooks || !hooks.length) return [];
         if (!tags.length) return hooks.filter((hook) => { return hook.getTags().length === 0 });
         return hooks.filter((hook) => {
             let hookTags = hook.getTags();
@@ -39,6 +41,10 @@ export class HookRegistry {
             }
             return false;
         })
+    }
+
+    public clear() {
+        this._hooks.clear();
     }
 
     private hasIntersection(tags: string[], hookTags: string[]): number {
