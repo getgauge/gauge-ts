@@ -1,11 +1,10 @@
-import { gauge } from "../messages";
-import hookRegistry from '../models/HookRegistry';
-import { HookType } from "../models/HookType";
-import { ExecutionProcessor } from "./ExecutionProcessor";
-import { MessageStore } from "../stores/MessageStore";
-import { Screenshot } from "../screenshot/Screenshot";
-import { ScreenshotStore } from "../stores/ScreenshotStore";
+import { gauge } from "../gen/messages";
 import { HookMethod } from "../models/HookMethod";
+import { HookType } from "../models/HookType";
+import { Screenshot } from "../screenshot/Screenshot";
+import { MessageStore } from "../stores/MessageStore";
+import { ScreenshotStore } from "../stores/ScreenshotStore";
+import { ExecutionProcessor } from "./ExecutionProcessor";
 
 export abstract class HookExecutionProcessor extends ExecutionProcessor {
 
@@ -27,7 +26,7 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
         result.failed = false;
         try {
             for (let hook of hooks) {
-                await this.executeMethod(hook.getInstance(), hook.getMethod(), [context]);
+                await this.executeMethod(hook.getInstance() as object, hook.getMethod(), [context]);
             }
         } catch (error) {
             result.failed = true;

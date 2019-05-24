@@ -18,7 +18,7 @@ function collectFilesIn(dir: any) {
     });
 }
 
-function getImplDirs() {
+export function getImplDirs() {
     const projectRoot = process.env.GAUGE_PROJECT_ROOT as string;
     if (process.env.STEP_IMPL_DIR) {
         return process.env.STEP_IMPL_DIR.split(",").map(function (dir) {
@@ -38,6 +38,15 @@ export function getListOfFiles() {
         return files.concat(collectFilesIn(dir));
     }, []);
     return results;
+}
+
+export function getNewTSFileName(dir: string, counter = 0): string {
+    var tmpl = counter && "StepImplementation" + counter + ".ts" || "StepImplementation.ts";
+    var fileName = join(dir, tmpl);
+    if (!existsSync(fileName)) {
+        return fileName;
+    }
+    return getNewTSFileName(dir, ++counter);
 }
 
 export function isAsync(m: Function): boolean {

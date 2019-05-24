@@ -1,6 +1,6 @@
-import { GaugeConnection } from "./GaugeConnection";
+import { gauge } from "../gen/messages";
 import { MessageProcessorFactory } from "../processors/MessageProcessorFactory";
-import { gauge } from "../messages";
+import { GaugeConnection } from "./GaugeConnection";
 
 export class GaugeListener {
     private readonly _processorFactory: MessageProcessorFactory;

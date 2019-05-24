@@ -16,4 +16,5 @@ export class Range {
     public getEnd(): Position {
         return this._end;
     }
+
 }

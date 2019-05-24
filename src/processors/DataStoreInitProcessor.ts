@@ -1,6 +1,6 @@
-import { gauge } from "../messages";
-import { IMessageProcessor } from "./IMessageProcessor";
+import { gauge } from "../gen/messages";
 import { DataStoreFactory } from "../stores/DataStoreFactory";
+import { IMessageProcessor } from "./IMessageProcessor";
 
 export class DataStoreInitProcessor implements IMessageProcessor {
     public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {

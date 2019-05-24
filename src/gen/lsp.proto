@@ -1,0 +1,39 @@
+// Copyright 2015 ThoughtWorks, Inc.
+
+// This file is part of gauge-proto.
+
+// gauge-proto is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// gauge-proto is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with gauge-proto.  If not, see <http://www.gnu.org/licenses/>.
+
+syntax = "proto3";
+package gauge.messages;
+option csharp_namespace = "Gauge.Messages";
+option java_package = "com.thoughtworks.gauge";
+
+import "messages.proto";
+
+// Empty is a blank response, to be used when there is no return expected.
+message Empty {}
+
+service lspService {
+    rpc GetStepNames (StepNamesRequest) returns (StepNamesResponse);
+    rpc CacheFile (CacheFileRequest) returns (Empty);
+    rpc GetStepPositions (StepPositionsRequest) returns (StepPositionsResponse);
+    rpc GetImplementationFiles (Empty) returns (ImplementationFileListResponse);
+    rpc ImplementStub (StubImplementationCodeRequest) returns (FileDiff);
+    rpc ValidateStep (StepValidateRequest) returns (StepValidateResponse);
+    rpc Refactor (RefactorRequest) returns (RefactorResponse);
+    rpc GetStepName (StepNameRequest) returns (StepNameResponse);
+    rpc GetGlobPatterns (Empty) returns (ImplementationFileGlobPatternResponse);
+    rpc KillProcess (KillProcessRequest) returns (Empty);
+}

@@ -1,6 +1,6 @@
-import { IMessageProcessor } from "./IMessageProcessor";
-import { gauge } from "../messages";
+import { gauge } from "../gen/messages";
 import { isAsync } from "../utils/fileUtils";
+import { IMessageProcessor } from "./IMessageProcessor";
 
 
 export abstract class ExecutionProcessor implements IMessageProcessor {

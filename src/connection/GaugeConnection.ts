@@ -1,7 +1,7 @@
-import { Socket } from "net";
 import { EventEmitter } from "events";
-import { gauge } from '../messages';
+import { Socket } from "net";
 import { Reader } from 'protobufjs';
+import { gauge } from '../gen/messages';
 
 export class GaugeConnection extends EventEmitter {
 

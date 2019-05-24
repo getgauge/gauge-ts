@@ -25,5 +25,6 @@
   "gaugeVersionSupport": {
     "minimum": "1.0.0",
     "maximum": ""
-  }
+  },
+  "lspLangId" : "typescript"
 }

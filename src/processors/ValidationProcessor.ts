@@ -1,11 +1,14 @@
-import { gauge } from "../messages";
-import { IMessageProcessor } from "./IMessageProcessor";
+import { randomBytes } from 'crypto';
+import { EOL } from "os";
+import { gauge } from "../gen/messages";
 import registry from "../models/StepRegistry";
+import { IMessageProcessor } from "./IMessageProcessor";
 
 export class ValidationProcessor implements IMessageProcessor {
     public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
         let req = message.stepValidateRequest as gauge.messages.StepValidateRequest;
-        let stepValue = (req.stepValue as gauge.messages.ProtoStepValue).parameterizedStepValue;
+        let step = (req.stepValue as gauge.messages.ProtoStepValue);
+        let stepValue = step.parameterizedStepValue;
         let isValid = true;
         let errorMessage = "";
         let errorType;
@@ -24,8 +27,30 @@ export class ValidationProcessor implements IMessageProcessor {
             stepValidateResponse: new gauge.messages.StepValidateResponse({
                 isValid: isValid,
                 errorMessage: errorMessage,
-                errorType: errorType
+                errorType: errorType,
+                suggestion: this.getSuggestion(isValid, step)
             })
         });
+    }
+
+    private getSuggestion(isValid: boolean, step: gauge.messages.ProtoStepValue): string {
+        if (isValid) return "";
+        let argCount = 0;
+        let stepText = step.stepValue.replace(/{}/g, function () { return "<arg" + argCount++ + ">"; });
+        return `@Step("${stepText}")` + EOL +
+            `public async ${this.getMethodName(stepText)}(${this.getParamsList(step.parameters)}) {` + EOL +
+            `\tthrow new Error("Method not implemented.");` + EOL +
+            '}';
+    }
+
+    private getMethodName(stepText: string) {
+        return `implementation${randomBytes(10).toString('hex')}`
+    }
+
+    private getParamsList(params: string[]): string {
+        if (!params || !params.length) return '';
+        return params.map((_, i) => {
+            return "arg" + i.toString() + ': any';
+        }).join(", ");
     }
 }

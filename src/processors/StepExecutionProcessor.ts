@@ -1,10 +1,10 @@
-import { gauge } from "../messages";
+import { gauge } from "../gen/messages";
 import registry from '../models/StepRegistry';
-
-import { ExecutionProcessor } from "./ExecutionProcessor";
-import { MessageStore } from "../stores/MessageStore";
 import { Screenshot } from "../screenshot/Screenshot";
+import { MessageStore } from "../stores/MessageStore";
 import { ScreenshotStore } from "../stores/ScreenshotStore";
+import { ExecutionProcessor } from "./ExecutionProcessor";
+
 
 export class StepExecutionProcessor extends ExecutionProcessor {
 

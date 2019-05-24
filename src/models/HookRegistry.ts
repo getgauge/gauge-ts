@@ -26,7 +26,7 @@ export class HookRegistry {
 
     public get(type: HookType, tags: Array<string>): Array<HookMethod> {
         let hooks = this._hooks.get(type) as Array<HookMethod>;
-        if(!hooks || !hooks.length) return [];
+        if (!hooks || !hooks.length) return [];
         if (!tags.length) return hooks.filter((hook) => { return hook.getTags().length === 0 });
         return hooks.filter((hook) => {
             let hookTags = hook.getTags();
@@ -41,6 +41,14 @@ export class HookRegistry {
             }
             return false;
         })
+    }
+
+    public setInstanceForMethodsIn(file: string, instance: object) {
+        this._hooks.forEach((hookMethods) => {
+            hookMethods.forEach((hookMethod) => {
+                hookMethod.setInstance(instance);
+            });
+        });
     }
 
     public clear() {

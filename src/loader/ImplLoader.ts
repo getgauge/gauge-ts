@@ -8,7 +8,14 @@ export class ImplLoader {
         hookRegistry.clear();
         for (const file of getListOfFiles()) {
             process.env.STEP_FILE_PATH = file;
-            await import(file);
+            let c = await import(file);
+            let instance = new c.default();
+            this.updateRegsitry(file, instance);
         }
+    }
+
+    private updateRegsitry(file: string, instance: object) {
+        registry.setInstanceForMethodsIn(file, instance);
+        hookRegistry.setInstanceForMethodsIn(file, instance)
     }
 }

@@ -5466,7 +5466,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.APIMessage
              * @instance
              */
-            APIMessage.prototype.messageId = 0;
+            APIMessage.prototype.messageId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * [GetProjectRootRequest](#gauge.messages.GetProjectRootRequest)
@@ -6240,7 +6240,11 @@ $root.gauge = (function() {
                 var object = {};
                 if (options.defaults) {
                     object.messageType = options.enums === String ? "GetProjectRootRequest" : 0;
-                    object.messageId = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.messageId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.messageId = options.longs === String ? "0" : 0;
                     object.projectRootRequest = null;
                     object.projectRootResponse = null;
                     object.installationRootRequest = null;
@@ -6543,7 +6547,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoSpec
              * @instance
              */
-            ProtoSpec.prototype.itemCount = 0;
+            ProtoSpec.prototype.itemCount = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Creates a new ProtoSpec instance using the specified properties.
@@ -6973,7 +6977,11 @@ $root.gauge = (function() {
                     object.specHeading = "";
                     object.isTableDriven = false;
                     object.fileName = "";
-                    object.itemCount = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.itemCount = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.itemCount = options.longs === String ? "0" : 0;
                 }
                 if (message.specHeading != null && message.hasOwnProperty("specHeading"))
                     object.specHeading = message.specHeading;
@@ -7648,7 +7656,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoScenario
              * @instance
              */
-            ProtoScenario.prototype.executionTime = 0;
+            ProtoScenario.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Flag to indicate if the Scenario execution is skipped
@@ -8286,7 +8294,11 @@ $root.gauge = (function() {
                     object.failed = false;
                     object.preHookFailure = null;
                     object.postHookFailure = null;
-                    object.executionTime = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
                     object.skipped = false;
                     object.ID = "";
                     object.span = null;
@@ -8418,7 +8430,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.Span
              * @instance
              */
-            Span.prototype.start = 0;
+            Span.prototype.start = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Span end.
@@ -8426,7 +8438,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.Span
              * @instance
              */
-            Span.prototype.end = 0;
+            Span.prototype.end = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Span startChar.
@@ -8434,7 +8446,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.Span
              * @instance
              */
-            Span.prototype.startChar = 0;
+            Span.prototype.startChar = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Span endChar.
@@ -8442,7 +8454,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.Span
              * @instance
              */
-            Span.prototype.endChar = 0;
+            Span.prototype.endChar = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Creates a new Span instance using the specified properties.
@@ -8637,10 +8649,26 @@ $root.gauge = (function() {
                     options = {};
                 var object = {};
                 if (options.defaults) {
-                    object.start = 0;
-                    object.end = 0;
-                    object.startChar = 0;
-                    object.endChar = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.start = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.start = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.end = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.end = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.startChar = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.startChar = options.longs === String ? "0" : 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.endChar = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.endChar = options.longs === String ? "0" : 0;
                 }
                 if (message.start != null && message.hasOwnProperty("start"))
                     if (typeof message.start === "number")
@@ -11463,7 +11491,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoExecutionResult
              * @instance
              */
-            ProtoExecutionResult.prototype.executionTime = 0;
+            ProtoExecutionResult.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Additional information at exec time to be available on reports
@@ -11790,7 +11818,11 @@ $root.gauge = (function() {
                         if (options.bytes !== Array)
                             object.screenShot = $util.newBuffer(object.screenShot);
                     }
-                    object.executionTime = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
                     object.errorType = options.enums === String ? "ASSERTION" : 0;
                     if (options.bytes === String)
                         object.failureScreenshot = "";
@@ -12250,7 +12282,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoSuiteResult
              * @instance
              */
-            ProtoSuiteResult.prototype.executionTime = 0;
+            ProtoSuiteResult.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Holds a metric indicating the success rate of the execution.
@@ -12362,7 +12394,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoSuiteResult
              * @instance
              */
-            ProtoSuiteResult.prototype.chunkSize = 0;
+            ProtoSuiteResult.prototype.chunkSize = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Creates a new ProtoSuiteResult instance using the specified properties.
@@ -12821,7 +12853,11 @@ $root.gauge = (function() {
                     object.postHookFailure = null;
                     object.failed = false;
                     object.specsFailedCount = 0;
-                    object.executionTime = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
                     object.successRate = 0;
                     object.environment = "";
                     object.tags = "";
@@ -12829,7 +12865,11 @@ $root.gauge = (function() {
                     object.timestamp = "";
                     object.specsSkippedCount = 0;
                     object.chunked = false;
-                    object.chunkSize = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.chunkSize = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.chunkSize = options.longs === String ? "0" : 0;
                 }
                 if (message.specResults && message.specResults.length) {
                     object.specResults = [];
@@ -12997,7 +13037,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.ProtoSpecResult
              * @instance
              */
-            ProtoSpecResult.prototype.executionTime = 0;
+            ProtoSpecResult.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * Flag to indicate if spec is skipped
@@ -13334,7 +13374,11 @@ $root.gauge = (function() {
                     object.scenarioCount = 0;
                     object.scenarioFailedCount = 0;
                     object.failed = false;
-                    object.executionTime = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
                     object.skipped = false;
                     object.scenarioSkippedCount = 0;
                 }
@@ -23708,7 +23752,7 @@ $root.gauge = (function() {
              * @memberof gauge.messages.Message
              * @instance
              */
-            Message.prototype.messageId = 0;
+            Message.prototype.messageId = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
 
             /**
              * [ExecutionStartingRequest](#gauge.messages.ExecutionStartingRequest)
@@ -24846,7 +24890,11 @@ $root.gauge = (function() {
                 var object = {};
                 if (options.defaults) {
                     object.messageType = options.enums === String ? "ExecutionStarting" : 0;
-                    object.messageId = 0;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.messageId = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.messageId = options.longs === String ? "0" : 0;
                     object.executionStartingRequest = null;
                     object.specExecutionStartingRequest = null;
                     object.specExecutionEndingRequest = null;

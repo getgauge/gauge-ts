@@ -1,9 +1,9 @@
-import { HookExecutionProcessor } from "./HookExecutionProcessor";
-import { HookType } from "../models/HookType";
-import { gauge } from "../messages";
+import { gauge } from "../gen/messages";
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
-import { Step } from "..";
+import { HookType } from "../models/HookType";
+import { HookExecutionProcessor } from "./HookExecutionProcessor";
+
 export class ScenarioExecutionEndingProcessor extends HookExecutionProcessor {
 
     hookType: HookType = HookType.AfterScenario;

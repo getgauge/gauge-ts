@@ -4,7 +4,7 @@ let stepImpl = `
 import { Step } from "gauge-ts";
 import { equal } from "assert";
 
-class StepImpl {
+export default class StepImpl {
 
     private vowels: Array<string>;
 
@@ -49,7 +49,10 @@ let packageJson = `
   "version": "0.0.1",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "dependencies": {
-    "gauge-ts": "file:../../projects/gauge-ts"
+    "gauge-ts": "file:../../projects/gauge-ts",
+    "ts-node": "^8.1.0",
+    "typescript": "^3.4.5",
+    "@types/node": "^12.0.2"
   }
 }
 `
@@ -89,6 +92,13 @@ if (process.argv[2] === "--init") {
   });
 
   fs.writeFileSync(packageJsonFile, packageJson);
+  console.log("Installing project dependencies...");
+  var runner = cp.spawn('npm', ['install'], {
+    env: process.env,
+    silent: false,
+    stdio: "inherit",
+    cwd: process.env.GAUGE_PROJECT_ROOT
+  });
 }
 
 else if (process.argv[2] === "--start") {

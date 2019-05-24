@@ -1,4 +1,6 @@
 cd gauge-proto
-npx --no-install pbjs -t static-module -w commonjs -o ../src/messages.js *.proto
-npx --no-install pbts -o ../src/messages.d.ts ../src/messages.js
+pbjs -t static-module -w commonjs -o ../src/gen/messages.js *.proto
+pbts -o ../src/gen/messages.d.ts ../src/gen/messages.js
+cp *.proto ../src/gen
+rm ../src/gen/api.proto
 cd ..
