@@ -31,7 +31,9 @@ export class HookRegistry {
         return hooks.filter((hook) => {
             let hookTags = hook.getTags();
             let operator = hook.getTagAggregationOperator();
-            if (!hookTags.length) return true;
+            if (!hookTags.length) {
+                return true
+            };
             let matched = this.hasIntersection(tags, hookTags);
             switch (operator) {
                 case Operator.And:
@@ -39,7 +41,6 @@ export class HookRegistry {
                 case Operator.Or:
                     return matched > 0;
             }
-            return false;
         })
     }
 
@@ -52,7 +53,7 @@ export class HookRegistry {
     }
 
     public clear() {
-        this._hooks.clear();
+        this._hooks.forEach((v, k) => { this._hooks.set(k, new Array<HookMethod>()) });
     }
 
     private hasIntersection(tags: string[], hookTags: string[]): number {

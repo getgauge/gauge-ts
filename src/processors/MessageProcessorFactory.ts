@@ -1,7 +1,7 @@
 import { EventEmitter } from "events";
 import { gauge } from "../gen/messages";
-import { ImplLoader } from "../loader/ImplLoader";
-import { StaticLoader } from "../loader/StaticLoader";
+import { ImplLoader } from "../loaders/ImplLoader";
+import { StaticLoader } from "../loaders/StaticLoader";
 import { CacheFileProcessor } from "./CacheFileProcessor";
 import { DataStoreInitProcessor } from "./DataStoreInitProcessor";
 import { ExecutionEndingProcessor } from "./ExecutionEndingProcessor";

@@ -1,7 +1,7 @@
 import { existsSync, readFileSync } from "fs";
 
 import { gauge } from "../gen/messages";
-import { StaticLoader } from "../loader/StaticLoader";
+import { StaticLoader } from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
 import { IMessageProcessor } from "./IMessageProcessor";
 

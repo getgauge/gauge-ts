@@ -1,11 +1,13 @@
 {
   "name": "gauge-ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Typescript language runner for gauge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "build": "rm -rf dist && tsc && cp -r src/gen dist/",
+    "test:coverage": "jest  --coverage",
+    "test": "jest",
     "gen-proto": "sh genproto.sh"
   },
   "repository": {
@@ -29,7 +31,10 @@
   },
   "devDependencies": {
     "@types/fs-extra": "^5.0.5",
+    "@types/jest": "^24.0.13",
     "@types/klaw-sync": "^6.0.0",
-    "@types/stack-trace": "0.0.29"
+    "@types/stack-trace": "0.0.29",
+    "jest": "^24.8.0",
+    "ts-jest": "^24.0.2"
   }
 }

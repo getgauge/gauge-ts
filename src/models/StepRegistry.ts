@@ -1,7 +1,6 @@
 import { AssertionError } from "assert";
 import { Range } from './Range';
 import { StepRegistryEntry } from "./StepRegistryEntry";
-import klawSync = require("klaw-sync");
 
 
 export class StepRegistry {
@@ -41,7 +40,7 @@ export class StepRegistry {
     }
 
 
-    public getContinueOnFailure(func: Function): Array<string> {
+    public getContinueOnFailureFuncs(func: Function): Array<string> {
         if (this._continuOnFailureFuncs.has(func)) return this._continuOnFailureFuncs.get(func) as Array<string>;
         return [];
     }

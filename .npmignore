@@ -4,3 +4,10 @@ gauge-proto
 deploy
 artifacts
 *.sh
+coverage
+tests
+.vscode
+jest*
+TODO*
+ts*
+launcher.js

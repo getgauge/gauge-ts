@@ -1,6 +1,6 @@
 {
   "id": "ts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "typescript support for gauge",
   "run": {
     "linux": [
@@ -9,6 +9,10 @@
     ],
     "darwin": [
       "./launcher.js",
+      "--start"
+    ],
+    "windows": [
+      "index.bat",
       "--start"
     ]
   },
@@ -20,11 +24,15 @@
     "darwin": [
       "./launcher.js",
       "--init"
+    ],
+    "windows": [
+      "index.bat",
+      "--start"
     ]
   },
   "gaugeVersionSupport": {
     "minimum": "1.0.0",
     "maximum": ""
   },
-  "lspLangId" : "typescript"
+  "lspLangId": "typescript"
 }

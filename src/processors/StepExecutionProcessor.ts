@@ -31,7 +31,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
             await this.executeMethod(mi.getInstance() as object, method, params);
         } catch (error) {
             result.failed = true;
-            let cofErrors = registry.getContinueOnFailure(method);
+            let cofErrors = registry.getContinueOnFailureFuncs(method);
             if (cofErrors && cofErrors.includes(error.constructor.name)) {
                 result.recoverableError = true;
             }

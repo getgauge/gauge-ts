@@ -25,7 +25,7 @@ export function getImplDirs() {
             return join(projectRoot, dir.trim());
         });
     }
-    return [join(projectRoot, "src")];
+    return [join(projectRoot, "tests")];
 }
 
 

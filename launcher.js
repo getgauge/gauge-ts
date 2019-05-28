@@ -1,5 +1,11 @@
 #! /usr/bin/env node
 
+
+var version = process.versions.node.split(".");
+if (parseInt(version[0]) < 10) {
+  throw new Error("gauge-ts requires Node.js version 10+. Current version: " + process.versions.node);
+}
+
 let stepImpl = `
 import { Step } from "gauge-ts";
 import { equal } from "assert";
@@ -39,7 +45,7 @@ let defaultProperties = `
 #settings related to gauge-ts.
 
 # Comma separated list of dirs. path should be relative to project root.
-STEP_IMPL_DIR = src
+STEP_IMPL_DIR = tests
 `
 
 
@@ -62,17 +68,17 @@ let fs = require("fs");
 let path = require("path");
 let cp = require("child_process");
 
-let srcDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'src');
+let testsDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'tests');
 let envDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'env');
 let packageJsonFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'package.json');
 
 if (process.argv[2] === "--init") {
   console.log("Initializing Gauge TypeScript project");
-  fs.mkdir(srcDir, 484, function (err) {
+  fs.mkdir(testsDir, 484, function (err) {
     if (err && err.code !== "EEXIST") {
       console.error(err);
     } else {
-      fs.writeFileSync(path.join(srcDir, 'StepImplementation.ts'), stepImpl);
+      fs.writeFileSync(path.join(testsDir, 'StepImplementation.ts'), stepImpl);
     }
   });
 

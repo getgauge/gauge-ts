@@ -3,7 +3,7 @@ import { loadPackageDefinition, PackageDefinition, Server, ServerCredentials } f
 import { join } from 'path';
 import { GaugeListener } from "./connection/GaugeListener";
 import { GRPCHandler } from './GRPCHandler';
-import { StaticLoader } from "./loader/StaticLoader";
+import { StaticLoader } from "./loaders/StaticLoader";
 import { MessageProcessorFactory } from "./processors/MessageProcessorFactory";
 
 export class GaugeRuntime {
