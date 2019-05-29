@@ -1,5 +1,5 @@
 import { gauge } from "../gen/messages";
-import { isAsync } from "../utils/fileUtils";
+import { Util } from "../utils/Util";
 import { IMessageProcessor } from "./IMessageProcessor";
 
 
@@ -19,7 +19,7 @@ export abstract class ExecutionProcessor implements IMessageProcessor {
 
     public async executeMethod(instance: Object, method: Function, params: any[]) {
         let promise = method.apply(instance, params);
-        if (isAsync(method)) await promise;
+        if (Util.isAsync(method)) await promise;
     }
 }
 

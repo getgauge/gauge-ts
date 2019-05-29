@@ -1,13 +1,13 @@
 import { Server } from 'grpc';
-import { gauge } from './gen/messages';
-import { MessageProcessorFactory } from './processors/MessageProcessorFactory';
+import { gauge } from '../gen/messages';
+import { MessageProcessorFactory } from '../processors/MessageProcessorFactory';
 
 
 export class GRPCHandler {
-    private readonly _server: Server;
+    private readonly _server: Server | null;
     private readonly _factory: MessageProcessorFactory;
 
-    constructor(server: Server, factory: MessageProcessorFactory) {
+    constructor(server: Server | null, factory: MessageProcessorFactory) {
         this._server = server;
         this._factory = factory;
     }
@@ -112,7 +112,7 @@ export class GRPCHandler {
     };
 
     public killProcess(call: any, callback: gauge.messages.lspService.KillProcessCallback): void {
-        this._server.forceShutdown();
+        this._server && this._server.forceShutdown();
         callback(null, new gauge.messages.Empty());
         process.exit(0);
     };

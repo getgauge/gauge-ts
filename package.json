@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc && cp -r src/gen dist/",
     "test:coverage": "jest  --coverage",
-    "test": "jest",
+    "test": "jest --verbose",
     "gen-proto": "sh genproto.sh"
   },
   "repository": {
@@ -30,8 +30,11 @@
     "typescript": "^3.4.5"
   },
   "devDependencies": {
+    "codecov": "^3.5.0",
+    "jest-when": "^2.5.0",
     "@types/fs-extra": "^5.0.5",
     "@types/jest": "^24.0.13",
+    "@types/jest-when": "^2.4.1",
     "@types/klaw-sync": "^6.0.0",
     "@types/stack-trace": "0.0.29",
     "jest": "^24.8.0",

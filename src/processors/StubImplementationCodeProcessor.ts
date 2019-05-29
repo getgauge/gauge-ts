@@ -1,9 +1,8 @@
-import { existsSync, readFileSync } from "fs";
 import { EOL } from "os";
 import { basename } from "path";
 import { createSourceFile, Extension, forEachChild, isClassDeclaration, isMethodDeclaration, Node, ScriptTarget } from "typescript";
 import { gauge } from "../gen/messages";
-import { getImplDirs, getNewTSFileName } from "../utils/fileUtils";
+import { Util } from "../utils/Util";
 import { IMessageProcessor } from "./IMessageProcessor";
 
 export class StubImplementationCodeProcessor implements IMessageProcessor {
@@ -11,8 +10,8 @@ export class StubImplementationCodeProcessor implements IMessageProcessor {
         let req = message.stubImplementationCodeRequest as gauge.messages.StubImplementationCodeRequest
         let filePath = req.implementationFilePath;
         let content = req.codes.reduce((acc, cur) => { return acc + EOL + cur });
-        if (!existsSync(filePath)) {
-            let filePath = getNewTSFileName(getImplDirs()[0]);
+        if (!Util.exists(filePath)) {
+            let filePath = Util.getNewTSFileName(Util.getImplDirs()[0]);
             let className = basename(filePath).replace(Extension.Ts, '');
             return this.wrapInMessage(message, filePath, this.diffForImplementationInNewClass(content, className))
         }
@@ -21,7 +20,7 @@ export class StubImplementationCodeProcessor implements IMessageProcessor {
 
 
     private diffForImplementationInExistingClass(filePath: string, content: string): gauge.messages.TextDiff[] {
-        let fileContent = readFileSync(filePath, "utf8").toString().replace("\r\n", "\n");
+        let fileContent = Util.readFile(filePath).toString().replace("\r\n", "\n");
         let source = createSourceFile(filePath, fileContent, ScriptTarget.Latest)
         let lastMethod: Node | null = null;
         forEachChild(source, (childNode: Node) => {

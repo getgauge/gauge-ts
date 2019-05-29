@@ -11,10 +11,10 @@ export class DataStoreFactory {
     }
 
     public static getSpecDataStore(): DataStore {
-        return this._suiteDataStore;
+        return this._specDataStore;
     }
 
     public static getScenarioDataStore(): DataStore {
-        return this._suiteDataStore;
+        return this._scenarioDataStore;
     }
 }

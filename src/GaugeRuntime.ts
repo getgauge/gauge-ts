@@ -2,7 +2,7 @@ import { loadSync } from '@grpc/proto-loader';
 import { loadPackageDefinition, PackageDefinition, Server, ServerCredentials } from 'grpc';
 import { join } from 'path';
 import { GaugeListener } from "./connection/GaugeListener";
-import { GRPCHandler } from './GRPCHandler';
+import { GRPCHandler } from './connection/GRPCHandler';
 import { StaticLoader } from "./loaders/StaticLoader";
 import { MessageProcessorFactory } from "./processors/MessageProcessorFactory";
 

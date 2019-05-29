@@ -1,5 +1,5 @@
 # Gauge-ts [WIP]
-
+[![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
 This project is still in progress. Not all the features works as of now.
 Look at the TODO for pending tasks.
 

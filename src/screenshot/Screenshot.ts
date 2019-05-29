@@ -1,9 +1,6 @@
-import { spawn, spawnSync } from "child_process";
 import { tmpdir } from 'os';
 import { join } from "path";
-import { readFileSync } from "fs";
-import { isAsync } from "../utils/fileUtils";
-
+import { Util } from "../utils/Util";
 
 export class Screenshot {
     private static customScreenGrabber: Function;
@@ -12,7 +9,7 @@ export class Screenshot {
             if (!this.customScreenGrabber) {
                 return Promise.resolve(this.captureScreenshot());
             }
-            if (isAsync(this.customScreenGrabber)) return await this.customScreenGrabber();
+            if (Util.isAsync(this.customScreenGrabber)) return await this.customScreenGrabber();
             return Promise.resolve(this.customScreenGrabber());
         } catch (error) {
             console.log(error)
@@ -23,8 +20,8 @@ export class Screenshot {
     private static captureScreenshot(): Uint8Array {
         try {
             let tmpFile = join(tmpdir(), `${Date.now()}_screenshot.png`);
-            spawnSync("gauge_screenshot", [tmpFile]);
-            return new Uint8Array(readFileSync(tmpFile).buffer);
+            Util.spawn("gauge_screenshot", [tmpFile]);
+            return new Uint8Array(Util.readFileBuffer(tmpFile));
         } catch (error) {
             throw new Error(`\nFailed to take screenshot using gauge_screenshot.\n${error}`)
         }

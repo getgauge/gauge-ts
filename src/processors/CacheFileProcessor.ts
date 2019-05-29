@@ -1,8 +1,7 @@
-import { existsSync, readFileSync } from "fs";
-
 import { gauge } from "../gen/messages";
 import { StaticLoader } from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
+import { Util } from "../utils/Util";
 import { IMessageProcessor } from "./IMessageProcessor";
 
 export class CacheFileProcessor implements IMessageProcessor {
@@ -28,7 +27,7 @@ export class CacheFileProcessor implements IMessageProcessor {
                 this.loadFromDisk(req.filePath);
                 break;
             case gauge.messages.CacheFileRequest.FileStatus.DELETED:
-                this._loader.reoveSteps(req.filePath);
+                this._loader.removeSteps(req.filePath);
                 break;
             default:
                 this._loader.reloadSteps(req.content, req.filePath)
@@ -38,8 +37,8 @@ export class CacheFileProcessor implements IMessageProcessor {
     }
 
     private loadFromDisk(filePath: string) {
-        if (!existsSync(filePath)) return;
-        this._loader.reloadSteps(readFileSync(filePath, 'utf-8'), filePath)
+        if (!Util.exists(filePath)) return;
+        this._loader.reloadSteps(Util.readFile(filePath), filePath)
     }
 
 }

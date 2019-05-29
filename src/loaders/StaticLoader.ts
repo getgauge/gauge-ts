@@ -1,11 +1,10 @@
-import { readFileSync } from "fs";
 import { createSourceFile, Decorator, forEachChild, isClassDeclaration, isMethodDeclaration, MethodDeclaration, Node, ScriptTarget, SourceFile } from 'typescript';
 import { CodeHelper } from "../helpers/CodeHelper";
 import { Position } from "../models/Position";
 import { Range } from "../models/Range";
 import registry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
-import { getListOfFiles } from "../utils/fileUtils";
+import { Util } from "../utils/Util";
 
 export class StaticLoader extends CodeHelper {
 
@@ -31,13 +30,13 @@ export class StaticLoader extends CodeHelper {
         this.loadStepsFromText(filePath, content)
     }
 
-    public reoveSteps(filePath: string) {
+    public removeSteps(filePath: string) {
         registry.removeSteps(filePath);
     }
 
     private loadFiles() {
-        getListOfFiles().forEach((file: string) => {
-            let text = readFileSync(file, 'utf-8')
+        Util.getListOfFiles().forEach((file: string) => {
+            let text = Util.readFile(file);
             this.loadStepsFromText(file, text);
         })
     }

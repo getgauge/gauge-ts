@@ -1,9 +1,9 @@
-import { readFileSync, writeFileSync } from "fs";
 import { EOL } from "os";
 import { createNodeArray, createParameter, createSourceFile, Decorator, EmitHint, forEachChild, isClassDeclaration, isMethodDeclaration, MethodDeclaration, Node, NodeArray, ParameterDeclaration, ScriptKind, ScriptTarget, SourceFile } from "typescript";
 import { gauge } from "../gen/messages";
 import { CodeHelper } from "../helpers/CodeHelper";
 import registry from "../models/StepRegistry";
+import { Util } from "../utils/Util";
 import { IMessageProcessor } from "./IMessageProcessor";
 
 export class RefactorProcessor extends CodeHelper implements IMessageProcessor {
@@ -32,7 +32,7 @@ export class RefactorProcessor extends CodeHelper implements IMessageProcessor {
         try {
             let info = registry.get(oldStep.stepValue);
             let filePath = info.getFilePath();
-            let source = createSourceFile(filePath, readFileSync(filePath, 'utf-8'), ScriptTarget.Latest, false, ScriptKind.TS);
+            let source = createSourceFile(filePath, Util.readFile(filePath), ScriptTarget.Latest, false, ScriptKind.TS);
             let change1: gauge.messages.FileChanges = new gauge.messages.FileChanges({ fileName: filePath, diffs: [] });
             let change2: gauge.messages.FileChanges = new gauge.messages.FileChanges({ fileName: filePath, diffs: [] });
             forEachChild(source, (childNode: Node) => {
@@ -60,7 +60,7 @@ export class RefactorProcessor extends CodeHelper implements IMessageProcessor {
                     })
                 }
             })
-            if (saveChanges) writeFileSync(filePath, this.printer.printFile(source))
+            if (saveChanges) Util.writeFile(filePath, this.printer.printFile(source))
             respnse.filesChanged = [filePath];
             respnse.fileChanges = [change1, change2];
             respnse.success = true;

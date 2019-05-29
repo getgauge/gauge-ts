@@ -14,8 +14,6 @@ export class DataStoreInitProcessor implements IMessageProcessor {
             case gauge.messages.Message.MessageType.ScenarioDataStoreInit:
                 DataStoreFactory.getScenarioDataStore().clear();
                 break;
-            default:
-                break;
         }
         return new gauge.messages.Message({
             messageId: message.messageId,
