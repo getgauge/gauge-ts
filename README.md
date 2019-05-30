@@ -1,5 +1,8 @@
 # Gauge-ts [WIP]
+
+[![Build Status](https://dev.azure.com/bugdiver/gauge-ts/_apis/build/status/BugDiver.gauge-ts?branchName=master)](https://dev.azure.com/bugdiver/gauge-ts/_build/latest?definitionId=1&branchName=master)
 [![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
+
 This project is still in progress. Not all the features works as of now.
 Look at the TODO for pending tasks.
 
