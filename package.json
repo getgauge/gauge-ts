@@ -7,6 +7,7 @@
   "scripts": {
     "build": "rm -rf dist && tsc && cp -r src/gen dist/",
     "test:coverage": "jest  --coverage",
+  "codecov": "codecov",
     "test": "jest --verbose",
     "gen-proto": "sh genproto.sh"
   },
