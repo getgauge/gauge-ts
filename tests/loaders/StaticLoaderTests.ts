@@ -1,4 +1,3 @@
-import { when } from 'jest-when';
 import { StaticLoader } from '../../src/loaders/StaticLoader';
 import registry from '../../src/models/StepRegistry';
 import { Util } from '../../src/utils/Util';
@@ -75,9 +74,9 @@ describe('StaticLoaderTests', () => {
             let file1 = 'StepImpl.ts';
             let file2 = 'StepImpl2.ts';
 
-            let mockFn = jest.fn();
-            when(mockFn).calledWith(file1).mockReturnValue(text1);
-            when(mockFn).calledWith(file2).mockReturnValue(text2);
+            let mockFn = jest.fn().mockImplementation((file: string) => {
+                return file == file1 ? text1 : text2;
+            });
             Util.readFile = mockFn;
             Util.getListOfFiles = jest.fn().mockReturnValue([file1, file2]);
 
