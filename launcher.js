@@ -106,7 +106,7 @@ else if (process.argv[2] === "--start") {
     + `let runner = new GaugeRuntime();`
     + `runner.start();`
   var options = `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`
-  var runner = cp.spawn('npx', ['ts-node', '-O', options, '-e', script], {
+  var runner = cp.spawn('npx', ["--no-install", 'ts-node', '-O', options, '-e', script], {
     env: process.env,
     silent: false,
     stdio: "inherit",

@@ -25,11 +25,11 @@ describe('MessageProcessorFactory', () => {
         })
 
         it('should load impl before loading files', async () => {
-            Util.getListOfFiles = jest.fn().mockReturnValue(['StepImpl.ts']);
             class Foo {
                 constructor() {
                 }
             }
+            Util.getListOfFiles = jest.fn().mockReturnValue(['StepImpl.ts']);
             Util.importFile = jest.fn().mockResolvedValue({ default: Foo })
             let message = new gauge.messages.Message({
                 messageId: 0,
