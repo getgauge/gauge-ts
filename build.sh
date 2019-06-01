@@ -22,8 +22,9 @@ function version() {
 function package() {
     checkCommand "npm"
     checkCommand "zip"
-    rm -rf deploy artifacts
+    rm -rf dist deploy artifacts
     npm run build
+    cp -r ./src/gen ./dist
     mkdir -p deploy
     cp launcher.* deploy
     cp ts.json deploy

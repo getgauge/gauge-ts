@@ -11,3 +11,7 @@ jest*
 TODO*
 ts*
 launcher.js
+azure*
+.gitmodules
+*.ps1
+*.bat

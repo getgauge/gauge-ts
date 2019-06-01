@@ -69,10 +69,20 @@ let packageJson = `
 let fs = require("fs");
 let path = require("path");
 let cp = require("child_process");
+let os = require('os');
 
 let testsDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'tests');
 let envDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'env');
 let packageJsonFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'package.json');
+
+function getCommand(command) {
+  let validExecExt = [""];
+  if (os.platform() === 'win32') validExecExt.push(".bat", ".exe", ".cmd");
+  for (const ext of validExecExt) {
+      let executable = `${command}${ext}`;
+      if (!cp.spawnSync(executable).error) return executable;
+  }
+}
 
 if (process.argv[2] === "--init") {
   console.log("Initializing Gauge TypeScript project");
@@ -108,7 +118,7 @@ else if (process.argv[2] === "--start") {
     + `let runner = new GaugeRuntime();`
     + `runner.start();`
   var options = `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`
-  var runner = cp.spawn('npx', ["--no-install", 'ts-node', '-O', options, '-e', script], {
+  var runner = cp.spawn(getCommand("npx"), ["--no-install", 'ts-node', '-O', options, '-e', script], {
     env: process.env,
     silent: false,
     stdio: "inherit",

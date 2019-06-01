@@ -12,7 +12,7 @@
       "--start"
     ],
     "windows": [
-      "index.bat",
+      "launcher.bat",
       "--start"
     ]
   },
@@ -26,8 +26,8 @@
       "--init"
     ],
     "windows": [
-      "index.bat",
-      "--start"
+      "launcher.bat",
+      "--init"
     ]
   },
   "gaugeVersionSupport": {

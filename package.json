@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist && tsc && cp -r src/gen dist/",
+    "build": "tsc",
     "test:coverage": "jest  --coverage",
     "codecov": "codecov",
     "test": "jest --verbose",

@@ -52,7 +52,6 @@ gauge install ts --file gauge-ts-0.0.1.zip
 
 #### Build from Source
 
-Currently only available for *nix
 
 ##### Requirements
 - [Gauge](https://gauge.org)
@@ -61,14 +60,14 @@ Currently only available for *nix
 - [JQ](https://stedolan.github.io/jq/) (for unix)
 
 
-Running `build.sh` should give the list of all tasks available. Below sections detail some commonly used tasks.
+Running `build.sh`(*nix), or `.\build.ps1`(windwos/powershell) should give the list of all tasks available. Below sections detail some commonly used tasks.
 
 ##### Compiling
 
-To build the project dlls:
+To compile typescript to commonjs:
 
 ````
-./build.sh build
+./build.sh | .\build.ps1 build
 ````
 
 ##### Installing
@@ -76,13 +75,14 @@ To build the project dlls:
 To install the the typescript plugin use(Note, this will uninstall gauge-ts before installing the compiled version):
 
 ````
-./build.sh forceinstall
+./build.sh | .\build.ps1 package
+./build.sh | .\build.ps1 forceinstall
 ````
 
 ##### Creating distributable
 
 ````
-./build.sh package
+./build.sh | .\build.ps1  package
 ````
 
 New distribution details need to be updated in the dotnet-install.json file in  [gauge plugin repository](https://github.com/getgauge/gauge-repository) for a new verison update.
