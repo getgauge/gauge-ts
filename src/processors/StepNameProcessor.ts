@@ -18,7 +18,7 @@ export class StepNameProcessor implements IMessageProcessor {
             resMes.stepNameResponse = new gauge.messages.StepNameResponse({
                 isStepPresent: true,
                 fileName: info.getFilePath(),
-                hasAlias: false, //TODO: Alias support
+                hasAlias: info.hasAlias(),
                 stepName: [info.getStepText()],
                 span: new gauge.messages.Span({
                     start: span.getStart().getLine(),

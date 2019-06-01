@@ -174,7 +174,7 @@ describe('GRPCHandler', () => {
         it('should give a step info', () => {
             let s = new Server();
             hanlder = new GRPCHandler(s, factory);
-            let mockExit = mockProcessExit();
+            mockProcessExit();
             let mockShutdown = jest.spyOn(s, 'forceShutdown');
             let req = new gauge.messages.KillProcessRequest();
             hanlder.killProcess({ request: req }, (err: gauge.messages.Error | null, res?: gauge.messages.Empty) => {

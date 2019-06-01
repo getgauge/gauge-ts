@@ -6,14 +6,24 @@ import stepRegistry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Screenshot } from "../screenshot/Screenshot";
 
-export function Step(stepText: string) {
+function addStep(stepText: string, fn: Function) {
+
+}
+
+export function Step(stepTexts: string | Array<string>) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-        let stepValue = stepText.replace(/(<.*?>)/g, "{}");
-        stepRegistry.add(stepValue, new StepRegistryEntry(
-            stepText,
-            stepValue,
-            process.env.STEP_FILE_PATH as string,
-            descriptor.value));
+        if (!(stepTexts instanceof Array)) {
+            stepTexts = [stepTexts];
+        }
+        for (const s of stepTexts) {
+            var stepValue = s.replace(/(<.*?>)/g, "{}")
+            stepRegistry.add(stepValue, new StepRegistryEntry(
+                s,
+                stepValue,
+                process.env.STEP_FILE_PATH as string,
+                descriptor.value,
+                undefined, stepTexts.length > 1));
+        }
     };
 }
 

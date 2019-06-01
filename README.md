@@ -1,10 +1,8 @@
-# Gauge-ts [WIP]
+# Gauge-Ts
 
 [![Build Status](https://dev.azure.com/bugdiver/gauge-ts/_apis/build/status/BugDiver.gauge-ts?branchName=master)](https://dev.azure.com/bugdiver/gauge-ts/_build/latest?definitionId=1&branchName=master)
 [![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
-
-This project is still in progress. Not all the features works as of now.
-Look at the TODO for pending tasks.
+[![npm version](https://badge.fury.io/js/gauge-ts.svg)](https://badge.fury.io/js/gauge-ts)
 
 This project adds typescript [language plugin](https://docs.gauge.org/latest/installation.html#language-runner) for [gauge](http://gauge.org).
 
@@ -14,9 +12,9 @@ The plugin is authored in [typescript](https://en.wikipedia.org/wiki/TypeScript)
 
 ### Pre-requisite
 
-- [Gauge](https://gauge.org)
-- [Node js](https://nodejs.org/en/)
-- [Npm](https://www.npmjs.com/)
+- [Gauge](https://docs.gauge.org/installing.html#installation) > v1.0.0
+- [Node js](https://nodejs.org/en/) > v10.0.0
+- [Npm](https://www.npmjs.com/) > v6.0.0
 
 
 ### Installation
@@ -25,7 +23,7 @@ The plugin is authored in [typescript](https://en.wikipedia.org/wiki/TypeScript)
 gauge install ts
 ```
 
-### Create a gauge-dotnet project
+### Create a gauge-ts project
 
 ```
 gauge init ts
@@ -51,8 +49,6 @@ gauge install ts --version 0.0.1
 ```
 gauge install ts --file gauge-ts-0.0.1.zip
 ```
-
-
 
 #### Build from Source
 
@@ -90,3 +86,8 @@ To install the the typescript plugin use(Note, this will uninstall gauge-ts befo
 ````
 
 New distribution details need to be updated in the dotnet-install.json file in  [gauge plugin repository](https://github.com/getgauge/gauge-repository) for a new verison update.
+
+
+##### Copyright
+
+Copyright 2019 BugDiver <vinayshankar00@gmail.com>.

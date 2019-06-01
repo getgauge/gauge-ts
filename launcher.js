@@ -10,7 +10,7 @@ let stepImpl = `
 import { Step } from "gauge-ts";
 import { equal } from "assert";
 
-export default class StepImpl {
+export default class StepImplementation {
 
     private vowels: Array<string>;
 
@@ -98,13 +98,7 @@ if (process.argv[2] === "--init") {
   });
 
   fs.writeFileSync(packageJsonFile, packageJson);
-  console.log("Installing project dependencies...");
-  var runner = cp.spawn('npm', ['install'], {
-    env: process.env,
-    silent: false,
-    stdio: "inherit",
-    cwd: process.env.GAUGE_PROJECT_ROOT
-  });
+  console.log("Run `npm install to get project dependencies..`");
 }
 
 else if (process.argv[2] === "--start") {

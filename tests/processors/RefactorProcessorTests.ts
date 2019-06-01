@@ -5,11 +5,11 @@ import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { RefactorProcessor } from "../../src/processors/RefactorProcessor";
 import { Util } from "../../src/utils/Util";
 
-describe('RefactorProcessor', () => {
+describe.only('RefactorProcessor', () => {
 
     let text1 = `import { Step } from "gauge-ts";` + EOL +
         `export default class StepImpl {` + EOL +
-        `    @Step("foo")` + EOL +
+        `    @Step(["foo"])` + EOL +
         `    public async foo() {` + EOL +
         `        console.log("Hello World");` + EOL +
         `    }` + EOL +
@@ -94,7 +94,7 @@ describe('RefactorProcessor', () => {
             expect(span.start).toBe(3);
             expect(span.startChar).toBe(10);
             expect(span.end).toBe(3);
-            expect(span.endChar).toBe(15);
+            expect(span.endChar).toBe(17);
         })
 
         it('should process RefactorRequest for a step with params and return response', async () => {

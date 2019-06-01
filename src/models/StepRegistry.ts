@@ -63,7 +63,7 @@ export class StepRegistry {
     public getStepTexts(): Array<string> {
         let steps: Array<string> = new Array();
         this._registry.forEach((v: StepRegistryEntry[], k) => {
-            steps.push(v[0].getStepText()); //TODO: Alias support
+            steps = steps.concat(v[0].getStepText())
         });
         return steps;
 

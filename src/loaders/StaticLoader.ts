@@ -42,14 +42,18 @@ export class StaticLoader extends CodeHelper {
     }
 
     private processNode(node: MethodDeclaration, file: string, source: SourceFile) {
-        let stepText = this.getStepText(node); // TODO: Add alias support
-        let stepValue = stepText.replace(/(<.*?>)/g, "{}");
-        registry.add(stepValue, new StepRegistryEntry(
-            stepText,
-            stepValue,
-            file,
-            undefined,
-            this.getRange(node, source)));
+        let stepTexts = this.getStepTexts(node);
+        for (let stepText of stepTexts) {
+            let stepValue = stepText.replace(/(<.*?>)/g, "{}");
+            registry.add(stepValue, new StepRegistryEntry(
+                stepText,
+                stepValue,
+                file,
+                undefined,
+                this.getRange(node, source),
+                stepTexts.length > 1
+            ));
+        }
     }
 
     private getRange(node: MethodDeclaration, source: SourceFile): Range {

@@ -4,10 +4,14 @@ export abstract class CodeHelper {
 
     protected printer: Printer = createPrinter();
 
-    protected getStepText(node: MethodDeclaration) {
+    protected getStepTexts(node: MethodDeclaration): Array<string> {
         let dec = (node.decorators as unknown) as Array<Decorator>;
         let stepDecExp = dec.filter(this.isStepDecorator)[0].expression as any;
-        return stepDecExp.arguments[0].text; // TODO: Add alias support
+        let arg = stepDecExp.arguments[0];
+        if (!arg.text && arg.elements) {
+            return arg.elements.map((e: { text: any; }) => { return e.text })
+        }
+        return [arg.text];
     }
 
     protected isStepDecorator(d: Decorator): boolean {
@@ -22,6 +26,8 @@ export abstract class CodeHelper {
     protected hasStepText(node: MethodDeclaration, stepText: string) {
         let dec = (node.decorators as unknown) as Array<Decorator>;
         let stepDecExp = dec.filter(this.isStepDecorator)[0].expression as any;
-        return stepDecExp.arguments[0].text === stepText;
+        let arg = stepDecExp.arguments[0]
+        if (!arg.text && arg.elements) return arg.elements.some((e: any) => { return e.text === stepText })
+        return arg.text === stepText;
     }
 }

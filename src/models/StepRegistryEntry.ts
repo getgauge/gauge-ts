@@ -9,13 +9,15 @@ export class StepRegistryEntry {
     private readonly _stepValue: string;
 
     private _instance: object | undefined;
+    private _hasAlias = false;
 
-    constructor(stepText: string, stepValue: string, filePath: string, method?: Function, span?: Range) {
+    constructor(stepText: string, stepValue: string, filePath: string, method?: Function, span?: Range, hasAlias?: boolean) {
         this._stepText = stepText;
         this._stepValue = stepValue;
         this._method = method;
         this._filePath = filePath;
         this._span = span;
+        this._hasAlias = hasAlias || false;
     }
 
     public getMethod() {
@@ -30,7 +32,7 @@ export class StepRegistryEntry {
         return this._instance = instance;
     }
 
-    public getFilePath() : string{
+    public getFilePath(): string {
         return this._filePath as string;
     }
 
@@ -40,5 +42,9 @@ export class StepRegistryEntry {
 
     public getStepText(): string {
         return this._stepText;
+    }
+
+    public hasAlias(): boolean {
+        return this._hasAlias;
     }
 }
