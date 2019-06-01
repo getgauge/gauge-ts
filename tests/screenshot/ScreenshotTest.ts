@@ -13,6 +13,7 @@ describe('Screenshot', () => {
         it('should return empty buffer if fails to capture screenshot', async () => {
             Util.readFileBuffer = jest.fn().mockReturnValue(new ArrayBuffer(10));
             Util.spawn = jest.fn().mockImplementation(() => { throw new Error('faild to spawn') });
+            console.log = jest.fn();
             let data = await Screenshot.capture();
             expect(data.length).toBe(0);
         })

@@ -19,7 +19,7 @@ describe('ExecutionStartingProcessor', () => {
 
     describe('.process', () => {
         it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
-            hookRegistry.addHook(HookType.AfterSuite, new HookMethod(async () => {}, "Hooks.ts"))
+            hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(async () => {}, "Hooks.ts"))
             let message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
@@ -34,6 +34,7 @@ describe('ExecutionStartingProcessor', () => {
         })
 
         it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            console.log = jest.fn();
             let open = jest.spyOn(inspector, 'open');
             process.env.DEBUGGING = 'true';
             process.env.DEBUG_PORT = '1234';
@@ -46,7 +47,7 @@ describe('ExecutionStartingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
+            await processor.process(message);
             expect(open).toHaveBeenCalledWith(1234, '127.0.0.1', true);
         })
 

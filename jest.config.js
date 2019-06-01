@@ -5,6 +5,7 @@ module.exports = {
     moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
     coveragePathIgnorePatterns: [
         "/node_modules/",
-        "src/gen/*"
+        "src/gen/*",
+        "src/utils/*"
       ]
 };

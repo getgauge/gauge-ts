@@ -71,12 +71,10 @@ export class MessageProcessorFactory extends EventEmitter {
         switch (message.messageType) {
             case gauge.messages.Message.MessageType.KillProcessRequest:
                 process.exit(0);
-                break;
+                return;
             case gauge.messages.Message.MessageType.ExecutionStarting:
                 let loader = new ImplLoader();
                 await loader.loadImplementations();
-                break;
-            default:
                 break;
         }
         await this._process(message);

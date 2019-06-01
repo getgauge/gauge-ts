@@ -55,10 +55,10 @@ let packageJson = `
   "version": "0.0.1",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "dependencies": {
-    "gauge-ts": "file:../../projects/gauge-ts",
-    "ts-node": "^8.1.0",
-    "typescript": "^3.4.5",
-    "@types/node": "^12.0.2"
+    "gauge-ts": "latest",
+    "ts-node": "latest",
+    "typescript": "latest",
+    "@types/node": "latest"
   }
 }
 `

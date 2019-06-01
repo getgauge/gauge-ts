@@ -5,6 +5,9 @@ import { Extension } from 'typescript';
 let klawSync = require('klaw-sync');
 
 export class Util {
+    public static async importFile(file: string) {
+        return await import(file);
+    }
     public static spawn(command: string, args: string[]) {
         return spawnSync(command, args);
     }

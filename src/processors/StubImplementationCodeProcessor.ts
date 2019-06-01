@@ -65,7 +65,7 @@ export class StubImplementationCodeProcessor implements IMessageProcessor {
 
     private getContentForNewClass(content: string, className: string): string {
         return `import { Step } from "gauge-ts";` + EOL +
-            `export class ${className} {` + EOL +
+            `export default class ${className} {` + EOL +
             `${content.split(EOL).map((c) => { return '\t' + c }).join(EOL)}` + EOL +
             `}`
     }

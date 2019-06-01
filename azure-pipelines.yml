@@ -15,7 +15,6 @@ jobs:
 
       - script: npm run test:coverage
       - script: npm run codecov -- -t $(codecovToken)
-        condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
 
   - job: macOS
     pool:

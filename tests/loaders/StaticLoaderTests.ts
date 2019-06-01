@@ -1,3 +1,4 @@
+import { EOL } from 'os';
 import { StaticLoader } from '../../src/loaders/StaticLoader';
 import registry from '../../src/models/StepRegistry';
 import { Util } from '../../src/utils/Util';
@@ -5,20 +6,20 @@ import { Util } from '../../src/utils/Util';
 describe('StaticLoaderTests', () => {
 
     let loader: StaticLoader;
-    let text1 = `import { Step } from "gauge-ts";` +
-        `export default class StepImpl {` +
-        `    @Step("foo")` +
-        `    public async foo() {` +
-        `        console.log("Hello World");` +
-        `    }` +
+    let text1 = `import { Step } from "gauge-ts";` + EOL +
+        `export default class StepImpl {` + EOL +
+        `    @Step("foo")` + EOL +
+        `    public async foo() {` + EOL +
+        `        console.log("Hello World");` + EOL +
+        `    }` + EOL +
         `}`;
 
-    let text2 = `import { Step } from "gauge-ts";` +
-        `export default class StepImpl {` +
-        `    @Step("bar")` +
-        `    public async bar() {` +
-        `        console.log("Hello World");` +
-        `    }` +
+    let text2 = `import { Step } from "gauge-ts";` + EOL +
+        `export default class StepImpl {` + EOL +
+        `    @Step("bar")` + EOL +
+        `    public async bar() {` + EOL +
+        `        console.log("Hello World");` + EOL +
+        `    }` + EOL +
         `}`;
 
     beforeEach(() => {
