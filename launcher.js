@@ -57,7 +57,9 @@ let packageJson = `
   "dependencies": {
     "gauge-ts": "latest",
     "ts-node": "latest",
-    "typescript": "latest",
+    "typescript": "latest"
+  },
+  "devDependencies": {
     "@types/node": "latest"
   }
 }

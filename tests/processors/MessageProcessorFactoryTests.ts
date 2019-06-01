@@ -36,8 +36,24 @@ describe('MessageProcessorFactory', () => {
                 messageType: gauge.messages.Message.MessageType.ExecutionStarting,
                 executionStartingRequest: new gauge.messages.ExecutionStartingRequest()
             })
+            console.error = jest.fn();
+            let err = jest.spyOn(console, 'error');
             await factory.process(message);
+            expect(err).toBeCalledTimes(0);
+        })
 
+        it('should load impl before loading files which fails to create instance', async () => {
+            Util.getListOfFiles = jest.fn().mockReturnValue(['StepImpl.ts']);
+            Util.importFile = jest.fn().mockResolvedValue({ default: () => { } })
+            let message = new gauge.messages.Message({
+                messageId: 0,
+                messageType: gauge.messages.Message.MessageType.ExecutionStarting,
+                executionStartingRequest: new gauge.messages.ExecutionStartingRequest()
+            })
+            console.error = jest.fn();
+            let err = jest.spyOn(console, 'error');
+            await factory.process(message);
+            expect(err).toHaveBeenCalled();
         })
 
         it('should process unsupport message', async () => {
@@ -51,5 +67,4 @@ describe('MessageProcessorFactory', () => {
             expect(mockExit).toHaveBeenCalledWith(1);
         })
     })
-
 })
