@@ -7,7 +7,7 @@ import { HookExecutionProcessor } from "./HookExecutionProcessor";
 
 export class ExecutionStartingProcessor extends HookExecutionProcessor {
 
-    hookType: HookType = HookType.BeforeSuite
+    protected hookType: HookType = HookType.BeforeSuite
     attachDebuggerEvent: string = "Runner Ready for Debugging";
     constructor() {
         super();
@@ -18,7 +18,7 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
         while (new Date().getTime() < now + ms) { /* do nothing */ }
     }
 
-    public getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
+    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
         if (process.env.DEBUGGING) {
             var port = parseInt(process.env.DEBUG_PORT as string);
             console.log(this.attachDebuggerEvent);
@@ -29,7 +29,7 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
 
-    public getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
+    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         return hookRegistry.get(this.hookType, [])
     }
 }

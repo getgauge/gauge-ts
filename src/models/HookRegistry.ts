@@ -1,6 +1,6 @@
+import { Operator } from "../public/Operator";
 import { HookMethod } from "./HookMethod";
 import { HookType } from "./HookType";
-import { Operator } from "./Operator";
 
 
 export class HookRegistry {

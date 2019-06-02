@@ -55,13 +55,34 @@ let packageJson = `
   "version": "0.0.1",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "dependencies": {
-    "gauge-ts": "latest",
+    "gauge-ts": "0.0.3",
     "ts-node": "latest",
     "typescript": "latest"
   },
   "devDependencies": {
     "@types/node": "latest"
   }
+}
+`
+
+let tsconfig = `
+{
+  "compilerOptions": {
+      /* Basic Options */
+      "target": "es6",
+      /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
+      "module": "commonjs",
+      /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
+      "lib": ["es2016"],                             /* Specify library files to be included in the compilation:  */
+      /* Module Resolution Options */
+      "moduleResolution": "node",
+      /* Experimental Options */
+      "experimentalDecorators": true,        /* Enables experimental support for ES7 decorators. */
+      "emitDecoratorMetadata": true,         /* Enables experimental support for emitting type metadata for decorators. */
+  },
+  "exclude": [
+      "node_modules",
+  ]
 }
 `
 
@@ -74,6 +95,7 @@ let os = require('os');
 let testsDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'tests');
 let envDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'env');
 let packageJsonFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'package.json');
+let tsconfigFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'tsconfig.json');
 
 function getCommand(command) {
   let validExecExt = [""];
@@ -110,7 +132,9 @@ if (process.argv[2] === "--init") {
   });
 
   fs.writeFileSync(packageJsonFile, packageJson);
-  console.log("Run `npm install to get project dependencies..`");
+  fs.writeFileSync(tsconfigFile, tsconfig);
+
+  console.log("Run `npm install` to get project dependencies.");
 }
 
 else if (process.argv[2] === "--start") {

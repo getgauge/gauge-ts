@@ -36,6 +36,7 @@ $tasks.Add('package', @{
 $tasks.Add('install', @{
         description = "Install's gauge-ts plugin from the files in artifacts dir";
         script      = {
+            Invoke-Command $tasks.Get_Item("package").script
             $version = version
             gauge install ts -f ".\artifacts\gauge-ts-$version.zip"
         }

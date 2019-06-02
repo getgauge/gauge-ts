@@ -1,6 +1,6 @@
 {
   "id": "ts",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "typescript support for gauge",
   "run": {
     "linux": [

@@ -1,14 +1,11 @@
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
-import { Operator } from "../models/Operator";
 import stepRegistry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
+import { Operator } from "../public/Operator";
 import { Screenshot } from "../screenshot/Screenshot";
 
-function addStep(stepText: string, fn: Function) {
-
-}
 
 export function Step(stepTexts: string | Array<string>) {
     return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {

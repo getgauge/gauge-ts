@@ -4,18 +4,18 @@ import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
 import { HookExecutionProcessor } from "./HookExecutionProcessor";
 export class StepExecutionEndingProcessor extends HookExecutionProcessor {
-    hookType: HookType = HookType.AfterStep;
+    protected hookType: HookType = HookType.AfterStep;
 
     constructor() {
         super();
     }
 
-    public getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
+    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
         return (message.stepExecutionEndingRequest as gauge.messages.StepExecutionEndingRequest)
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
 
-    public getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
+    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         const request = message.stepExecutionEndingRequest as gauge.messages.StepExecutionEndingRequest;
         const execInfo = request.currentExecutionInfo as gauge.messages.ExecutionInfo;
         const specInfo = execInfo.currentSpec as gauge.messages.ISpecInfo;

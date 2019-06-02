@@ -6,18 +6,18 @@ import { HookExecutionProcessor } from "./HookExecutionProcessor";
 
 export class ScenarioExecutionEndingProcessor extends HookExecutionProcessor {
 
-    hookType: HookType = HookType.AfterScenario;
+    protected hookType: HookType = HookType.AfterScenario;
 
     constructor() {
         super();
     }
 
-    public getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
+    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
         return (message.scenarioExecutionEndingRequest as gauge.messages.ScenarioExecutionEndingRequest)
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
 
-    public getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
+    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         const request = message.scenarioExecutionEndingRequest as gauge.messages.ScenarioExecutionEndingRequest;
         const execInfo = request.currentExecutionInfo as gauge.messages.ExecutionInfo;
         const specInfo = execInfo.currentSpec as gauge.messages.ISpecInfo;

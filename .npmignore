@@ -15,3 +15,4 @@ azure*
 .gitmodules
 *.ps1
 *.bat
+docs

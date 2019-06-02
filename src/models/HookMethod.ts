@@ -1,4 +1,4 @@
-import { Operator } from "../models/Operator";
+import { Operator } from "../public/Operator";
 
 export class HookMethod {
 

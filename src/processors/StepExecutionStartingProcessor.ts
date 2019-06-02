@@ -5,7 +5,7 @@ import { HookType } from "../models/HookType";
 import { HookExecutionProcessor } from "./HookExecutionProcessor";
 export class StepExecutionStartingProcessor extends HookExecutionProcessor {
 
-    hookType: HookType = HookType.BeforeStep;
+    protected hookType: HookType = HookType.BeforeStep;
 
     constructor() {
         super();
@@ -16,7 +16,7 @@ export class StepExecutionStartingProcessor extends HookExecutionProcessor {
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
 
-    public getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
+    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         const request = message.stepExecutionStartingRequest as gauge.messages.StepExecutionStartingRequest;
         const execInfo = request.currentExecutionInfo as gauge.messages.ExecutionInfo;
         const specInfo = execInfo.currentSpec as gauge.messages.ISpecInfo;
