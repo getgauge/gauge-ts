@@ -19,6 +19,13 @@ Gauge Typescript allows you to use typescript [decorators](https://www.typescrip
 
 ## Installation
 
+### Pre-requisite
+
+- [Gauge](https://docs.gauge.org/installing.html#installation) > v1.0.0
+- [Node js](https://nodejs.org/en/) > v10.0.0
+- [Npm](https://www.npmjs.com/) > v6.0.0
+
+
 The plugin has two components which has to install to run a gauge typescript project.
 The first component is in form of a gauge plugin whihch take care of create a guage-ts project and starting the runnner.
 The 2nd component is a `npm` package which gives the API which the users will use to write there step/hook implementations. The second component will be install as part of `npm install` in your gauge  typescript project.

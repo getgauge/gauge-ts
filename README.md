@@ -10,48 +10,11 @@ The plugin is authored in [typescript](https://en.wikipedia.org/wiki/TypeScript)
 
 ## Getting started
 
-### Pre-requisite
+Refer https://bugdiver.github.io/gauge-ts
 
-- [Gauge](https://docs.gauge.org/installing.html#installation) > v1.0.0
-- [Node js](https://nodejs.org/en/) > v10.0.0
-- [Npm](https://www.npmjs.com/) > v6.0.0
-
-
-### Installation
-
-```
-gauge install ts
-```
-
-### Create a gauge-ts project
-
-```
-gauge init ts
-```
-
-### Run tests
-
-```
-gauge run specs
-```
-
-### Alternate Installation options
-
-#### Install specific version
-* Installing specific version
-```
-gauge install ts --version 0.0.1
-```
-
-#### Offline installation
-
-* Download the plugin from [Releases](https://github.com/getgauge/gauge-ts/releases)
-```
-gauge install ts --file gauge-ts-0.0.1.zip
-```
+## Deveopement 
 
 #### Build from Source
-
 
 ##### Requirements
 - [Gauge](https://gauge.org)
@@ -88,6 +51,8 @@ To install the the typescript plugin use(Note, this will uninstall gauge-ts befo
 New distribution details need to be updated in the dotnet-install.json file in  [gauge plugin repository](https://github.com/getgauge/gauge-repository) for a new verison update.
 
 
-##### Copyright
 
-Copyright 2019 BugDiver <vinayshankar00@gmail.com>.
+
+## Copyright
+
+Copyright 2019 `BugDiver <vinayshankar00@gmail.com>`.
