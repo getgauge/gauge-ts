@@ -1,7 +1,7 @@
 import { HookMethod } from '../../src/models/HookMethod';
 import hookRegistry from '../../src/models/HookRegistry';
 import { HookType } from '../../src/models/HookType';
-import { Operator } from '../../src/models/Operator';
+import { Operator } from '../../src/public/Operator';
 
 describe('HookRegistry', () => {
     afterEach(() => {
