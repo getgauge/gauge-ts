@@ -10,7 +10,7 @@ The plugin is authored in [typescript](https://en.wikipedia.org/wiki/TypeScript)
 
 ## Getting started
 
-Refer https://bugdiver.github.io/gauge-ts
+Refer https://bugdiver.dev/gauge-ts
 
 ## Deveopement 
 
