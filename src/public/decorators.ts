@@ -7,8 +7,8 @@ import { Operator } from "../public/Operator";
 import { Screenshot } from "../screenshot/Screenshot";
 
 
-export function Step(stepTexts: string | Array<string>) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function Step(stepTexts: string | Array<string>): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         if (!(stepTexts instanceof Array)) {
             stepTexts = [stepTexts];
         }
@@ -24,70 +24,70 @@ export function Step(stepTexts: string | Array<string>) {
     };
 }
 
-export function ContinueOnFailure(exceptions?: Array<string>) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function ContinueOnFailure(exceptions?: Array<string>): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         stepRegistry.addContinueOnFailure(descriptor.value, exceptions);
     };
 }
 
-export function BeforeSuite() {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function BeforeSuite(): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(descriptor.value, file))
     };
 }
 
-export function AfterSuite() {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function AfterSuite(): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.AfterSuite, new HookMethod(descriptor.value, file))
     };
 }
 
-export function BeforeSpec(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function BeforeSpec(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.BeforeSpec, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function AfterSpec(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function AfterSpec(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.AfterSpec, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function BeforeScenario(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function BeforeScenario(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function AfterScenario(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function AfterScenario(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.AfterScenario, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function BeforeStep(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function BeforeStep(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.BeforeStep, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function AfterStep(options?: { tags: Array<string>, operator?: Operator }) {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function AfterStep(options?: { tags: Array<string>, operator?: Operator }): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         let file = process.env.STEP_FILE_PATH as string;
         hookRegistry.addHook(HookType.AfterStep, new HookMethod(descriptor.value, file, options))
     };
 }
 
-export function CustomScreenGrabber() {
-    return function (target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
+export function CustomScreenGrabber(): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         Screenshot.setCustomScreenGrabber(descriptor.value);
     };
 }
