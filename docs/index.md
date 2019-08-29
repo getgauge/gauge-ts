@@ -460,11 +460,11 @@ Gauge-Ts follows the protocol and implements the API's reuired by gauge to suppo
 ## Contact & Support
 
 - Create a [Github issue](https://github.com/bugdiver/gauge-ts/issues) for bug reports, feature requests, or questions
-- Add a ⭐️ [star on GitHub](https://github.com/jhildenbiddle/class-change) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fbugdiver%2Fgauge-ts&via=bugdiverr&hashtags=getgauge,automation,bdd,typescript) to support the project!
+- Add a ⭐️ [star on GitHub](https://github.com/bugdiver/gauge-ts) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fbugdiver%2Fgauge-ts&via=bugdiverr&hashtags=getgauge,automation,bdd,typescript) to support the project!
 
 ## License
 
-This project is licensed under the MIT License. See the [LICENSE](https://github.com/jhildenbiddle/class-change/blob/master/LICENSE) for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/bugdiver/gauge-ts/blob/master/LICENSE) for details.
 
 Copyright (c) Vinay Shankar Shukla ([@BugDiver](https://github.com/bugdiver))
 
