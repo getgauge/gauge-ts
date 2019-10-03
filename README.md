@@ -1,6 +1,6 @@
 # Gauge-Ts
 
-[![Build Status](https://dev.azure.com/bugdiver/gauge-ts/_apis/build/status/BugDiver.gauge-ts?branchName=master)](https://dev.azure.com/bugdiver/gauge-ts/_build/latest?definitionId=1&branchName=master)
+[![Actions Status](https://github.com/bugdiver/gauge-ts/workflows/Node%20CI/badge.svg)](https://github.com/BugDiver/gauge-ts/actions)
 [![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
 [![npm version](https://badge.fury.io/js/gauge-ts.svg)](https://badge.fury.io/js/gauge-ts)
 
@@ -12,7 +12,7 @@ The plugin is authored in [typescript](https://en.wikipedia.org/wiki/TypeScript)
 
 Refer https://bugdiver.dev/gauge-ts
 
-## Deveopement 
+## Deveopement
 
 #### Build from Source
 
