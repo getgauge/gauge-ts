@@ -49,10 +49,3 @@ To install the the typescript plugin use(Note, this will uninstall gauge-ts befo
 ````
 
 New distribution details need to be updated in the dotnet-install.json file in  [gauge plugin repository](https://github.com/getgauge/gauge-repository) for a new verison update.
-
-
-
-
-## Copyright
-
-Copyright 2019 `BugDiver <vinayshankar00@gmail.com>`.
