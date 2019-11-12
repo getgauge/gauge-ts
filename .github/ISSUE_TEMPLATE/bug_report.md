@@ -31,3 +31,6 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+For example if you are facing an issue with editor (vscode)
+ - VS Code Version : [e.g. 1.30.0]
+ - Gauge VS Code Plugin Version : [e.g. 0.0.5]
