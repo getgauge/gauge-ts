@@ -92,10 +92,12 @@ let path = require("path");
 let cp = require("child_process");
 let os = require('os');
 
-let testsDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'tests');
-let envDir = path.join(process.env.GAUGE_PROJECT_ROOT, 'env');
-let packageJsonFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'package.json');
-let tsconfigFile = path.join(process.env.GAUGE_PROJECT_ROOT, 'tsconfig.json');
+const { GAUGE_PROJECT_ROOT } = process.env;
+
+let testsDir = path.join(GAUGE_PROJECT_ROOT, 'tests');
+let envDir = path.join(GAUGE_PROJECT_ROOT, 'env');
+let packageJsonFile = path.join(GAUGE_PROJECT_ROOT, 'package.json');
+let tsconfigFile = path.join(GAUGE_PROJECT_ROOT, 'tsconfig.json');
 
 function getCommand(command) {
   let validExecExt = [""];
@@ -141,14 +143,30 @@ else if (process.argv[2] === "--start") {
   var script = `import {GaugeRuntime} from "gauge-ts/dist/GaugeRuntime";`
     + `let runner = new GaugeRuntime();`
     + `runner.start();`
-  var options = `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`
-  var runner = cp.spawn(getCommand("npx"), ["--no-install", 'ts-node', '-O', options, '-e', script], {
+  var opts = [
+    "--no-install",
+    'ts-node',
+    '-O', `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`,
+    ...hasModule('tsconfig-paths') ? ['-r', 'tsconfig-paths/register'] : [],
+    '-e', script
+  ];
+  var runner = cp.spawn(getCommand("npx"), opts, {
     env: process.env,
     silent: false,
     stdio: "inherit",
-    cwd: process.env.GAUGE_PROJECT_ROOT
+    cwd: GAUGE_PROJECT_ROOT
   });
   runner.on("error", function (err) {
     console.trace(err.stack);
   });
+}
+
+function hasModule(name) {
+  try {
+    require.resolve(name, { paths: [GAUGE_PROJECT_ROOT] });
+    return true;
+  } catch(e) {
+    console.log(e);
+    return false;
+  }
 }
