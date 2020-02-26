@@ -25,8 +25,9 @@ jobs:
       - name: Update coverage
         if: matrix.os == 'ubuntu-latest'
         run: npm run codecov -- -t ${{ secrets.CODECOV_TOKEN }}
-  
+
   sample-project:
+    needs: test
     strategy:
       matrix:
         node-version: [10.x, 12.x]
