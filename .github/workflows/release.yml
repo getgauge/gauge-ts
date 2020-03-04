@@ -12,16 +12,16 @@ jobs:
       CI: true
 
     steps:
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
       - uses: geertvdc/setup-hub@master
 
-      - uses: actions/setup-node@v1
-        with:
-          node-version: '10.x'
-          registry-url: 'https://registry.npmjs.org'
+      # - uses: actions/setup-node@v1
+      #   with:
+      #     node-version: '10.x'
+      #     registry-url: 'https://registry.npmjs.org'
 
-      - run: npm install
-      - run: npm build
+      # - run: npm install
+      # - run: npm build
 
       - name: Setup git
         run: |
@@ -41,28 +41,28 @@ jobs:
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-ts BugDiver)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          # hub release create -F ./desc.txt "v$version"
+          hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
 
-      - name: Deploy npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --access=public
+      # - name: Deploy npm
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     npm publish --access=public
 
-      - name: 'deployment success'
-        if: success()
-        uses: 'deliverybot/status@master'
-        with:
-          state: 'success'
-          token: '${{ secrets.GITHUB_TOKEN }}'
+      # - name: 'deployment success'
+      #   if: success()
+      #   uses: 'deliverybot/status@master'
+      #   with:
+      #     state: 'success'
+      #     token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: 'deployment failure'
-        if: failure()
-        uses: 'deliverybot/status@master'
-        with:
-          state: 'failure'
-          token: '${{ secrets.GITHUB_TOKEN }}'
+      # - name: 'deployment failure'
+      #   if: failure()
+      #   uses: 'deliverybot/status@master'
+      #   with:
+      #     state: 'failure'
+      #     token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Create metadata pr in gauge-repository
         run: |
@@ -80,7 +80,7 @@ jobs:
 
           python update_metadata.py ts $VERSION
 
-          git add ./ts.json
+          git add ./ts-install.json
           git commit -m "Update typescript metadata for v$VERSION"
 
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/BugDiver/gauge-repository.git" $BRANCH
