@@ -9,7 +9,8 @@
     "test:coverage": "jest  --coverage",
     "codecov": "codecov",
     "test": "jest --verbose",
-    "gen-proto": "sh genproto.sh"
+    "gen-proto": "sh genproto.sh",
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
@@ -17,9 +18,9 @@
   },
   "keywords": [
     "gauge",
-    "acceptence test",
-    "typescript",
-    "automaiton"
+    "Acceptance Test",
+    "Typescript",
+    "Automation"
   ],
   "author": "BugDiver <vinayshankar00@gmail.com>",
   "license": "MIT",

@@ -1,7 +1,6 @@
 name: Release
 
-on:
-  repository_dispatch
+on: deployment
 
 jobs:
   release:
@@ -21,9 +20,8 @@ jobs:
           node-version: '10.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: npm install
-        run: |
-          npm install
+      - run: npm install
+      - run: npm build
 
       - name: Setup git
         run: |
@@ -50,7 +48,22 @@ jobs:
       #   env:
       #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       #   run: |
+      #     npm build
       #     npm publish --access=public
+
+      - name: 'deployment success'
+        if: success()
+        uses: 'deliverybot/status@master'
+        with:
+          state: 'success'
+          token: '${{ secrets.GITHUB_TOKEN }}'
+
+      - name: 'deployment failure'
+        if: failure()
+        uses: 'deliverybot/status@master'
+        with:
+          state: 'failure'
+          token: '${{ secrets.GITHUB_TOKEN }}'
 
       - name: Create metadata pr in gauge-repository
         run: |

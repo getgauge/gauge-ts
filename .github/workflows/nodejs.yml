@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         node-version: [10.x, 12.x]
-        os: [macOS-latest, ubuntu-latest, windows-latest]
+        os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -16,18 +16,39 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: npm install and test
         run: |
           npm install
           npm run test:coverage
         env:
           CI: true
+
       - name: Update coverage
-        if: matrix.os == 'ubuntu-latest'
-        run: npm run codecov -- -t ${{ secrets.CODECOV_TOKEN }}
+        run: |
+          npm run codecov -- -t ${{ secrets.CODECOV_TOKEN }}
+
+  build-artifacts:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+
+      - name: Create artifact
+        run: |
+          ./build.sh package
+          npm pack
+          mv ./gauge-ts-*.tgz ./artifacts
+
+      - name: Upload artifacts for local
+        uses: actions/upload-artifact@v1
+        with:
+          name: gauge-ts
+          path: ./artifacts
 
   sample-project:
-    needs: test
+    needs: build-artifacts
     strategy:
       matrix:
         node-version: [10.x, 12.x]
@@ -35,34 +56,31 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
 
       - uses: BugDiver/setup-gauge@master
-
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Install gauge-ts
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          npm install
-          ./build.sh forceinstall
+      - uses: actions/download-artifact@v1
+        with:
+          name: gauge-ts
+          path: ./artifacts
 
       - name: Install gauge-ts
-        if: matrix.os == 'windows-latest'
         run: |
-          npm install
-          ./build.ps1 forceinstall
+          gauge install ts -f ./artifacts/gauge-ts-*.zip
+        shell: bash
 
       - name: Initialize a sample project
         run: |
           mkdir sample
           cd sample
           gauge init ts
-          npm install ../
+          npm install ../artifacts/gauge-ts-*.tgz
+        shell: bash
 
       - name: Run sample project
         run: |
