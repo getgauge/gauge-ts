@@ -62,6 +62,9 @@ jobs:
           mkdir sample
           cd sample
           gauge init ts
+          rm -rf node_modules
+          npm install ../
+          npm install
 
       - name: Run sample project
         run: |
