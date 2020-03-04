@@ -2719,14 +2719,20 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             postHookMessage?: (string[]|null);
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             preHookScreenshots?: (Uint8Array[]|null);
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             postHookScreenshots?: (Uint8Array[]|null);
 
             /** used when items are sent as individual chunk */
             itemCount?: (number|Long|null);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            preHookScreenshotFiles?: (string[]|null);
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            postHookScreenshotFiles?: (string[]|null);
         }
 
         /** A specification can contain Scenarios or Steps, besides Comments */
@@ -2771,14 +2777,20 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             public postHookMessage: string[];
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             public preHookScreenshots: Uint8Array[];
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             public postHookScreenshots: Uint8Array[];
 
             /** used when items are sent as individual chunk */
             public itemCount: (number|Long);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            public preHookScreenshotFiles: string[];
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            public postHookScreenshotFiles: string[];
 
             /**
              * Creates a new ProtoSpec instance using the specified properties.
@@ -3068,11 +3080,17 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             postHookMessage?: (string[]|null);
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             preHookScreenshots?: (Uint8Array[]|null);
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             postHookScreenshots?: (Uint8Array[]|null);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            preHookScreenshotFiles?: (string[]|null);
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            postHookScreenshotFiles?: (string[]|null);
         }
 
         /** A proto object representing a Scenario */
@@ -3138,11 +3156,17 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             public postHookMessage: string[];
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             public preHookScreenshots: Uint8Array[];
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             public postHookScreenshots: Uint8Array[];
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            public preHookScreenshotFiles: string[];
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            public postHookScreenshotFiles: string[];
 
             /**
              * Creates a new ProtoScenario instance using the specified properties.
@@ -3343,6 +3367,9 @@ export namespace gauge {
 
             /** Holds the scenario data table */
             scenarioDataTable?: (gauge.messages.IProtoTable|null);
+
+            /** Hold the row of scenario data table. */
+            scenarioTableRow?: (gauge.messages.IProtoTable|null);
         }
 
         /** A proto object representing a TableDrivenScenario */
@@ -3371,6 +3398,9 @@ export namespace gauge {
 
             /** Holds the scenario data table */
             public scenarioDataTable?: (gauge.messages.IProtoTable|null);
+
+            /** Hold the row of scenario data table. */
+            public scenarioTableRow?: (gauge.messages.IProtoTable|null);
 
             /**
              * Creates a new ProtoTableDrivenScenario instance using the specified properties.
@@ -3464,11 +3494,17 @@ export namespace gauge {
             /** Additional information at post hook exec time to be available on reports */
             postHookMessages?: (string[]|null);
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             preHookScreenshots?: (Uint8Array[]|null);
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             postHookScreenshots?: (Uint8Array[]|null);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            preHookScreenshotFiles?: (string[]|null);
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            postHookScreenshotFiles?: (string[]|null);
         }
 
         /** A proto object representing a Step */
@@ -3498,11 +3534,17 @@ export namespace gauge {
             /** Additional information at post hook exec time to be available on reports */
             public postHookMessages: string[];
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             public preHookScreenshots: Uint8Array[];
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             public postHookScreenshots: Uint8Array[];
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            public preHookScreenshotFiles: string[];
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            public postHookScreenshotFiles: string[];
 
             /**
              * Creates a new ProtoStep instance using the specified properties.
@@ -4403,7 +4445,7 @@ export namespace gauge {
             /** Stacktrace of the error */
             stackTrace?: (string|null);
 
-            /** [DEPRECATED, use failedScreenshot] Bytes containing screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure. */
             screenShot?: (Uint8Array|null);
 
             /** Holds the time taken for executing this scenario. */
@@ -4415,11 +4457,17 @@ export namespace gauge {
             /** Type of the Error. Valid values: ASSERTION, VERIFICATION. Default: ASSERTION */
             errorType?: (gauge.messages.ProtoExecutionResult.ErrorType|null);
 
-            /** Bytes containing screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure. */
             failureScreenshot?: (Uint8Array|null);
 
-            /** Bytes array containing screenshots at the time of it invoked */
+            /** [DEPRECATED, use screenshotFiles] Bytes array containing screenshots at the time of it invoked */
             screenshots?: (Uint8Array[]|null);
+
+            /** Path to the screenshot file captured at the time of failure. */
+            failureScreenshotFile?: (string|null);
+
+            /** Path to the screenshot files captured using Gauge screenshsot API. */
+            screenshotFiles?: (string[]|null);
         }
 
         /** A proto object representing the result of an execution */
@@ -4443,7 +4491,7 @@ export namespace gauge {
             /** Stacktrace of the error */
             public stackTrace: string;
 
-            /** [DEPRECATED, use failedScreenshot] Bytes containing screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure. */
             public screenShot: Uint8Array;
 
             /** Holds the time taken for executing this scenario. */
@@ -4455,11 +4503,17 @@ export namespace gauge {
             /** Type of the Error. Valid values: ASSERTION, VERIFICATION. Default: ASSERTION */
             public errorType: gauge.messages.ProtoExecutionResult.ErrorType;
 
-            /** Bytes containing screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure. */
             public failureScreenshot: Uint8Array;
 
-            /** Bytes array containing screenshots at the time of it invoked */
+            /** [DEPRECATED, use screenshotFiles] Bytes array containing screenshots at the time of it invoked */
             public screenshots: Uint8Array[];
+
+            /** Path to the screenshot file captured at the time of failure. */
+            public failureScreenshotFile: string;
+
+            /** Path to the screenshot files captured using Gauge screenshsot API. */
+            public screenshotFiles: string[];
 
             /**
              * Creates a new ProtoExecutionResult instance using the specified properties.
@@ -4550,14 +4604,17 @@ export namespace gauge {
             /** Error message from the failure */
             errorMessage?: (string|null);
 
-            /** [DEPRECATED, use failedScreenshot] Bytes holding the screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure. */
             screenShot?: (Uint8Array|null);
 
             /** ProtoHookFailure tableRowIndex */
             tableRowIndex?: (number|null);
 
-            /** Bytes holding the screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure. */
             failureScreenshot?: (Uint8Array|null);
+
+            /** Path to the screenshot file captured at the time of failure. */
+            failureScreenshotFile?: (string|null);
         }
 
         /** Used to hold failure information for before_suite, before_spec, before_scenario and before_spec hooks. */
@@ -4575,14 +4632,17 @@ export namespace gauge {
             /** Error message from the failure */
             public errorMessage: string;
 
-            /** [DEPRECATED, use failedScreenshot] Bytes holding the screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure. */
             public screenShot: Uint8Array;
 
             /** ProtoHookFailure tableRowIndex. */
             public tableRowIndex: number;
 
-            /** Bytes holding the screenshot taken at the time of failure. */
+            /** [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure. */
             public failureScreenshot: Uint8Array;
+
+            /** Path to the screenshot file captured at the time of failure. */
+            public failureScreenshotFile: string;
 
             /**
              * Creates a new ProtoHookFailure instance using the specified properties.
@@ -4706,10 +4766,10 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             postHookMessage?: (string[]|null);
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             preHookScreenshots?: (Uint8Array[]|null);
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             postHookScreenshots?: (Uint8Array[]|null);
 
             /** ProtoSuiteResult chunked */
@@ -4717,6 +4777,12 @@ export namespace gauge {
 
             /** ProtoSuiteResult chunkSize */
             chunkSize?: (number|Long|null);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            preHookScreenshotFiles?: (string[]|null);
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            postHookScreenshotFiles?: (string[]|null);
         }
 
         /** A proto object representing the result of entire Suite execution. */
@@ -4776,10 +4842,10 @@ export namespace gauge {
             /** [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports */
             public postHookMessage: string[];
 
-            /** Capture Screenshot at pre hook exec time to be available on reports */
+            /** [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports */
             public preHookScreenshots: Uint8Array[];
 
-            /** Capture Screenshot at post hook exec time to be available on reports */
+            /** [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports */
             public postHookScreenshots: Uint8Array[];
 
             /** ProtoSuiteResult chunked. */
@@ -4787,6 +4853,12 @@ export namespace gauge {
 
             /** ProtoSuiteResult chunkSize. */
             public chunkSize: (number|Long);
+
+            /** Screenshots captured on pre hook exec time to be available on reports */
+            public preHookScreenshotFiles: string[];
+
+            /** Screenshots captured on post hook exec time to be available on reports */
+            public postHookScreenshotFiles: string[];
 
             /**
              * Creates a new ProtoSuiteResult instance using the specified properties.
@@ -4891,6 +4963,9 @@ export namespace gauge {
 
             /** Holds parse, validation and skipped errors. */
             errors?: (gauge.messages.IError[]|null);
+
+            /** Holds the timestamp of event starting. */
+            timestamp?: (string|null);
         }
 
         /** A proto object representing the result of Spec execution. */
@@ -4931,6 +5006,9 @@ export namespace gauge {
 
             /** Holds parse, validation and skipped errors. */
             public errors: gauge.messages.IError[];
+
+            /** Holds the timestamp of event starting. */
+            public timestamp: string;
 
             /**
              * Creates a new ProtoSpecResult instance using the specified properties.
@@ -4998,6 +5076,210 @@ export namespace gauge {
 
             /**
              * Converts this ProtoSpecResult to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        /** Properties of a ProtoScenarioResult. */
+        interface IProtoScenarioResult {
+
+            /** Collection of scenarios in scenario execution result. */
+            protoItem?: (gauge.messages.IProtoItem|null);
+
+            /** Holds the time taken for executing the whole suite. */
+            executionTime?: (number|Long|null);
+
+            /** Holds the timestamp of event starting. */
+            timestamp?: (string|null);
+        }
+
+        /** A proto object representing the result of Scenario execution. */
+        class ProtoScenarioResult implements IProtoScenarioResult {
+
+            /**
+             * Constructs a new ProtoScenarioResult.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: gauge.messages.IProtoScenarioResult);
+
+            /** Collection of scenarios in scenario execution result. */
+            public protoItem?: (gauge.messages.IProtoItem|null);
+
+            /** Holds the time taken for executing the whole suite. */
+            public executionTime: (number|Long);
+
+            /** Holds the timestamp of event starting. */
+            public timestamp: string;
+
+            /**
+             * Creates a new ProtoScenarioResult instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ProtoScenarioResult instance
+             */
+            public static create(properties?: gauge.messages.IProtoScenarioResult): gauge.messages.ProtoScenarioResult;
+
+            /**
+             * Encodes the specified ProtoScenarioResult message. Does not implicitly {@link gauge.messages.ProtoScenarioResult.verify|verify} messages.
+             * @param message ProtoScenarioResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: gauge.messages.IProtoScenarioResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ProtoScenarioResult message, length delimited. Does not implicitly {@link gauge.messages.ProtoScenarioResult.verify|verify} messages.
+             * @param message ProtoScenarioResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: gauge.messages.IProtoScenarioResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ProtoScenarioResult message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ProtoScenarioResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.ProtoScenarioResult;
+
+            /**
+             * Decodes a ProtoScenarioResult message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ProtoScenarioResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.ProtoScenarioResult;
+
+            /**
+             * Verifies a ProtoScenarioResult message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ProtoScenarioResult message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ProtoScenarioResult
+             */
+            public static fromObject(object: { [k: string]: any }): gauge.messages.ProtoScenarioResult;
+
+            /**
+             * Creates a plain object from a ProtoScenarioResult message. Also converts values to other types if specified.
+             * @param message ProtoScenarioResult
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: gauge.messages.ProtoScenarioResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ProtoScenarioResult to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        /** Properties of a ProtoStepResult. */
+        interface IProtoStepResult {
+
+            /** Collection of steps in step execution result. */
+            protoItem?: (gauge.messages.IProtoItem|null);
+
+            /** Holds the time taken for executing the whole suite. */
+            executionTime?: (number|Long|null);
+
+            /** Holds the timestamp of event starting. */
+            timestamp?: (string|null);
+        }
+
+        /** A proto object representing the result of Step execution. */
+        class ProtoStepResult implements IProtoStepResult {
+
+            /**
+             * Constructs a new ProtoStepResult.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: gauge.messages.IProtoStepResult);
+
+            /** Collection of steps in step execution result. */
+            public protoItem?: (gauge.messages.IProtoItem|null);
+
+            /** Holds the time taken for executing the whole suite. */
+            public executionTime: (number|Long);
+
+            /** Holds the timestamp of event starting. */
+            public timestamp: string;
+
+            /**
+             * Creates a new ProtoStepResult instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ProtoStepResult instance
+             */
+            public static create(properties?: gauge.messages.IProtoStepResult): gauge.messages.ProtoStepResult;
+
+            /**
+             * Encodes the specified ProtoStepResult message. Does not implicitly {@link gauge.messages.ProtoStepResult.verify|verify} messages.
+             * @param message ProtoStepResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: gauge.messages.IProtoStepResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ProtoStepResult message, length delimited. Does not implicitly {@link gauge.messages.ProtoStepResult.verify|verify} messages.
+             * @param message ProtoStepResult message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: gauge.messages.IProtoStepResult, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a ProtoStepResult message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ProtoStepResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.ProtoStepResult;
+
+            /**
+             * Decodes a ProtoStepResult message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ProtoStepResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.ProtoStepResult;
+
+            /**
+             * Verifies a ProtoStepResult message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a ProtoStepResult message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ProtoStepResult
+             */
+            public static fromObject(object: { [k: string]: any }): gauge.messages.ProtoStepResult;
+
+            /**
+             * Creates a plain object from a ProtoStepResult message. Also converts values to other types if specified.
+             * @param message ProtoStepResult
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: gauge.messages.ProtoStepResult, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ProtoStepResult to JSON.
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
@@ -5217,90 +5499,6 @@ export namespace gauge {
 
             /**
              * Converts this ProtoStepValue to JSON.
-             * @returns JSON object
-             */
-            public toJSON(): { [k: string]: any };
-        }
-
-        /** Properties of an Empty. */
-        interface IEmpty {
-        }
-
-        /** Represents an Empty. */
-        class Empty implements IEmpty {
-
-            /**
-             * Constructs a new Empty.
-             * @param [properties] Properties to set
-             */
-            constructor(properties?: gauge.messages.IEmpty);
-
-            /**
-             * Creates a new Empty instance using the specified properties.
-             * @param [properties] Properties to set
-             * @returns Empty instance
-             */
-            public static create(properties?: gauge.messages.IEmpty): gauge.messages.Empty;
-
-            /**
-             * Encodes the specified Empty message. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
-             * @param message Empty message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encode(message: gauge.messages.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Encodes the specified Empty message, length delimited. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
-             * @param message Empty message or plain object to encode
-             * @param [writer] Writer to encode to
-             * @returns Writer
-             */
-            public static encodeDelimited(message: gauge.messages.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
-
-            /**
-             * Decodes an Empty message from the specified reader or buffer.
-             * @param reader Reader or buffer to decode from
-             * @param [length] Message length if known beforehand
-             * @returns Empty
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.Empty;
-
-            /**
-             * Decodes an Empty message from the specified reader or buffer, length delimited.
-             * @param reader Reader or buffer to decode from
-             * @returns Empty
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.Empty;
-
-            /**
-             * Verifies an Empty message.
-             * @param message Plain object to verify
-             * @returns `null` if valid, otherwise the reason why it is not
-             */
-            public static verify(message: { [k: string]: any }): (string|null);
-
-            /**
-             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
-             * @param object Plain object
-             * @returns Empty
-             */
-            public static fromObject(object: { [k: string]: any }): gauge.messages.Empty;
-
-            /**
-             * Creates a plain object from an Empty message. Also converts values to other types if specified.
-             * @param message Empty
-             * @param [options] Conversion options
-             * @returns Plain object
-             */
-            public static toObject(message: gauge.messages.Empty, options?: $protobuf.IConversionOptions): { [k: string]: any };
-
-            /**
-             * Converts this Empty to JSON.
              * @returns JSON object
              */
             public toJSON(): { [k: string]: any };
@@ -5627,7 +5825,7 @@ export namespace gauge {
         /** Properties of an ExecutionStatusResponse. */
         interface IExecutionStatusResponse {
 
-            /** ExecutionStatusResponse executionResult */
+            /** Holds the suite result after suite execution done. */
             executionResult?: (gauge.messages.IProtoExecutionResult|null);
         }
 
@@ -5640,7 +5838,7 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IExecutionStatusResponse);
 
-            /** ExecutionStatusResponse executionResult. */
+            /** Holds the suite result after suite execution done. */
             public executionResult?: (gauge.messages.IProtoExecutionResult|null);
 
             /**
@@ -5717,8 +5915,14 @@ export namespace gauge {
         /** Properties of an ExecutionStartingRequest. */
         interface IExecutionStartingRequest {
 
-            /** ExecutionStartingRequest currentExecutionInfo */
+            /** Holds the current suite execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            suiteResult?: (gauge.messages.IProtoSuiteResult|null);
+
+            /** ExecutionStartingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at start of Suite Execution. Tells the runner to execute `before_suite` hook. */
@@ -5730,8 +5934,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IExecutionStartingRequest);
 
-            /** ExecutionStartingRequest currentExecutionInfo. */
+            /** Holds the current suite execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            public suiteResult?: (gauge.messages.IProtoSuiteResult|null);
+
+            /** ExecutionStartingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ExecutionStartingRequest instance using the specified properties.
@@ -5807,8 +6017,14 @@ export namespace gauge {
         /** Properties of an ExecutionEndingRequest. */
         interface IExecutionEndingRequest {
 
-            /** ExecutionEndingRequest currentExecutionInfo */
+            /** Holds the current suite execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds the suite result in execution ending. */
+            suiteResult?: (gauge.messages.IProtoSuiteResult|null);
+
+            /** ExecutionEndingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at end of Suite Execution. Tells the runner to execute `after_suite` hook. */
@@ -5820,8 +6036,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IExecutionEndingRequest);
 
-            /** ExecutionEndingRequest currentExecutionInfo. */
+            /** Holds the current suite execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds the suite result in execution ending. */
+            public suiteResult?: (gauge.messages.IProtoSuiteResult|null);
+
+            /** ExecutionEndingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ExecutionEndingRequest instance using the specified properties.
@@ -5897,8 +6119,14 @@ export namespace gauge {
         /** Properties of a SpecExecutionStartingRequest. */
         interface ISpecExecutionStartingRequest {
 
-            /** SpecExecutionStartingRequest currentExecutionInfo */
+            /** Holds the current spec execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            specResult?: (gauge.messages.IProtoSpecResult|null);
+
+            /** SpecExecutionStartingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at start of Spec Execution. Tells the runner to execute `before_spec` hook. */
@@ -5910,8 +6138,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.ISpecExecutionStartingRequest);
 
-            /** SpecExecutionStartingRequest currentExecutionInfo. */
+            /** Holds the current spec execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            public specResult?: (gauge.messages.IProtoSpecResult|null);
+
+            /** SpecExecutionStartingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new SpecExecutionStartingRequest instance using the specified properties.
@@ -5987,8 +6221,14 @@ export namespace gauge {
         /** Properties of a SpecExecutionEndingRequest. */
         interface ISpecExecutionEndingRequest {
 
-            /** SpecExecutionEndingRequest currentExecutionInfo */
+            /** Holds the current spec execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds the specs result in spec execution ending. */
+            specResult?: (gauge.messages.IProtoSpecResult|null);
+
+            /** SpecExecutionEndingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at end of Spec Execution. Tells the runner to execute `after_spec` hook. */
@@ -6000,8 +6240,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.ISpecExecutionEndingRequest);
 
-            /** SpecExecutionEndingRequest currentExecutionInfo. */
+            /** Holds the current spec execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds the specs result in spec execution ending. */
+            public specResult?: (gauge.messages.IProtoSpecResult|null);
+
+            /** SpecExecutionEndingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new SpecExecutionEndingRequest instance using the specified properties.
@@ -6077,8 +6323,14 @@ export namespace gauge {
         /** Properties of a ScenarioExecutionStartingRequest. */
         interface IScenarioExecutionStartingRequest {
 
-            /** ScenarioExecutionStartingRequest currentExecutionInfo */
+            /** Holds the current sceanrio execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            scenarioResult?: (gauge.messages.IProtoScenarioResult|null);
+
+            /** ScenarioExecutionStartingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at start of Scenario Execution. Tells the runner to execute `before_scenario` hook. */
@@ -6090,8 +6342,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IScenarioExecutionStartingRequest);
 
-            /** ScenarioExecutionStartingRequest currentExecutionInfo. */
+            /** Holds the current sceanrio execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            public scenarioResult?: (gauge.messages.IProtoScenarioResult|null);
+
+            /** ScenarioExecutionStartingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ScenarioExecutionStartingRequest instance using the specified properties.
@@ -6167,8 +6425,14 @@ export namespace gauge {
         /** Properties of a ScenarioExecutionEndingRequest. */
         interface IScenarioExecutionEndingRequest {
 
-            /** ScenarioExecutionEndingRequest currentExecutionInfo */
+            /** Holds the current scenario execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** ScenarioExecutionEndingRequest scenarioResult */
+            scenarioResult?: (gauge.messages.IProtoScenarioResult|null);
+
+            /** ScenarioExecutionEndingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at end of Scenario Execution. Tells the runner to execute `after_scenario` hook. */
@@ -6180,8 +6444,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IScenarioExecutionEndingRequest);
 
-            /** ScenarioExecutionEndingRequest currentExecutionInfo. */
+            /** Holds the current scenario execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** ScenarioExecutionEndingRequest scenarioResult. */
+            public scenarioResult?: (gauge.messages.IProtoScenarioResult|null);
+
+            /** ScenarioExecutionEndingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ScenarioExecutionEndingRequest instance using the specified properties.
@@ -6257,8 +6527,14 @@ export namespace gauge {
         /** Properties of a StepExecutionStartingRequest. */
         interface IStepExecutionStartingRequest {
 
-            /** StepExecutionStartingRequest currentExecutionInfo */
+            /** Holds the current step execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            stepResult?: (gauge.messages.IProtoStepResult|null);
+
+            /** StepExecutionStartingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at start of Step Execution. Tells the runner to execute `before_step` hook. */
@@ -6270,8 +6546,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IStepExecutionStartingRequest);
 
-            /** StepExecutionStartingRequest currentExecutionInfo. */
+            /** Holds the current step execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Some fields will not be populated before execution. */
+            public stepResult?: (gauge.messages.IProtoStepResult|null);
+
+            /** StepExecutionStartingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new StepExecutionStartingRequest instance using the specified properties.
@@ -6347,8 +6629,14 @@ export namespace gauge {
         /** Properties of a StepExecutionEndingRequest. */
         interface IStepExecutionEndingRequest {
 
-            /** StepExecutionEndingRequest currentExecutionInfo */
+            /** Holds the current step execution info. */
             currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds step result in step execution ending. */
+            stepResult?: (gauge.messages.IProtoStepResult|null);
+
+            /** StepExecutionEndingRequest stream */
+            stream?: (number|null);
         }
 
         /** Sent at end of Step Execution. Tells the runner to execute `after_step` hook. */
@@ -6360,8 +6648,14 @@ export namespace gauge {
              */
             constructor(properties?: gauge.messages.IStepExecutionEndingRequest);
 
-            /** StepExecutionEndingRequest currentExecutionInfo. */
+            /** Holds the current step execution info. */
             public currentExecutionInfo?: (gauge.messages.IExecutionInfo|null);
+
+            /** Holds step result in step execution ending. */
+            public stepResult?: (gauge.messages.IProtoStepResult|null);
+
+            /** StepExecutionEndingRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new StepExecutionEndingRequest instance using the specified properties.
@@ -6434,6 +6728,102 @@ export namespace gauge {
             public toJSON(): { [k: string]: any };
         }
 
+        /** Properties of an ExecutionArg. */
+        interface IExecutionArg {
+
+            /** Holds the flag name passed from command line. */
+            flagName?: (string|null);
+
+            /** Holds the flag value passed from command line. */
+            flagValue?: (string[]|null);
+        }
+
+        /** Contains command line arguments which passed by user during execution. */
+        class ExecutionArg implements IExecutionArg {
+
+            /**
+             * Constructs a new ExecutionArg.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: gauge.messages.IExecutionArg);
+
+            /** Holds the flag name passed from command line. */
+            public flagName: string;
+
+            /** Holds the flag value passed from command line. */
+            public flagValue: string[];
+
+            /**
+             * Creates a new ExecutionArg instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns ExecutionArg instance
+             */
+            public static create(properties?: gauge.messages.IExecutionArg): gauge.messages.ExecutionArg;
+
+            /**
+             * Encodes the specified ExecutionArg message. Does not implicitly {@link gauge.messages.ExecutionArg.verify|verify} messages.
+             * @param message ExecutionArg message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: gauge.messages.IExecutionArg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified ExecutionArg message, length delimited. Does not implicitly {@link gauge.messages.ExecutionArg.verify|verify} messages.
+             * @param message ExecutionArg message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: gauge.messages.IExecutionArg, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an ExecutionArg message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns ExecutionArg
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.ExecutionArg;
+
+            /**
+             * Decodes an ExecutionArg message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns ExecutionArg
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.ExecutionArg;
+
+            /**
+             * Verifies an ExecutionArg message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an ExecutionArg message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns ExecutionArg
+             */
+            public static fromObject(object: { [k: string]: any }): gauge.messages.ExecutionArg;
+
+            /**
+             * Creates a plain object from an ExecutionArg message. Also converts values to other types if specified.
+             * @param message ExecutionArg
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: gauge.messages.ExecutionArg, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this ExecutionArg to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
         /** Properties of an ExecutionInfo. */
         interface IExecutionInfo {
 
@@ -6448,6 +6838,18 @@ export namespace gauge {
 
             /** Stacktrace of the execution. Valid only if there is an error in execution. */
             stacktrace?: (string|null);
+
+            /** Holds the project name */
+            projectName?: (string|null);
+
+            /** Holds the command line arguments. */
+            ExecutionArgs?: (gauge.messages.IExecutionArg[]|null);
+
+            /** Holds the number of running execution streams. */
+            numberOfExecutionStreams?: (number|null);
+
+            /** Holds the runner id for parallel execution. */
+            runnerId?: (number|null);
         }
 
         /** Depending on the context (Step, Scenario, Spec or Suite), the respective fields are set. */
@@ -6470,6 +6872,18 @@ export namespace gauge {
 
             /** Stacktrace of the execution. Valid only if there is an error in execution. */
             public stacktrace: string;
+
+            /** Holds the project name */
+            public projectName: string;
+
+            /** Holds the command line arguments. */
+            public ExecutionArgs: gauge.messages.IExecutionArg[];
+
+            /** Holds the number of running execution streams. */
+            public numberOfExecutionStreams: number;
+
+            /** Holds the runner id for parallel execution. */
+            public runnerId: number;
 
             /**
              * Creates a new ExecutionInfo instance using the specified properties.
@@ -6874,6 +7288,9 @@ export namespace gauge {
 
             /** Collection of parameters applicable to the current Step. */
             parameters?: (gauge.messages.IParameter[]|null);
+
+            /** ExecuteStepRequest stream */
+            stream?: (number|null);
         }
 
         /** Request sent ot the runner to Execute a Step */
@@ -6896,6 +7313,9 @@ export namespace gauge {
 
             /** Collection of parameters applicable to the current Step. */
             public parameters: gauge.messages.IParameter[];
+
+            /** ExecuteStepRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ExecuteStepRequest instance using the specified properties.
@@ -7543,6 +7963,9 @@ export namespace gauge {
 
         /** Properties of a ScenarioDataStoreInitRequest. */
         interface IScenarioDataStoreInitRequest {
+
+            /** ScenarioDataStoreInitRequest stream */
+            stream?: (number|null);
         }
 
         /** Scenario Datastore is reset after every Scenario execution. */
@@ -7553,6 +7976,9 @@ export namespace gauge {
              * @param [properties] Properties to set
              */
             constructor(properties?: gauge.messages.IScenarioDataStoreInitRequest);
+
+            /** ScenarioDataStoreInitRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new ScenarioDataStoreInitRequest instance using the specified properties.
@@ -7627,6 +8053,9 @@ export namespace gauge {
 
         /** Properties of a SpecDataStoreInitRequest. */
         interface ISpecDataStoreInitRequest {
+
+            /** SpecDataStoreInitRequest stream */
+            stream?: (number|null);
         }
 
         /** Spec Datastore is reset after every Spec execution. */
@@ -7637,6 +8066,9 @@ export namespace gauge {
              * @param [properties] Properties to set
              */
             constructor(properties?: gauge.messages.ISpecDataStoreInitRequest);
+
+            /** SpecDataStoreInitRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new SpecDataStoreInitRequest instance using the specified properties.
@@ -7711,6 +8143,9 @@ export namespace gauge {
 
         /** Properties of a SuiteDataStoreInitRequest. */
         interface ISuiteDataStoreInitRequest {
+
+            /** SuiteDataStoreInitRequest stream */
+            stream?: (number|null);
         }
 
         /** Suite Datastore is reset after every Suite execution. */
@@ -7721,6 +8156,9 @@ export namespace gauge {
              * @param [properties] Properties to set
              */
             constructor(properties?: gauge.messages.ISuiteDataStoreInitRequest);
+
+            /** SuiteDataStoreInitRequest stream. */
+            public stream: number;
 
             /**
              * Creates a new SuiteDataStoreInitRequest instance using the specified properties.
@@ -9632,6 +10070,279 @@ export namespace gauge {
             public toJSON(): { [k: string]: any };
         }
 
+        /** Properties of a SpecDetails. */
+        interface ISpecDetails {
+
+            /** Holds a collection of Spec details. */
+            details?: (gauge.messages.SpecDetails.ISpecDetail[]|null);
+        }
+
+        /** Represents a SpecDetails. */
+        class SpecDetails implements ISpecDetails {
+
+            /**
+             * Constructs a new SpecDetails.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: gauge.messages.ISpecDetails);
+
+            /** Holds a collection of Spec details. */
+            public details: gauge.messages.SpecDetails.ISpecDetail[];
+
+            /**
+             * Creates a new SpecDetails instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns SpecDetails instance
+             */
+            public static create(properties?: gauge.messages.ISpecDetails): gauge.messages.SpecDetails;
+
+            /**
+             * Encodes the specified SpecDetails message. Does not implicitly {@link gauge.messages.SpecDetails.verify|verify} messages.
+             * @param message SpecDetails message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: gauge.messages.ISpecDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified SpecDetails message, length delimited. Does not implicitly {@link gauge.messages.SpecDetails.verify|verify} messages.
+             * @param message SpecDetails message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: gauge.messages.ISpecDetails, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes a SpecDetails message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns SpecDetails
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.SpecDetails;
+
+            /**
+             * Decodes a SpecDetails message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns SpecDetails
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.SpecDetails;
+
+            /**
+             * Verifies a SpecDetails message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates a SpecDetails message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns SpecDetails
+             */
+            public static fromObject(object: { [k: string]: any }): gauge.messages.SpecDetails;
+
+            /**
+             * Creates a plain object from a SpecDetails message. Also converts values to other types if specified.
+             * @param message SpecDetails
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: gauge.messages.SpecDetails, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this SpecDetails to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
+        namespace SpecDetails {
+
+            /** Properties of a SpecDetail. */
+            interface ISpecDetail {
+
+                /** Holds a collection of Specs that are defined in the project. */
+                spec?: (gauge.messages.IProtoSpec|null);
+
+                /** Holds a collection of parse errors present in the above spec. */
+                parseErrors?: (gauge.messages.IError[]|null);
+            }
+
+            /** Represents a SpecDetail. */
+            class SpecDetail implements ISpecDetail {
+
+                /**
+                 * Constructs a new SpecDetail.
+                 * @param [properties] Properties to set
+                 */
+                constructor(properties?: gauge.messages.SpecDetails.ISpecDetail);
+
+                /** Holds a collection of Specs that are defined in the project. */
+                public spec?: (gauge.messages.IProtoSpec|null);
+
+                /** Holds a collection of parse errors present in the above spec. */
+                public parseErrors: gauge.messages.IError[];
+
+                /**
+                 * Creates a new SpecDetail instance using the specified properties.
+                 * @param [properties] Properties to set
+                 * @returns SpecDetail instance
+                 */
+                public static create(properties?: gauge.messages.SpecDetails.ISpecDetail): gauge.messages.SpecDetails.SpecDetail;
+
+                /**
+                 * Encodes the specified SpecDetail message. Does not implicitly {@link gauge.messages.SpecDetails.SpecDetail.verify|verify} messages.
+                 * @param message SpecDetail message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encode(message: gauge.messages.SpecDetails.ISpecDetail, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Encodes the specified SpecDetail message, length delimited. Does not implicitly {@link gauge.messages.SpecDetails.SpecDetail.verify|verify} messages.
+                 * @param message SpecDetail message or plain object to encode
+                 * @param [writer] Writer to encode to
+                 * @returns Writer
+                 */
+                public static encodeDelimited(message: gauge.messages.SpecDetails.ISpecDetail, writer?: $protobuf.Writer): $protobuf.Writer;
+
+                /**
+                 * Decodes a SpecDetail message from the specified reader or buffer.
+                 * @param reader Reader or buffer to decode from
+                 * @param [length] Message length if known beforehand
+                 * @returns SpecDetail
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.SpecDetails.SpecDetail;
+
+                /**
+                 * Decodes a SpecDetail message from the specified reader or buffer, length delimited.
+                 * @param reader Reader or buffer to decode from
+                 * @returns SpecDetail
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.SpecDetails.SpecDetail;
+
+                /**
+                 * Verifies a SpecDetail message.
+                 * @param message Plain object to verify
+                 * @returns `null` if valid, otherwise the reason why it is not
+                 */
+                public static verify(message: { [k: string]: any }): (string|null);
+
+                /**
+                 * Creates a SpecDetail message from a plain object. Also converts values to their respective internal types.
+                 * @param object Plain object
+                 * @returns SpecDetail
+                 */
+                public static fromObject(object: { [k: string]: any }): gauge.messages.SpecDetails.SpecDetail;
+
+                /**
+                 * Creates a plain object from a SpecDetail message. Also converts values to other types if specified.
+                 * @param message SpecDetail
+                 * @param [options] Conversion options
+                 * @returns Plain object
+                 */
+                public static toObject(message: gauge.messages.SpecDetails.SpecDetail, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+                /**
+                 * Converts this SpecDetail to JSON.
+                 * @returns JSON object
+                 */
+                public toJSON(): { [k: string]: any };
+            }
+        }
+
+        /** Properties of an Empty. */
+        interface IEmpty {
+        }
+
+        /** Represents an Empty. */
+        class Empty implements IEmpty {
+
+            /**
+             * Constructs a new Empty.
+             * @param [properties] Properties to set
+             */
+            constructor(properties?: gauge.messages.IEmpty);
+
+            /**
+             * Creates a new Empty instance using the specified properties.
+             * @param [properties] Properties to set
+             * @returns Empty instance
+             */
+            public static create(properties?: gauge.messages.IEmpty): gauge.messages.Empty;
+
+            /**
+             * Encodes the specified Empty message. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encode(message: gauge.messages.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Encodes the specified Empty message, length delimited. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
+             * @param message Empty message or plain object to encode
+             * @param [writer] Writer to encode to
+             * @returns Writer
+             */
+            public static encodeDelimited(message: gauge.messages.IEmpty, writer?: $protobuf.Writer): $protobuf.Writer;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer.
+             * @param reader Reader or buffer to decode from
+             * @param [length] Message length if known beforehand
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): gauge.messages.Empty;
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer, length delimited.
+             * @param reader Reader or buffer to decode from
+             * @returns Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            public static decodeDelimited(reader: ($protobuf.Reader|Uint8Array)): gauge.messages.Empty;
+
+            /**
+             * Verifies an Empty message.
+             * @param message Plain object to verify
+             * @returns `null` if valid, otherwise the reason why it is not
+             */
+            public static verify(message: { [k: string]: any }): (string|null);
+
+            /**
+             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
+             * @param object Plain object
+             * @returns Empty
+             */
+            public static fromObject(object: { [k: string]: any }): gauge.messages.Empty;
+
+            /**
+             * Creates a plain object from an Empty message. Also converts values to other types if specified.
+             * @param message Empty
+             * @param [options] Conversion options
+             * @returns Plain object
+             */
+            public static toObject(message: gauge.messages.Empty, options?: $protobuf.IConversionOptions): { [k: string]: any };
+
+            /**
+             * Converts this Empty to JSON.
+             * @returns JSON object
+             */
+            public toJSON(): { [k: string]: any };
+        }
+
         /** Properties of a Message. */
         interface IMessage {
 
@@ -9978,6 +10689,792 @@ export namespace gauge {
                 SuiteExecutionResultItem = 33,
                 KeepAlive = 34
             }
+        }
+
+        /** Represents a Runner */
+        class Runner extends $protobuf.rpc.Service {
+
+            /**
+             * Constructs a new Runner service.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             */
+            constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+            /**
+             * Creates new Runner service using the specified rpc implementation.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             * @returns RPC service. Useful where requests and/or responses are streamed.
+             */
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Runner;
+
+            /**
+             * Calls ValidateStep.
+             * @param request StepValidateRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and StepValidateResponse
+             */
+            public validateStep(request: gauge.messages.IStepValidateRequest, callback: gauge.messages.Runner.ValidateStepCallback): void;
+
+            /**
+             * Calls ValidateStep.
+             * @param request StepValidateRequest message or plain object
+             * @returns Promise
+             */
+            public validateStep(request: gauge.messages.IStepValidateRequest): Promise<gauge.messages.StepValidateResponse>;
+
+            /**
+             * Calls InitializeSuiteDataStore.
+             * @param request SuiteDataStoreInitRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public initializeSuiteDataStore(request: gauge.messages.ISuiteDataStoreInitRequest, callback: gauge.messages.Runner.InitializeSuiteDataStoreCallback): void;
+
+            /**
+             * Calls InitializeSuiteDataStore.
+             * @param request SuiteDataStoreInitRequest message or plain object
+             * @returns Promise
+             */
+            public initializeSuiteDataStore(request: gauge.messages.ISuiteDataStoreInitRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls StartExecution.
+             * @param request ExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public startExecution(request: gauge.messages.IExecutionStartingRequest, callback: gauge.messages.Runner.StartExecutionCallback): void;
+
+            /**
+             * Calls StartExecution.
+             * @param request ExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public startExecution(request: gauge.messages.IExecutionStartingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls InitializeSpecDataStore.
+             * @param request SpecDataStoreInitRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public initializeSpecDataStore(request: gauge.messages.ISpecDataStoreInitRequest, callback: gauge.messages.Runner.InitializeSpecDataStoreCallback): void;
+
+            /**
+             * Calls InitializeSpecDataStore.
+             * @param request SpecDataStoreInitRequest message or plain object
+             * @returns Promise
+             */
+            public initializeSpecDataStore(request: gauge.messages.ISpecDataStoreInitRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls StartSpecExecution.
+             * @param request SpecExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public startSpecExecution(request: gauge.messages.ISpecExecutionStartingRequest, callback: gauge.messages.Runner.StartSpecExecutionCallback): void;
+
+            /**
+             * Calls StartSpecExecution.
+             * @param request SpecExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public startSpecExecution(request: gauge.messages.ISpecExecutionStartingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls InitializeScenarioDataStore.
+             * @param request ScenarioDataStoreInitRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public initializeScenarioDataStore(request: gauge.messages.IScenarioDataStoreInitRequest, callback: gauge.messages.Runner.InitializeScenarioDataStoreCallback): void;
+
+            /**
+             * Calls InitializeScenarioDataStore.
+             * @param request ScenarioDataStoreInitRequest message or plain object
+             * @returns Promise
+             */
+            public initializeScenarioDataStore(request: gauge.messages.IScenarioDataStoreInitRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls StartScenarioExecution.
+             * @param request ScenarioExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public startScenarioExecution(request: gauge.messages.IScenarioExecutionStartingRequest, callback: gauge.messages.Runner.StartScenarioExecutionCallback): void;
+
+            /**
+             * Calls StartScenarioExecution.
+             * @param request ScenarioExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public startScenarioExecution(request: gauge.messages.IScenarioExecutionStartingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls StartStepExecution.
+             * @param request StepExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public startStepExecution(request: gauge.messages.IStepExecutionStartingRequest, callback: gauge.messages.Runner.StartStepExecutionCallback): void;
+
+            /**
+             * Calls StartStepExecution.
+             * @param request StepExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public startStepExecution(request: gauge.messages.IStepExecutionStartingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls ExecuteStep.
+             * @param request ExecuteStepRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public executeStep(request: gauge.messages.IExecuteStepRequest, callback: gauge.messages.Runner.ExecuteStepCallback): void;
+
+            /**
+             * Calls ExecuteStep.
+             * @param request ExecuteStepRequest message or plain object
+             * @returns Promise
+             */
+            public executeStep(request: gauge.messages.IExecuteStepRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls FinishStepExecution.
+             * @param request StepExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public finishStepExecution(request: gauge.messages.IStepExecutionEndingRequest, callback: gauge.messages.Runner.FinishStepExecutionCallback): void;
+
+            /**
+             * Calls FinishStepExecution.
+             * @param request StepExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public finishStepExecution(request: gauge.messages.IStepExecutionEndingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls FinishScenarioExecution.
+             * @param request ScenarioExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public finishScenarioExecution(request: gauge.messages.IScenarioExecutionEndingRequest, callback: gauge.messages.Runner.FinishScenarioExecutionCallback): void;
+
+            /**
+             * Calls FinishScenarioExecution.
+             * @param request ScenarioExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public finishScenarioExecution(request: gauge.messages.IScenarioExecutionEndingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls FinishSpecExecution.
+             * @param request SpecExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public finishSpecExecution(request: gauge.messages.ISpecExecutionEndingRequest, callback: gauge.messages.Runner.FinishSpecExecutionCallback): void;
+
+            /**
+             * Calls FinishSpecExecution.
+             * @param request SpecExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public finishSpecExecution(request: gauge.messages.ISpecExecutionEndingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls FinishExecution.
+             * @param request ExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             */
+            public finishExecution(request: gauge.messages.IExecutionEndingRequest, callback: gauge.messages.Runner.FinishExecutionCallback): void;
+
+            /**
+             * Calls FinishExecution.
+             * @param request ExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public finishExecution(request: gauge.messages.IExecutionEndingRequest): Promise<gauge.messages.ExecutionStatusResponse>;
+
+            /**
+             * Calls CacheFile.
+             * @param request CacheFileRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public cacheFile(request: gauge.messages.ICacheFileRequest, callback: gauge.messages.Runner.CacheFileCallback): void;
+
+            /**
+             * Calls CacheFile.
+             * @param request CacheFileRequest message or plain object
+             * @returns Promise
+             */
+            public cacheFile(request: gauge.messages.ICacheFileRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls GetStepName.
+             * @param request StepNameRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and StepNameResponse
+             */
+            public getStepName(request: gauge.messages.IStepNameRequest, callback: gauge.messages.Runner.GetStepNameCallback): void;
+
+            /**
+             * Calls GetStepName.
+             * @param request StepNameRequest message or plain object
+             * @returns Promise
+             */
+            public getStepName(request: gauge.messages.IStepNameRequest): Promise<gauge.messages.StepNameResponse>;
+
+            /**
+             * Calls GetGlobPatterns.
+             * @param request Empty message or plain object
+             * @param callback Node-style callback called with the error, if any, and ImplementationFileGlobPatternResponse
+             */
+            public getGlobPatterns(request: gauge.messages.IEmpty, callback: gauge.messages.Runner.GetGlobPatternsCallback): void;
+
+            /**
+             * Calls GetGlobPatterns.
+             * @param request Empty message or plain object
+             * @returns Promise
+             */
+            public getGlobPatterns(request: gauge.messages.IEmpty): Promise<gauge.messages.ImplementationFileGlobPatternResponse>;
+
+            /**
+             * Calls GetStepNames.
+             * @param request StepNamesRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and StepNamesResponse
+             */
+            public getStepNames(request: gauge.messages.IStepNamesRequest, callback: gauge.messages.Runner.GetStepNamesCallback): void;
+
+            /**
+             * Calls GetStepNames.
+             * @param request StepNamesRequest message or plain object
+             * @returns Promise
+             */
+            public getStepNames(request: gauge.messages.IStepNamesRequest): Promise<gauge.messages.StepNamesResponse>;
+
+            /**
+             * Calls GetStepPositions.
+             * @param request StepPositionsRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and StepPositionsResponse
+             */
+            public getStepPositions(request: gauge.messages.IStepPositionsRequest, callback: gauge.messages.Runner.GetStepPositionsCallback): void;
+
+            /**
+             * Calls GetStepPositions.
+             * @param request StepPositionsRequest message or plain object
+             * @returns Promise
+             */
+            public getStepPositions(request: gauge.messages.IStepPositionsRequest): Promise<gauge.messages.StepPositionsResponse>;
+
+            /**
+             * Calls GetImplementationFiles.
+             * @param request Empty message or plain object
+             * @param callback Node-style callback called with the error, if any, and ImplementationFileListResponse
+             */
+            public getImplementationFiles(request: gauge.messages.IEmpty, callback: gauge.messages.Runner.GetImplementationFilesCallback): void;
+
+            /**
+             * Calls GetImplementationFiles.
+             * @param request Empty message or plain object
+             * @returns Promise
+             */
+            public getImplementationFiles(request: gauge.messages.IEmpty): Promise<gauge.messages.ImplementationFileListResponse>;
+
+            /**
+             * Calls ImplementStub.
+             * @param request StubImplementationCodeRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and FileDiff
+             */
+            public implementStub(request: gauge.messages.IStubImplementationCodeRequest, callback: gauge.messages.Runner.ImplementStubCallback): void;
+
+            /**
+             * Calls ImplementStub.
+             * @param request StubImplementationCodeRequest message or plain object
+             * @returns Promise
+             */
+            public implementStub(request: gauge.messages.IStubImplementationCodeRequest): Promise<gauge.messages.FileDiff>;
+
+            /**
+             * Calls Refactor.
+             * @param request RefactorRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and RefactorResponse
+             */
+            public refactor(request: gauge.messages.IRefactorRequest, callback: gauge.messages.Runner.RefactorCallback): void;
+
+            /**
+             * Calls Refactor.
+             * @param request RefactorRequest message or plain object
+             * @returns Promise
+             */
+            public refactor(request: gauge.messages.IRefactorRequest): Promise<gauge.messages.RefactorResponse>;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public kill(request: gauge.messages.IKillProcessRequest, callback: gauge.messages.Runner.KillCallback): void;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @returns Promise
+             */
+            public kill(request: gauge.messages.IKillProcessRequest): Promise<gauge.messages.Empty>;
+        }
+
+        namespace Runner {
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#validateStep}.
+             * @param error Error, if any
+             * @param [response] StepValidateResponse
+             */
+            type ValidateStepCallback = (error: (Error|null), response?: gauge.messages.StepValidateResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeSuiteDataStore}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type InitializeSuiteDataStoreCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type StartExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeSpecDataStore}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type InitializeSpecDataStoreCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startSpecExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type StartSpecExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeScenarioDataStore}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type InitializeScenarioDataStoreCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startScenarioExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type StartScenarioExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startStepExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type StartStepExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#executeStep}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type ExecuteStepCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishStepExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type FinishStepExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishScenarioExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type FinishScenarioExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishSpecExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type FinishSpecExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishExecution}.
+             * @param error Error, if any
+             * @param [response] ExecutionStatusResponse
+             */
+            type FinishExecutionCallback = (error: (Error|null), response?: gauge.messages.ExecutionStatusResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#cacheFile}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type CacheFileCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepName}.
+             * @param error Error, if any
+             * @param [response] StepNameResponse
+             */
+            type GetStepNameCallback = (error: (Error|null), response?: gauge.messages.StepNameResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getGlobPatterns}.
+             * @param error Error, if any
+             * @param [response] ImplementationFileGlobPatternResponse
+             */
+            type GetGlobPatternsCallback = (error: (Error|null), response?: gauge.messages.ImplementationFileGlobPatternResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepNames}.
+             * @param error Error, if any
+             * @param [response] StepNamesResponse
+             */
+            type GetStepNamesCallback = (error: (Error|null), response?: gauge.messages.StepNamesResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepPositions}.
+             * @param error Error, if any
+             * @param [response] StepPositionsResponse
+             */
+            type GetStepPositionsCallback = (error: (Error|null), response?: gauge.messages.StepPositionsResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getImplementationFiles}.
+             * @param error Error, if any
+             * @param [response] ImplementationFileListResponse
+             */
+            type GetImplementationFilesCallback = (error: (Error|null), response?: gauge.messages.ImplementationFileListResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#implementStub}.
+             * @param error Error, if any
+             * @param [response] FileDiff
+             */
+            type ImplementStubCallback = (error: (Error|null), response?: gauge.messages.FileDiff) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#refactor}.
+             * @param error Error, if any
+             * @param [response] RefactorResponse
+             */
+            type RefactorCallback = (error: (Error|null), response?: gauge.messages.RefactorResponse) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#kill}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type KillCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+        }
+
+        /** Represents a Reporter */
+        class Reporter extends $protobuf.rpc.Service {
+
+            /**
+             * Constructs a new Reporter service.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             */
+            constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+            /**
+             * Creates new Reporter service using the specified rpc implementation.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             * @returns RPC service. Useful where requests and/or responses are streamed.
+             */
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Reporter;
+
+            /**
+             * Calls NotifyExecutionStarting.
+             * @param request ExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyExecutionStarting(request: gauge.messages.IExecutionStartingRequest, callback: gauge.messages.Reporter.NotifyExecutionStartingCallback): void;
+
+            /**
+             * Calls NotifyExecutionStarting.
+             * @param request ExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyExecutionStarting(request: gauge.messages.IExecutionStartingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifySpecExecutionStarting.
+             * @param request SpecExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifySpecExecutionStarting(request: gauge.messages.ISpecExecutionStartingRequest, callback: gauge.messages.Reporter.NotifySpecExecutionStartingCallback): void;
+
+            /**
+             * Calls NotifySpecExecutionStarting.
+             * @param request SpecExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public notifySpecExecutionStarting(request: gauge.messages.ISpecExecutionStartingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifyScenarioExecutionStarting.
+             * @param request ScenarioExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyScenarioExecutionStarting(request: gauge.messages.IScenarioExecutionStartingRequest, callback: gauge.messages.Reporter.NotifyScenarioExecutionStartingCallback): void;
+
+            /**
+             * Calls NotifyScenarioExecutionStarting.
+             * @param request ScenarioExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyScenarioExecutionStarting(request: gauge.messages.IScenarioExecutionStartingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifyStepExecutionStarting.
+             * @param request StepExecutionStartingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyStepExecutionStarting(request: gauge.messages.IStepExecutionStartingRequest, callback: gauge.messages.Reporter.NotifyStepExecutionStartingCallback): void;
+
+            /**
+             * Calls NotifyStepExecutionStarting.
+             * @param request StepExecutionStartingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyStepExecutionStarting(request: gauge.messages.IStepExecutionStartingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifyStepExecutionEnding.
+             * @param request StepExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyStepExecutionEnding(request: gauge.messages.IStepExecutionEndingRequest, callback: gauge.messages.Reporter.NotifyStepExecutionEndingCallback): void;
+
+            /**
+             * Calls NotifyStepExecutionEnding.
+             * @param request StepExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyStepExecutionEnding(request: gauge.messages.IStepExecutionEndingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifyScenarioExecutionEnding.
+             * @param request ScenarioExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyScenarioExecutionEnding(request: gauge.messages.IScenarioExecutionEndingRequest, callback: gauge.messages.Reporter.NotifyScenarioExecutionEndingCallback): void;
+
+            /**
+             * Calls NotifyScenarioExecutionEnding.
+             * @param request ScenarioExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyScenarioExecutionEnding(request: gauge.messages.IScenarioExecutionEndingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifySpecExecutionEnding.
+             * @param request SpecExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifySpecExecutionEnding(request: gauge.messages.ISpecExecutionEndingRequest, callback: gauge.messages.Reporter.NotifySpecExecutionEndingCallback): void;
+
+            /**
+             * Calls NotifySpecExecutionEnding.
+             * @param request SpecExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public notifySpecExecutionEnding(request: gauge.messages.ISpecExecutionEndingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifyExecutionEnding.
+             * @param request ExecutionEndingRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifyExecutionEnding(request: gauge.messages.IExecutionEndingRequest, callback: gauge.messages.Reporter.NotifyExecutionEndingCallback): void;
+
+            /**
+             * Calls NotifyExecutionEnding.
+             * @param request ExecutionEndingRequest message or plain object
+             * @returns Promise
+             */
+            public notifyExecutionEnding(request: gauge.messages.IExecutionEndingRequest): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls NotifySuiteResult.
+             * @param request SuiteExecutionResult message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public notifySuiteResult(request: gauge.messages.ISuiteExecutionResult, callback: gauge.messages.Reporter.NotifySuiteResultCallback): void;
+
+            /**
+             * Calls NotifySuiteResult.
+             * @param request SuiteExecutionResult message or plain object
+             * @returns Promise
+             */
+            public notifySuiteResult(request: gauge.messages.ISuiteExecutionResult): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public kill(request: gauge.messages.IKillProcessRequest, callback: gauge.messages.Reporter.KillCallback): void;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @returns Promise
+             */
+            public kill(request: gauge.messages.IKillProcessRequest): Promise<gauge.messages.Empty>;
+        }
+
+        namespace Reporter {
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyExecutionStarting}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyExecutionStartingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySpecExecutionStarting}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifySpecExecutionStartingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyScenarioExecutionStarting}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyScenarioExecutionStartingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyStepExecutionStarting}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyStepExecutionStartingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyStepExecutionEnding}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyStepExecutionEndingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyScenarioExecutionEnding}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyScenarioExecutionEndingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySpecExecutionEnding}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifySpecExecutionEndingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyExecutionEnding}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifyExecutionEndingCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySuiteResult}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type NotifySuiteResultCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#kill}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type KillCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+        }
+
+        /** Represents a Documenter */
+        class Documenter extends $protobuf.rpc.Service {
+
+            /**
+             * Constructs a new Documenter service.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             */
+            constructor(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean);
+
+            /**
+             * Creates new Documenter service using the specified rpc implementation.
+             * @param rpcImpl RPC implementation
+             * @param [requestDelimited=false] Whether requests are length-delimited
+             * @param [responseDelimited=false] Whether responses are length-delimited
+             * @returns RPC service. Useful where requests and/or responses are streamed.
+             */
+            public static create(rpcImpl: $protobuf.RPCImpl, requestDelimited?: boolean, responseDelimited?: boolean): Documenter;
+
+            /**
+             * Calls GenerateDocs.
+             * @param request SpecDetails message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public generateDocs(request: gauge.messages.ISpecDetails, callback: gauge.messages.Documenter.GenerateDocsCallback): void;
+
+            /**
+             * Calls GenerateDocs.
+             * @param request SpecDetails message or plain object
+             * @returns Promise
+             */
+            public generateDocs(request: gauge.messages.ISpecDetails): Promise<gauge.messages.Empty>;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @param callback Node-style callback called with the error, if any, and Empty
+             */
+            public kill(request: gauge.messages.IKillProcessRequest, callback: gauge.messages.Documenter.KillCallback): void;
+
+            /**
+             * Calls Kill.
+             * @param request KillProcessRequest message or plain object
+             * @returns Promise
+             */
+            public kill(request: gauge.messages.IKillProcessRequest): Promise<gauge.messages.Empty>;
+        }
+
+        namespace Documenter {
+
+            /**
+             * Callback as used by {@link gauge.messages.Documenter#generateDocs}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type GenerateDocsCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
+
+            /**
+             * Callback as used by {@link gauge.messages.Documenter#kill}.
+             * @param error Error, if any
+             * @param [response] Empty
+             */
+            type KillCallback = (error: (Error|null), response?: gauge.messages.Empty) => void;
         }
     }
 }

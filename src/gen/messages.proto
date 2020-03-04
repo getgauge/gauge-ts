@@ -31,50 +31,103 @@ message KillProcessRequest {
 /// Sends to any request which needs a execution status as response
 /// usually step execution, hooks etc will return this
 message ExecutionStatusResponse {
+    /// Holds the suite result after suite execution done.
   gauge.messages.ProtoExecutionResult executionResult = 1;
 }
 
 /// Sent at start of Suite Execution. Tells the runner to execute `before_suite` hook.
 message ExecutionStartingRequest {
+    /// Holds the current suite execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds the suite result in execution starting.
+    /// Some fields will not be populated before execution.
+    gauge.messages.ProtoSuiteResult suiteResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at end of Suite Execution. Tells the runner to execute `after_suite` hook.
 message ExecutionEndingRequest {
+    /// Holds the current suite execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds the suite result in execution ending.
+    gauge.messages.ProtoSuiteResult suiteResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at start of Spec Execution. Tells the runner to execute `before_spec` hook.
 message SpecExecutionStartingRequest {
+    /// Holds the current spec execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds the specs result in spec execution starting.
+    /// Some fields will not be populated before execution.
+    gauge.messages.ProtoSpecResult specResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at end of Spec Execution. Tells the runner to execute `after_spec` hook.
 message SpecExecutionEndingRequest {
+    /// Holds the current spec execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds the specs result in spec execution ending.
+    gauge.messages.ProtoSpecResult specResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at start of Scenario Execution. Tells the runner to execute `before_scenario` hook.
 message ScenarioExecutionStartingRequest {
+    /// Holds the current sceanrio execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds the scenarion result in scenarion execution starting.
+    /// Some fields will not be populated before execution.
+    gauge.messages.ProtoScenarioResult scenarioResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at end of Scenario Execution. Tells the runner to execute `after_scenario` hook.
 message ScenarioExecutionEndingRequest {
+    /// Holds the current scenario execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    gauge.messages.ProtoScenarioResult scenarioResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at start of Step Execution. Tells the runner to execute `before_step` hook.
 message StepExecutionStartingRequest {
+    /// Holds the current step execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds step result in step execution starting.
+    /// Some fields will not be populated before execution.
+    gauge.messages.ProtoStepResult stepResult = 2;
+
+    int32 stream = 3;
 }
 
 /// Sent at end of Step Execution. Tells the runner to execute `after_step` hook.
 message StepExecutionEndingRequest {
+    /// Holds the current step execution info.
     ExecutionInfo currentExecutionInfo = 1;
+    /// Holds step result in step execution ending.
+    gauge.messages.ProtoStepResult stepResult = 2;
+
+    int32 stream = 3;
 }
 
-/// Contains details of the execution. 
+/// Contains command line arguments which passed by user during execution.
+message ExecutionArg {
+    /// Holds the flag name passed from command line.
+    string flagName = 1;
+    /// Holds the flag value passed from command line.
+    repeated string flagValue = 2;
+}
+
+
+/// Contains details of the execution.
 /// Depending on the context (Step, Scenario, Spec or Suite), the respective fields are set.
 message ExecutionInfo {
     /// Holds the information of the current Spec. Valid in context of Spec execution.
@@ -85,6 +138,14 @@ message ExecutionInfo {
     StepInfo currentStep = 3;
     /// Stacktrace of the execution. Valid only if there is an error in execution.
     string stacktrace = 4;
+    /// Holds the project name
+    string projectName = 5;
+    /// Holds the command line arguments.
+    repeated ExecutionArg ExecutionArgs = 6;
+    /// Holds the number of running execution streams.
+    int32 numberOfExecutionStreams = 7;
+    /// Holds the runner id for parallel execution.
+    int32 runnerId = 8;
 }
 
 /// Contains details of the Spec execution.
@@ -123,19 +184,21 @@ message StepInfo {
 
 /// Request sent ot the runner to Execute a Step
 message ExecuteStepRequest {
-  /// Contains the actual text of the Step being executed. 
+  /// Contains the actual text of the Step being executed.
   /// This contains the parameters as defined in the Spec.
   string actualStepText = 1;
-  /// Contains the parsed text of the Step being executed. 
+  /// Contains the parsed text of the Step being executed.
   /// The paramters are replaced with placeholders.
   string parsedStepText = 2;
   /// Flag to indicate if the execution of the Scenario, containing the current Step, failed.
   bool scenarioFailing = 3;
   /// Collection of parameters applicable to the current Step.
   repeated gauge.messages.Parameter parameters = 4;
+
+  int32 stream = 5;
 }
 
-/// Request sent ot the runner to check if given Step is valid. 
+/// Request sent ot the runner to check if given Step is valid.
 /// The runner should check if there is an implementation defined for the given Step Text.
 message StepValidateRequest {
   /// The text is used to lookup Step implementation
@@ -147,7 +210,7 @@ message StepValidateRequest {
 }
 
 /// Response of StepValidateRequest.
-/// The runner tells the caller if the Request was valid, 
+/// The runner tells the caller if the Request was valid,
 /// i.e. an implementation exists for given Step text.
 /// Returns an error message if it is an error response.
 message StepValidateResponse {
@@ -184,16 +247,19 @@ message StepNamesResponse {
 /// Request runner to initialize Scenario DataStore
 /// Scenario Datastore is reset after every Scenario execution.
 message ScenarioDataStoreInitRequest {
+    int32 stream = 1;
 }
 
 /// Request runner to initialize Spec DataStore
 /// Spec Datastore is reset after every Spec execution.
 message SpecDataStoreInitRequest {
+    int32 stream = 1;
 }
 
 /// Request runner to initialize Suite DataStore
 /// Suite Datastore is reset after every Suite execution.
 message SuiteDataStoreInitRequest {
+    int32 stream = 1;
 }
 
 /// Holds the new and old positions of a parameter.
@@ -236,7 +302,7 @@ message RefactorResponse {
 
 /// Request for details on a Single Step.
 message StepNameRequest {
-  /// Step text to lookup the Step. 
+  /// Step text to lookup the Step.
   /// This is the parsed step value, i.e. with placeholders for parameters.
   string stepValue = 1;
 }
@@ -245,7 +311,7 @@ message StepNameRequest {
 message StepNameResponse {
   /// Flag indicating if there is a match for the given Step Text.
   bool isStepPresent = 1;
-  /// The Step name of the given step. 
+  /// The Step name of the given step.
   repeated string stepName = 2;
   /// Flag indicating if the given Step is an alias.
   bool hasAlias = 3;
@@ -360,6 +426,22 @@ message KeepAlive {
     /// ID of the plugin initiating this request
     string pluginId = 1;
 }
+
+message SpecDetails {
+  /// Holds a collection of Spec details.
+  repeated SpecDetail details = 1;
+
+  message SpecDetail {
+    /// Holds a collection of Specs that are defined in the project.
+    ProtoSpec spec = 1;
+    /// Holds a collection of parse errors present in the above spec.
+    repeated Error parseErrors = 2;
+  }
+}
+
+
+// Empty is a blank response, to be used when there is no return expected.
+message Empty {}
 
 /// This is the message which gets transferred all the time
 /// with proper message type set

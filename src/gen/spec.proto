@@ -47,13 +47,17 @@ message ProtoSpec {
     repeated string preHookMessage = 10 [deprecated=true];
     /// [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
     repeated string postHookMessage = 11 [deprecated=true];
-    /// Capture Screenshot at pre hook exec time to be available on reports
-    repeated bytes preHookScreenshots = 12;
-    /// Capture Screenshot at post hook exec time to be available on reports
-    repeated bytes postHookScreenshots = 13;
+    /// [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+    repeated bytes preHookScreenshots = 12 [deprecated=true];
+    /// [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+    repeated bytes postHookScreenshots = 13 [deprecated=true];
     /// meta field to indicate the number of items in the list
     /// used when items are sent as individual chunk
     int64 itemCount = 14;
+    /// Screenshots captured on pre hook exec time to be available on reports
+    repeated string preHookScreenshotFiles = 15;
+    /// Screenshots captured on post hook exec time to be available on reports
+    repeated string postHookScreenshotFiles = 16;
 }
 
 
@@ -135,10 +139,14 @@ message ProtoScenario {
     repeated string preHookMessage = 17 [deprecated=true];
     /// [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
     repeated string postHookMessage = 18 [deprecated=true];
-    /// Capture Screenshot at pre hook exec time to be available on reports
-    repeated bytes preHookScreenshots = 19;
-    /// Capture Screenshot at post hook exec time to be available on reports
-    repeated bytes postHookScreenshots = 20;
+    /// [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+    repeated bytes preHookScreenshots = 19 [deprecated=true];
+    /// [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+    repeated bytes postHookScreenshots = 20 [deprecated=true];
+    /// Screenshots captured on pre hook exec time to be available on reports
+    repeated string preHookScreenshotFiles = 21;
+    /// Screenshots captured on post hook exec time to be available on reports
+    repeated string postHookScreenshotFiles = 22;
 }
 
 /// A proto object representing a Span of content
@@ -163,6 +171,8 @@ message ProtoTableDrivenScenario {
     bool isScenarioTableDriven = 5;
     /// Holds the scenario data table
     ProtoTable scenarioDataTable = 6;
+    /// Hold the row of scenario data table.
+    ProtoTable scenarioTableRow = 7;
 }
 
 /// A proto object representing a Step
@@ -179,10 +189,14 @@ message ProtoStep {
     repeated string preHookMessages = 5;
     /// Additional information at post hook exec time to be available on reports
     repeated string postHookMessages = 6;
-    /// Capture Screenshot at pre hook exec time to be available on reports
-    repeated bytes preHookScreenshots = 7;
-    /// Capture Screenshot at post hook exec time to be available on reports
-    repeated bytes postHookScreenshots = 8;
+    /// [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+    repeated bytes preHookScreenshots = 7 [deprecated=true];
+    /// [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+    repeated bytes postHookScreenshots = 8 [deprecated=true];
+    /// Screenshots captured on pre hook exec time to be available on reports
+    repeated string preHookScreenshotFiles = 9;
+    /// Screenshots captured on post hook exec time to be available on reports
+    repeated string postHookScreenshotFiles = 10;
 }
 
 /// Concept is a type of step, that can have multiple Steps.
@@ -282,7 +296,7 @@ message ProtoExecutionResult {
     string errorMessage = 3;
     /// Stacktrace of the error
     string stackTrace = 4;
-    /// [DEPRECATED, use failedScreenshot] Bytes containing screenshot taken at the time of failure.
+    /// [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
     bytes screenShot = 5 [deprecated=true];
     /// Holds the time taken for executing this scenario.
     int64 executionTime = 6;
@@ -296,10 +310,14 @@ message ProtoExecutionResult {
     }
     /// Type of the Error. Valid values: ASSERTION, VERIFICATION. Default: ASSERTION
     ErrorType errorType = 8;
-    /// Bytes containing screenshot taken at the time of failure.
-    bytes failureScreenshot = 9;
-    /// Bytes array containing screenshots at the time of it invoked
-    repeated bytes screenshots = 10;
+    /// [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
+    bytes failureScreenshot = 9 [deprecated=true];
+    /// [DEPRECATED, use screenshotFiles] Bytes array containing screenshots at the time of it invoked
+    repeated bytes screenshots = 10 [deprecated=true];
+    /// Path to the screenshot file captured at the time of failure.
+    string failureScreenshotFile = 11;
+    /// Path to the screenshot files captured using Gauge screenshsot API.
+    repeated string screenshotFiles = 12;
 }
 
 /// A proto object representing a pre-hook failure.
@@ -309,12 +327,14 @@ message ProtoHookFailure {
     string stackTrace = 1;
     /// Error message from the failure
     string errorMessage = 2;
-    /// [DEPRECATED, use failedScreenshot] Bytes holding the screenshot taken at the time of failure.
+    /// [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
     bytes screenShot = 3 [deprecated=true];
     // / Contains table row index corresponding to datatable rows
     int32 tableRowIndex = 4;
-    ///Bytes holding the screenshot taken at the time of failure.
-    bytes failureScreenshot = 5;
+    /// [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
+    bytes failureScreenshot = 5 [deprecated=true];
+    /// Path to the screenshot file captured at the time of failure.
+    string failureScreenshotFile = 6;
 }
 
 /// A proto object representing the result of entire Suite execution.
@@ -350,14 +370,18 @@ message ProtoSuiteResult {
     repeated string preHookMessage = 15 [deprecated=true];
     /// [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
     repeated string postHookMessage = 16 [deprecated=true];
-    /// Capture Screenshot at pre hook exec time to be available on reports
-    repeated bytes preHookScreenshots = 17;
-    /// Capture Screenshot at post hook exec time to be available on reports
-    repeated bytes postHookScreenshots = 18;
+    /// [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+    repeated bytes preHookScreenshots = 17 [deprecated=true];
+    /// [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+    repeated bytes postHookScreenshots = 18 [deprecated=true];
     // Indicates if the result is sent in chunks
     bool chunked = 19;
     // Indicates the number of chunks to expect after this
     int64 chunkSize = 20;
+    /// Screenshots captured on pre hook exec time to be available on reports
+    repeated string preHookScreenshotFiles = 21;
+    /// Screenshots captured on post hook exec time to be available on reports
+    repeated string postHookScreenshotFiles = 22;
 }
 
 /// A proto object representing the result of Spec execution.
@@ -382,6 +406,28 @@ message ProtoSpecResult {
     repeated int32 skippedDataTableRows = 9;
     /// Holds parse, validation and skipped errors.
     repeated Error errors = 10;
+    /// Holds the timestamp of event starting.
+    string timestamp = 11;
+}
+
+/// A proto object representing the result of Scenario execution.
+message ProtoScenarioResult {
+    /// Collection of scenarios in scenario execution result.
+    ProtoItem protoItem = 1;
+    /// Holds the time taken for executing the whole suite.
+    int64 executionTime = 2;
+    /// Holds the timestamp of event starting.
+    string timestamp = 3;
+}
+
+/// A proto object representing the result of Step execution.
+message ProtoStepResult {
+    /// Collection of steps in step execution result.
+    ProtoItem protoItem = 1;
+    /// Holds the time taken for executing the whole suite.
+    int64 executionTime = 2;
+    /// Holds the timestamp of event starting.
+    string timestamp = 3;
 }
 
 /// A proto object representing an error in spec/Scenario.

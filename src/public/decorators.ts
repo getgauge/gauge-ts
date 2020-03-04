@@ -86,8 +86,18 @@ export function AfterStep(options?: { tags: Array<string>, operator?: Operator }
     };
 }
 
+/**
+ * @deprecated Use CustomScreenshotWriter instead.
+ */
 export function CustomScreenGrabber(): MethodDecorator {
+    console.warn("CustomScreenGrabber is deprecated. Please use CustomScreenWriter.")
     return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
         Screenshot.setCustomScreenGrabber(descriptor.value);
+    };
+}
+
+export function CustomScreenshotWriter(): MethodDecorator {
+    return function (target: any, _propertyKey, descriptor: PropertyDescriptor) {
+        Screenshot.setCustomScreenshotWriter(descriptor.value);
     };
 }

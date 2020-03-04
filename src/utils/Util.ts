@@ -2,6 +2,7 @@ import { spawnSync } from 'child_process';
 import { existsSync, readFileSync, writeFileSync } from 'fs';
 import { extname, join } from 'path';
 import { Extension } from 'typescript';
+import { v4 } from 'uuid';
 let klawSync = require('klaw-sync');
 
 export class Util {
@@ -75,5 +76,10 @@ export class Util {
     public static isAsync(m: Function): boolean {
         let r = (m instanceof (async () => { }).constructor) === true;
         return r
+    }
+
+    public static getUniqueScreenshotFileName(): string {
+        let dir = process.env.gauge_screenshots_dir as string;
+        return join(dir, `screenshot-${v4()}.png`)
     }
 }

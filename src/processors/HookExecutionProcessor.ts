@@ -40,30 +40,29 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
             result.stackTrace = error.stack;
             if (process.env.screenshot_on_failure !== "false") {
                 let s = await Screenshot.capture();
-                result.screenShot = s;
-                result.failureScreenshot = s;
+                result.failureScreenshotFile = s;
             }
         }
         result.executionTime = Date.now() - start;
         result.message = MessageStore.pendingMessages();
-        result.screenshots = ScreenshotStore.pendingScreenshots();
+        result.screenshotFiles = ScreenshotStore.pendingScreenshots();
         return result;
     }
 
     private getExecutionContext(info: gauge.messages.ExecutionInfo): ExecutionContext {
         if (!info) return new ExecutionContext(null, null, null, null);
         let specInfo = info.currentSpec;
-        let scenrioInfo = info.currentScenario;
+        let scenarioInfo = info.currentScenario;
         let stepInfo = info.currentStep;
         let trace = info.stacktrace;
-        return new ExecutionContext(this.toSpec(specInfo), this.toScneario(scenrioInfo), this.toStepInfo(stepInfo), trace)
+        return new ExecutionContext(this.toSpec(specInfo), this.toScenario(scenarioInfo), this.toStepInfo(stepInfo), trace)
     }
 
     private toSpec(specInfo: gauge.messages.ISpecInfo | null | undefined): Specification | null {
         if (!specInfo) return null;
         return new Specification(specInfo.name, specInfo.fileName, specInfo.isFailed, specInfo.tags);
     }
-    private toScneario(scenInfo: gauge.messages.IScenarioInfo | null | undefined): Scenario | null {
+    private toScenario(scenInfo: gauge.messages.IScenarioInfo | null | undefined): Scenario | null {
         if (!scenInfo) return null;
         return new Scenario(scenInfo.name, scenInfo.isFailed, scenInfo.tags);
     }

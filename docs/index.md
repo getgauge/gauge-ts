@@ -9,7 +9,7 @@ A [typescript](https://www.typescriptlang.org/) runner for [Gauge](https://gauge
 
 ## Description
 
-This projects adds support for implementing your Gauge acceptence tests in typescript language. Here are the few motivations
+This projects adds support for implementing your Gauge acceptance tests in typescript language. Here are the few motivations
 * https://github.com/getgauge/gauge/issues/293
 * https://github.com/getgauge/gauge-js/issues/187
 
@@ -27,7 +27,7 @@ Gauge Typescript allows you to use typescript [decorators](https://www.typescrip
 
 
 The plugin has two components which has to install to run a gauge typescript project.
-The first component is in form of a gauge plugin whihch take care of create a guage-ts project and starting the runnner.
+The first component is in form of a gauge plugin which take care of create a gauge-ts project and starting the runner.
 The 2nd component is a `npm` package which gives the API which the users will use to write there step/hook implementations. The second component will be install as part of `npm install` in your gauge  typescript project.
 
 To install the first component
@@ -60,7 +60,7 @@ gauge init ts
 
 ## Run a Project
 
-Once the initilization is done run `npm install` to get all the required dependencies.
+Once the initialization is done run `npm install` to get all the required dependencies.
 Now you can run `gauge run specs` to run your project.
 Open the project in your favorite editor and start adding some new tests.
 
@@ -217,7 +217,7 @@ export default class StepImpl {
 }
 ```
 
-NOTE: `tags` are not aplicable for `<Before | After>Suite` hooks.
+NOTE: `tags` are not applicable for `<Before | After>Suite` hooks.
 
 ### ExecutionContext
 
@@ -231,14 +231,14 @@ export default class StepImpl {
     @BeforeStep()
     public async setup(context: ExecutionContext) {
       let scenario: Scenario = context.getCurrentScenario() as Scenario;
-      let name: string = scenario.getName() as string;  // this need to be done becasue the name can be null also.
+      let name: string = scenario.getName() as string;  // this need to be done because the name can be null also.
       console.log("setup needs to done before running the Step");
     }
 
     @AfterStep()
     public async cleanUp(context: any) {
       let step: StepInfo = context.getCurrentStep() as StepInfo;
-      let name: string = step.getText() as string;  // this need to be done becasue the name can be null also.
+      let name: string = step.getText() as string;  // this need to be done because the name can be null also.
       console.log("clean up needs to done after running the Step");
     }
 
@@ -250,16 +250,16 @@ export default class StepImpl {
 
 Data (Objects) can be shared in steps defined in different classes at runtime using DataStores exposed by gauge-ts.
 
-There are 3 different types of DataStores based on the lifecycle of when it gets cleared.
+There are 3 different types of DataStores based on the life cycle of when it gets cleared.
 
 #### Suite Data Store
 
-This data store keeps values added to it during the lifecycle of entire suite execution. Values are cleared after entire suite execution.
+This data store keeps values added to it during the life cycle of entire suite execution. Values are cleared after entire suite execution.
 
 WARNING: `SuiteStore` is not advised to be used when executing specs in parallel. The values are not retained between parallel streams of execution.
 
 ```javascript
-// import facotry
+// import factory
 import {DataStoreFactory, DataStore} from 'gauge-ts';
 
 // Adding value
@@ -274,14 +274,14 @@ String elementId = suiteStore.get("element-id") as string;
 
 #### Spec Data Store
 
-This data store keeps values added to it during the lifecycle of the specification execution. Values are cleared after every specification executes.
+This data store keeps values added to it during the life cycle of the specification execution. Values are cleared after every specification executes.
 
 ```javascript
-// import facotry
+// import factory
 import {DataStoreFactory, DataStore} from 'gauge-ts';
 
 // Adding value
-let specStore: DataStore = DataStoreFactory.getSpeceDataStore();
+let specStore: DataStore = DataStoreFactory.getSpecDataStore();
 specStore.put("element-id", "455678");
 
 // Fetching value
@@ -292,14 +292,14 @@ String elementId = specStore.get("element-id") as string;
 
 #### Scenario Data Store
 
-This data store keeps values added to it in the lifecycle of the scenario execution. Values are cleared after every scenario executes.
+This data store keeps values added to it in the life cycle of the scenario execution. Values are cleared after every scenario executes.
 
 ```javascript
-// import facotry
+// import factory
 import {DataStoreFactory, DataStore} from 'gauge-ts';
 
 // Adding value
-let scenarioStore: DataStore = DataStoreFactory.getSpeceDataStore();
+let scenarioStore: DataStore = DataStoreFactory.getSpecDataStore();
 scenarioStore.put("element-id", "455678");
 
 // Fetching value
@@ -311,14 +311,14 @@ String elementId = scenarioStore.get("element-id") as string;
 ### Custom Screenshots
 
 * By default gauge captures the display screen on failure if this feature has been enabled.
-If you need to take CustomScreenshots (using webdriver for example) because you need only a part of the screen captured, this can be done by assgining a `ICustomScreenshotGrabber` to `gauge-ts`
+If you need to take CustomScreenshots (using webdriver for example) because you need only a part of the screen captured, this can be done by assigning a `CustomScreenshotGrabber` to `gauge-ts`
 
 ```javascript
 // import CustomScreenshotGrabber
-import {CustomScreenshotGrabber} from 'gauge-ts';
+import {CustomScreenGrabber} from 'gauge-ts';
 
 export default class ScreenGrabber {
-    @CustomScreenshotGrabber()
+    @CustomScreenGrabber()
     public async takeScreenshot(): Uint8Array {
       // return a Unint8Array
       return new Uint8Arrat();
@@ -326,6 +326,26 @@ export default class ScreenGrabber {
 }
 
 ```
+
+DEPRECATION NOTICE: `CustomScreenshotGrabber` has been deprecated since gauge-ts v0.0.5, please use `CustomScreenshotGrabber` as mentioned below
+
+```javascript
+import { CustomScreenWriter } from "gauge-ts";
+import { join, basename } from "path";
+import { writeFileSync } from "fs";
+import { v4 } from 'uuid';
+
+export default class ScreenshotWriter {
+    @CustomScreenshotWriter()
+    public async foo(): string {
+        let bytes = new Uint8Array(); // use your driver to fetch the screenshot bytes
+        let fileName = join(process.env["gauge_screenshots_dir"], `${v4}.png`)
+        writeFileSync(fileName, bytes);
+        return basename(fileName);
+    }
+}
+```
+
 
 ### Custom messages in reports
 
@@ -356,7 +376,7 @@ await Gauge.captureScreenshot();
 
 ### Continue on Failure
 
-The default behaviour in gauge is to break execution on the first failure in a step. So, if the first step in a scenario fails, the subsequent steps are skipped. While this works for a majority of use cases, there are times when you need to execute all steps in a scenario irrespective of whether the previous steps have failed or not.
+The default behavior in gauge is to break execution on the first failure in a step. So, if the first step in a scenario fails, the subsequent steps are skipped. While this works for a majority of use cases, there are times when you need to execute all steps in a scenario irrespective of whether the previous steps have failed or not.
 
 To address that requirement, gauge provides a way for language runners to mark steps as recoverable, depending on whether the step implementation asks for it explicitly. Each language runner uses different syntax, depending on the language idioms to allow a step implementation to be marked to continue on failure.
 ```javascript
@@ -450,11 +470,11 @@ This will change all spec files to reflect the change.
 ```
 
 
-## Editor (authoring) and Debugging Supoort
+## Editor (authoring) and Debugging Support
 
 Gauge supports [LSP](https://blog.getgauge.io/gauge-and-the-language-server-protocol-c56fbcfba177) which can be used to used to integrate Gauge with any (if it supports) LSP. Gauge has it's official plugin for [Visual Studio Code](https://github.com/getgauge/gauge-vscode/blob/master/README.md) which allows author/debug to write their tests in multiple language.
 
-Gauge-Ts follows the protocol and implements the API's reuired by gauge to support a langauge. Install the `gauge` plugin for VS Code for a rich editing and debugging sopprt with Gauge and Typescript.
+Gauge-Ts follows the protocol and implements the apis required by gauge to support a language. Install the `gauge` plugin for VS Code for a rich editing and debugging support with Gauge and Typescript.
 
 
 ## Contact & Support

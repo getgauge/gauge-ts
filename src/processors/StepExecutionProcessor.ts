@@ -26,7 +26,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         try {
             if (method.length !== params.length) {
                 throw new Error(`Argument length mismatch for \`${req.actualStepText}\`.` +
-                    ` Actual Count: [${method.length}], Exepected Count: [${params.length}]`)
+                    ` Actual Count: [${method.length}], Expected Count: [${params.length}]`)
             }
             await this.executeMethod(mi.getInstance() as object, method, params);
         } catch (error) {
@@ -39,13 +39,12 @@ export class StepExecutionProcessor extends ExecutionProcessor {
             result.stackTrace = error.stack;
             if (process.env.screenshot_on_failure !== "false") {
                 let s = await Screenshot.capture();
-                result.screenShot = s;
-                result.failureScreenshot = s;
+                result.failureScreenshotFile= s;
             }
         }
         result.executionTime = Date.now() - start;
         result.message = MessageStore.pendingMessages();;
-        result.screenshots = ScreenshotStore.pendingScreenshots();
+        result.screenshotFiles = ScreenshotStore.pendingScreenshots();
         return result;
     }
 

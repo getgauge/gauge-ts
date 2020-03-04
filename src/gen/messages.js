@@ -6407,9 +6407,11 @@ $root.gauge = (function() {
              * @property {Array.<string>|null} [postHookMessages] Additional information at post hook exec time to be available on reports
              * @property {Array.<string>|null} [preHookMessage] [DEPRECATED, use preHookMessages] Additional information at pre hook exec time to be available on reports
              * @property {Array.<string>|null} [postHookMessage] [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [preHookScreenshots] Capture Screenshot at pre hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [postHookScreenshots] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [preHookScreenshots] [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [postHookScreenshots] [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @property {number|Long|null} [itemCount] used when items are sent as individual chunk
+             * @property {Array.<string>|null} [preHookScreenshotFiles] Screenshots captured on pre hook exec time to be available on reports
+             * @property {Array.<string>|null} [postHookScreenshotFiles] Screenshots captured on post hook exec time to be available on reports
              */
 
             /**
@@ -6431,6 +6433,8 @@ $root.gauge = (function() {
                 this.postHookMessage = [];
                 this.preHookScreenshots = [];
                 this.postHookScreenshots = [];
+                this.preHookScreenshotFiles = [];
+                this.postHookScreenshotFiles = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -6526,7 +6530,7 @@ $root.gauge = (function() {
             ProtoSpec.prototype.postHookMessage = $util.emptyArray;
 
             /**
-             * Capture Screenshot at pre hook exec time to be available on reports
+             * [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
              * @member {Array.<Uint8Array>} preHookScreenshots
              * @memberof gauge.messages.ProtoSpec
              * @instance
@@ -6534,7 +6538,7 @@ $root.gauge = (function() {
             ProtoSpec.prototype.preHookScreenshots = $util.emptyArray;
 
             /**
-             * Capture Screenshot at post hook exec time to be available on reports
+             * [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @member {Array.<Uint8Array>} postHookScreenshots
              * @memberof gauge.messages.ProtoSpec
              * @instance
@@ -6548,6 +6552,22 @@ $root.gauge = (function() {
              * @instance
              */
             ProtoSpec.prototype.itemCount = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Screenshots captured on pre hook exec time to be available on reports
+             * @member {Array.<string>} preHookScreenshotFiles
+             * @memberof gauge.messages.ProtoSpec
+             * @instance
+             */
+            ProtoSpec.prototype.preHookScreenshotFiles = $util.emptyArray;
+
+            /**
+             * Screenshots captured on post hook exec time to be available on reports
+             * @member {Array.<string>} postHookScreenshotFiles
+             * @memberof gauge.messages.ProtoSpec
+             * @instance
+             */
+            ProtoSpec.prototype.postHookScreenshotFiles = $util.emptyArray;
 
             /**
              * Creates a new ProtoSpec instance using the specified properties.
@@ -6611,6 +6631,12 @@ $root.gauge = (function() {
                         writer.uint32(/* id 13, wireType 2 =*/106).bytes(message.postHookScreenshots[i]);
                 if (message.itemCount != null && message.hasOwnProperty("itemCount"))
                     writer.uint32(/* id 14, wireType 0 =*/112).int64(message.itemCount);
+                if (message.preHookScreenshotFiles != null && message.preHookScreenshotFiles.length)
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 15, wireType 2 =*/122).string(message.preHookScreenshotFiles[i]);
+                if (message.postHookScreenshotFiles != null && message.postHookScreenshotFiles.length)
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 16, wireType 2 =*/130).string(message.postHookScreenshotFiles[i]);
                 return writer;
             };
 
@@ -6706,6 +6732,16 @@ $root.gauge = (function() {
                         break;
                     case 14:
                         message.itemCount = reader.int64();
+                        break;
+                    case 15:
+                        if (!(message.preHookScreenshotFiles && message.preHookScreenshotFiles.length))
+                            message.preHookScreenshotFiles = [];
+                        message.preHookScreenshotFiles.push(reader.string());
+                        break;
+                    case 16:
+                        if (!(message.postHookScreenshotFiles && message.postHookScreenshotFiles.length))
+                            message.postHookScreenshotFiles = [];
+                        message.postHookScreenshotFiles.push(reader.string());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -6830,6 +6866,20 @@ $root.gauge = (function() {
                 if (message.itemCount != null && message.hasOwnProperty("itemCount"))
                     if (!$util.isInteger(message.itemCount) && !(message.itemCount && $util.isInteger(message.itemCount.low) && $util.isInteger(message.itemCount.high)))
                         return "itemCount: integer|Long expected";
+                if (message.preHookScreenshotFiles != null && message.hasOwnProperty("preHookScreenshotFiles")) {
+                    if (!Array.isArray(message.preHookScreenshotFiles))
+                        return "preHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.preHookScreenshotFiles[i]))
+                            return "preHookScreenshotFiles: string[] expected";
+                }
+                if (message.postHookScreenshotFiles != null && message.hasOwnProperty("postHookScreenshotFiles")) {
+                    if (!Array.isArray(message.postHookScreenshotFiles))
+                        return "postHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.postHookScreenshotFiles[i]))
+                            return "postHookScreenshotFiles: string[] expected";
+                }
                 return null;
             };
 
@@ -6945,6 +6995,20 @@ $root.gauge = (function() {
                         message.itemCount = object.itemCount;
                     else if (typeof object.itemCount === "object")
                         message.itemCount = new $util.LongBits(object.itemCount.low >>> 0, object.itemCount.high >>> 0).toNumber();
+                if (object.preHookScreenshotFiles) {
+                    if (!Array.isArray(object.preHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoSpec.preHookScreenshotFiles: array expected");
+                    message.preHookScreenshotFiles = [];
+                    for (var i = 0; i < object.preHookScreenshotFiles.length; ++i)
+                        message.preHookScreenshotFiles[i] = String(object.preHookScreenshotFiles[i]);
+                }
+                if (object.postHookScreenshotFiles) {
+                    if (!Array.isArray(object.postHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoSpec.postHookScreenshotFiles: array expected");
+                    message.postHookScreenshotFiles = [];
+                    for (var i = 0; i < object.postHookScreenshotFiles.length; ++i)
+                        message.postHookScreenshotFiles[i] = String(object.postHookScreenshotFiles[i]);
+                }
                 return message;
             };
 
@@ -6972,6 +7036,8 @@ $root.gauge = (function() {
                     object.postHookMessage = [];
                     object.preHookScreenshots = [];
                     object.postHookScreenshots = [];
+                    object.preHookScreenshotFiles = [];
+                    object.postHookScreenshotFiles = [];
                 }
                 if (options.defaults) {
                     object.specHeading = "";
@@ -7044,6 +7110,16 @@ $root.gauge = (function() {
                         object.itemCount = options.longs === String ? String(message.itemCount) : message.itemCount;
                     else
                         object.itemCount = options.longs === String ? $util.Long.prototype.toString.call(message.itemCount) : options.longs === Number ? new $util.LongBits(message.itemCount.low >>> 0, message.itemCount.high >>> 0).toNumber() : message.itemCount;
+                if (message.preHookScreenshotFiles && message.preHookScreenshotFiles.length) {
+                    object.preHookScreenshotFiles = [];
+                    for (var j = 0; j < message.preHookScreenshotFiles.length; ++j)
+                        object.preHookScreenshotFiles[j] = message.preHookScreenshotFiles[j];
+                }
+                if (message.postHookScreenshotFiles && message.postHookScreenshotFiles.length) {
+                    object.postHookScreenshotFiles = [];
+                    for (var j = 0; j < message.postHookScreenshotFiles.length; ++j)
+                        object.postHookScreenshotFiles[j] = message.postHookScreenshotFiles[j];
+                }
                 return object;
             };
 
@@ -7564,8 +7640,10 @@ $root.gauge = (function() {
              * @property {Array.<string>|null} [postHookMessages] Additional information at post hook exec time to be available on reports
              * @property {Array.<string>|null} [preHookMessage] [DEPRECATED, use preHookMessages] Additional information at pre hook exec time to be available on reports
              * @property {Array.<string>|null} [postHookMessage] [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [preHookScreenshots] Capture Screenshot at pre hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [postHookScreenshots] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [preHookScreenshots] [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [postHookScreenshots] [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<string>|null} [preHookScreenshotFiles] Screenshots captured on pre hook exec time to be available on reports
+             * @property {Array.<string>|null} [postHookScreenshotFiles] Screenshots captured on post hook exec time to be available on reports
              */
 
             /**
@@ -7588,6 +7666,8 @@ $root.gauge = (function() {
                 this.postHookMessage = [];
                 this.preHookScreenshots = [];
                 this.postHookScreenshots = [];
+                this.preHookScreenshotFiles = [];
+                this.postHookScreenshotFiles = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -7739,7 +7819,7 @@ $root.gauge = (function() {
             ProtoScenario.prototype.postHookMessage = $util.emptyArray;
 
             /**
-             * Capture Screenshot at pre hook exec time to be available on reports
+             * [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
              * @member {Array.<Uint8Array>} preHookScreenshots
              * @memberof gauge.messages.ProtoScenario
              * @instance
@@ -7747,12 +7827,28 @@ $root.gauge = (function() {
             ProtoScenario.prototype.preHookScreenshots = $util.emptyArray;
 
             /**
-             * Capture Screenshot at post hook exec time to be available on reports
+             * [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @member {Array.<Uint8Array>} postHookScreenshots
              * @memberof gauge.messages.ProtoScenario
              * @instance
              */
             ProtoScenario.prototype.postHookScreenshots = $util.emptyArray;
+
+            /**
+             * Screenshots captured on pre hook exec time to be available on reports
+             * @member {Array.<string>} preHookScreenshotFiles
+             * @memberof gauge.messages.ProtoScenario
+             * @instance
+             */
+            ProtoScenario.prototype.preHookScreenshotFiles = $util.emptyArray;
+
+            /**
+             * Screenshots captured on post hook exec time to be available on reports
+             * @member {Array.<string>} postHookScreenshotFiles
+             * @memberof gauge.messages.ProtoScenario
+             * @instance
+             */
+            ProtoScenario.prototype.postHookScreenshotFiles = $util.emptyArray;
 
             /**
              * Creates a new ProtoScenario instance using the specified properties.
@@ -7829,6 +7925,12 @@ $root.gauge = (function() {
                 if (message.postHookScreenshots != null && message.postHookScreenshots.length)
                     for (var i = 0; i < message.postHookScreenshots.length; ++i)
                         writer.uint32(/* id 20, wireType 2 =*/162).bytes(message.postHookScreenshots[i]);
+                if (message.preHookScreenshotFiles != null && message.preHookScreenshotFiles.length)
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 21, wireType 2 =*/170).string(message.preHookScreenshotFiles[i]);
+                if (message.postHookScreenshotFiles != null && message.postHookScreenshotFiles.length)
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 22, wireType 2 =*/178).string(message.postHookScreenshotFiles[i]);
                 return writer;
             };
 
@@ -7944,6 +8046,16 @@ $root.gauge = (function() {
                         if (!(message.postHookScreenshots && message.postHookScreenshots.length))
                             message.postHookScreenshots = [];
                         message.postHookScreenshots.push(reader.bytes());
+                        break;
+                    case 21:
+                        if (!(message.preHookScreenshotFiles && message.preHookScreenshotFiles.length))
+                            message.preHookScreenshotFiles = [];
+                        message.preHookScreenshotFiles.push(reader.string());
+                        break;
+                    case 22:
+                        if (!(message.postHookScreenshotFiles && message.postHookScreenshotFiles.length))
+                            message.postHookScreenshotFiles = [];
+                        message.postHookScreenshotFiles.push(reader.string());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -8103,6 +8215,20 @@ $root.gauge = (function() {
                         if (!(message.postHookScreenshots[i] && typeof message.postHookScreenshots[i].length === "number" || $util.isString(message.postHookScreenshots[i])))
                             return "postHookScreenshots: buffer[] expected";
                 }
+                if (message.preHookScreenshotFiles != null && message.hasOwnProperty("preHookScreenshotFiles")) {
+                    if (!Array.isArray(message.preHookScreenshotFiles))
+                        return "preHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.preHookScreenshotFiles[i]))
+                            return "preHookScreenshotFiles: string[] expected";
+                }
+                if (message.postHookScreenshotFiles != null && message.hasOwnProperty("postHookScreenshotFiles")) {
+                    if (!Array.isArray(message.postHookScreenshotFiles))
+                        return "postHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.postHookScreenshotFiles[i]))
+                            return "postHookScreenshotFiles: string[] expected";
+                }
                 return null;
             };
 
@@ -8260,6 +8386,20 @@ $root.gauge = (function() {
                         else if (object.postHookScreenshots[i].length)
                             message.postHookScreenshots[i] = object.postHookScreenshots[i];
                 }
+                if (object.preHookScreenshotFiles) {
+                    if (!Array.isArray(object.preHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoScenario.preHookScreenshotFiles: array expected");
+                    message.preHookScreenshotFiles = [];
+                    for (var i = 0; i < object.preHookScreenshotFiles.length; ++i)
+                        message.preHookScreenshotFiles[i] = String(object.preHookScreenshotFiles[i]);
+                }
+                if (object.postHookScreenshotFiles) {
+                    if (!Array.isArray(object.postHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoScenario.postHookScreenshotFiles: array expected");
+                    message.postHookScreenshotFiles = [];
+                    for (var i = 0; i < object.postHookScreenshotFiles.length; ++i)
+                        message.postHookScreenshotFiles[i] = String(object.postHookScreenshotFiles[i]);
+                }
                 return message;
             };
 
@@ -8288,6 +8428,8 @@ $root.gauge = (function() {
                     object.postHookMessage = [];
                     object.preHookScreenshots = [];
                     object.postHookScreenshots = [];
+                    object.preHookScreenshotFiles = [];
+                    object.postHookScreenshotFiles = [];
                 }
                 if (options.defaults) {
                     object.scenarioHeading = "";
@@ -8379,6 +8521,16 @@ $root.gauge = (function() {
                     object.postHookScreenshots = [];
                     for (var j = 0; j < message.postHookScreenshots.length; ++j)
                         object.postHookScreenshots[j] = options.bytes === String ? $util.base64.encode(message.postHookScreenshots[j], 0, message.postHookScreenshots[j].length) : options.bytes === Array ? Array.prototype.slice.call(message.postHookScreenshots[j]) : message.postHookScreenshots[j];
+                }
+                if (message.preHookScreenshotFiles && message.preHookScreenshotFiles.length) {
+                    object.preHookScreenshotFiles = [];
+                    for (var j = 0; j < message.preHookScreenshotFiles.length; ++j)
+                        object.preHookScreenshotFiles[j] = message.preHookScreenshotFiles[j];
+                }
+                if (message.postHookScreenshotFiles && message.postHookScreenshotFiles.length) {
+                    object.postHookScreenshotFiles = [];
+                    for (var j = 0; j < message.postHookScreenshotFiles.length; ++j)
+                        object.postHookScreenshotFiles[j] = message.postHookScreenshotFiles[j];
                 }
                 return object;
             };
@@ -8719,6 +8871,7 @@ $root.gauge = (function() {
              * @property {boolean|null} [isSpecTableDriven] Executed against a spec data table
              * @property {boolean|null} [isScenarioTableDriven] Executed against a scenario data table
              * @property {gauge.messages.IProtoTable|null} [scenarioDataTable] Holds the scenario data table
+             * @property {gauge.messages.IProtoTable|null} [scenarioTableRow] Hold the row of scenario data table.
              */
 
             /**
@@ -8785,6 +8938,14 @@ $root.gauge = (function() {
             ProtoTableDrivenScenario.prototype.scenarioDataTable = null;
 
             /**
+             * Hold the row of scenario data table.
+             * @member {gauge.messages.IProtoTable|null|undefined} scenarioTableRow
+             * @memberof gauge.messages.ProtoTableDrivenScenario
+             * @instance
+             */
+            ProtoTableDrivenScenario.prototype.scenarioTableRow = null;
+
+            /**
              * Creates a new ProtoTableDrivenScenario instance using the specified properties.
              * @function create
              * @memberof gauge.messages.ProtoTableDrivenScenario
@@ -8820,6 +8981,8 @@ $root.gauge = (function() {
                     writer.uint32(/* id 5, wireType 0 =*/40).bool(message.isScenarioTableDriven);
                 if (message.scenarioDataTable != null && message.hasOwnProperty("scenarioDataTable"))
                     $root.gauge.messages.ProtoTable.encode(message.scenarioDataTable, writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.scenarioTableRow != null && message.hasOwnProperty("scenarioTableRow"))
+                    $root.gauge.messages.ProtoTable.encode(message.scenarioTableRow, writer.uint32(/* id 7, wireType 2 =*/58).fork()).ldelim();
                 return writer;
             };
 
@@ -8871,6 +9034,9 @@ $root.gauge = (function() {
                         break;
                     case 6:
                         message.scenarioDataTable = $root.gauge.messages.ProtoTable.decode(reader, reader.uint32());
+                        break;
+                    case 7:
+                        message.scenarioTableRow = $root.gauge.messages.ProtoTable.decode(reader, reader.uint32());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -8929,6 +9095,11 @@ $root.gauge = (function() {
                     if (error)
                         return "scenarioDataTable." + error;
                 }
+                if (message.scenarioTableRow != null && message.hasOwnProperty("scenarioTableRow")) {
+                    var error = $root.gauge.messages.ProtoTable.verify(message.scenarioTableRow);
+                    if (error)
+                        return "scenarioTableRow." + error;
+                }
                 return null;
             };
 
@@ -8962,6 +9133,11 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.ProtoTableDrivenScenario.scenarioDataTable: object expected");
                     message.scenarioDataTable = $root.gauge.messages.ProtoTable.fromObject(object.scenarioDataTable);
                 }
+                if (object.scenarioTableRow != null) {
+                    if (typeof object.scenarioTableRow !== "object")
+                        throw TypeError(".gauge.messages.ProtoTableDrivenScenario.scenarioTableRow: object expected");
+                    message.scenarioTableRow = $root.gauge.messages.ProtoTable.fromObject(object.scenarioTableRow);
+                }
                 return message;
             };
 
@@ -8985,6 +9161,7 @@ $root.gauge = (function() {
                     object.isSpecTableDriven = false;
                     object.isScenarioTableDriven = false;
                     object.scenarioDataTable = null;
+                    object.scenarioTableRow = null;
                 }
                 if (message.scenario != null && message.hasOwnProperty("scenario"))
                     object.scenario = $root.gauge.messages.ProtoScenario.toObject(message.scenario, options);
@@ -8998,6 +9175,8 @@ $root.gauge = (function() {
                     object.isScenarioTableDriven = message.isScenarioTableDriven;
                 if (message.scenarioDataTable != null && message.hasOwnProperty("scenarioDataTable"))
                     object.scenarioDataTable = $root.gauge.messages.ProtoTable.toObject(message.scenarioDataTable, options);
+                if (message.scenarioTableRow != null && message.hasOwnProperty("scenarioTableRow"))
+                    object.scenarioTableRow = $root.gauge.messages.ProtoTable.toObject(message.scenarioTableRow, options);
                 return object;
             };
 
@@ -9027,8 +9206,10 @@ $root.gauge = (function() {
              * @property {gauge.messages.IProtoStepExecutionResult|null} [stepExecutionResult] Holds the result from the execution.
              * @property {Array.<string>|null} [preHookMessages] Additional information at pre hook exec time to be available on reports
              * @property {Array.<string>|null} [postHookMessages] Additional information at post hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [preHookScreenshots] Capture Screenshot at pre hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [postHookScreenshots] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [preHookScreenshots] [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [postHookScreenshots] [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<string>|null} [preHookScreenshotFiles] Screenshots captured on pre hook exec time to be available on reports
+             * @property {Array.<string>|null} [postHookScreenshotFiles] Screenshots captured on post hook exec time to be available on reports
              */
 
             /**
@@ -9045,6 +9226,8 @@ $root.gauge = (function() {
                 this.postHookMessages = [];
                 this.preHookScreenshots = [];
                 this.postHookScreenshots = [];
+                this.preHookScreenshotFiles = [];
+                this.postHookScreenshotFiles = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -9100,7 +9283,7 @@ $root.gauge = (function() {
             ProtoStep.prototype.postHookMessages = $util.emptyArray;
 
             /**
-             * Capture Screenshot at pre hook exec time to be available on reports
+             * [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
              * @member {Array.<Uint8Array>} preHookScreenshots
              * @memberof gauge.messages.ProtoStep
              * @instance
@@ -9108,12 +9291,28 @@ $root.gauge = (function() {
             ProtoStep.prototype.preHookScreenshots = $util.emptyArray;
 
             /**
-             * Capture Screenshot at post hook exec time to be available on reports
+             * [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @member {Array.<Uint8Array>} postHookScreenshots
              * @memberof gauge.messages.ProtoStep
              * @instance
              */
             ProtoStep.prototype.postHookScreenshots = $util.emptyArray;
+
+            /**
+             * Screenshots captured on pre hook exec time to be available on reports
+             * @member {Array.<string>} preHookScreenshotFiles
+             * @memberof gauge.messages.ProtoStep
+             * @instance
+             */
+            ProtoStep.prototype.preHookScreenshotFiles = $util.emptyArray;
+
+            /**
+             * Screenshots captured on post hook exec time to be available on reports
+             * @member {Array.<string>} postHookScreenshotFiles
+             * @memberof gauge.messages.ProtoStep
+             * @instance
+             */
+            ProtoStep.prototype.postHookScreenshotFiles = $util.emptyArray;
 
             /**
              * Creates a new ProtoStep instance using the specified properties.
@@ -9160,6 +9359,12 @@ $root.gauge = (function() {
                 if (message.postHookScreenshots != null && message.postHookScreenshots.length)
                     for (var i = 0; i < message.postHookScreenshots.length; ++i)
                         writer.uint32(/* id 8, wireType 2 =*/66).bytes(message.postHookScreenshots[i]);
+                if (message.preHookScreenshotFiles != null && message.preHookScreenshotFiles.length)
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 9, wireType 2 =*/74).string(message.preHookScreenshotFiles[i]);
+                if (message.postHookScreenshotFiles != null && message.postHookScreenshotFiles.length)
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 10, wireType 2 =*/82).string(message.postHookScreenshotFiles[i]);
                 return writer;
             };
 
@@ -9227,6 +9432,16 @@ $root.gauge = (function() {
                         if (!(message.postHookScreenshots && message.postHookScreenshots.length))
                             message.postHookScreenshots = [];
                         message.postHookScreenshots.push(reader.bytes());
+                        break;
+                    case 9:
+                        if (!(message.preHookScreenshotFiles && message.preHookScreenshotFiles.length))
+                            message.preHookScreenshotFiles = [];
+                        message.preHookScreenshotFiles.push(reader.string());
+                        break;
+                    case 10:
+                        if (!(message.postHookScreenshotFiles && message.postHookScreenshotFiles.length))
+                            message.postHookScreenshotFiles = [];
+                        message.postHookScreenshotFiles.push(reader.string());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -9311,6 +9526,20 @@ $root.gauge = (function() {
                         if (!(message.postHookScreenshots[i] && typeof message.postHookScreenshots[i].length === "number" || $util.isString(message.postHookScreenshots[i])))
                             return "postHookScreenshots: buffer[] expected";
                 }
+                if (message.preHookScreenshotFiles != null && message.hasOwnProperty("preHookScreenshotFiles")) {
+                    if (!Array.isArray(message.preHookScreenshotFiles))
+                        return "preHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.preHookScreenshotFiles[i]))
+                            return "preHookScreenshotFiles: string[] expected";
+                }
+                if (message.postHookScreenshotFiles != null && message.hasOwnProperty("postHookScreenshotFiles")) {
+                    if (!Array.isArray(message.postHookScreenshotFiles))
+                        return "postHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.postHookScreenshotFiles[i]))
+                            return "postHookScreenshotFiles: string[] expected";
+                }
                 return null;
             };
 
@@ -9379,6 +9608,20 @@ $root.gauge = (function() {
                         else if (object.postHookScreenshots[i].length)
                             message.postHookScreenshots[i] = object.postHookScreenshots[i];
                 }
+                if (object.preHookScreenshotFiles) {
+                    if (!Array.isArray(object.preHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoStep.preHookScreenshotFiles: array expected");
+                    message.preHookScreenshotFiles = [];
+                    for (var i = 0; i < object.preHookScreenshotFiles.length; ++i)
+                        message.preHookScreenshotFiles[i] = String(object.preHookScreenshotFiles[i]);
+                }
+                if (object.postHookScreenshotFiles) {
+                    if (!Array.isArray(object.postHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoStep.postHookScreenshotFiles: array expected");
+                    message.postHookScreenshotFiles = [];
+                    for (var i = 0; i < object.postHookScreenshotFiles.length; ++i)
+                        message.postHookScreenshotFiles[i] = String(object.postHookScreenshotFiles[i]);
+                }
                 return message;
             };
 
@@ -9401,6 +9644,8 @@ $root.gauge = (function() {
                     object.postHookMessages = [];
                     object.preHookScreenshots = [];
                     object.postHookScreenshots = [];
+                    object.preHookScreenshotFiles = [];
+                    object.postHookScreenshotFiles = [];
                 }
                 if (options.defaults) {
                     object.actualText = "";
@@ -9437,6 +9682,16 @@ $root.gauge = (function() {
                     object.postHookScreenshots = [];
                     for (var j = 0; j < message.postHookScreenshots.length; ++j)
                         object.postHookScreenshots[j] = options.bytes === String ? $util.base64.encode(message.postHookScreenshots[j], 0, message.postHookScreenshots[j].length) : options.bytes === Array ? Array.prototype.slice.call(message.postHookScreenshots[j]) : message.postHookScreenshots[j];
+                }
+                if (message.preHookScreenshotFiles && message.preHookScreenshotFiles.length) {
+                    object.preHookScreenshotFiles = [];
+                    for (var j = 0; j < message.preHookScreenshotFiles.length; ++j)
+                        object.preHookScreenshotFiles[j] = message.preHookScreenshotFiles[j];
+                }
+                if (message.postHookScreenshotFiles && message.postHookScreenshotFiles.length) {
+                    object.postHookScreenshotFiles = [];
+                    for (var j = 0; j < message.postHookScreenshotFiles.length; ++j)
+                        object.postHookScreenshotFiles[j] = message.postHookScreenshotFiles[j];
                 }
                 return object;
             };
@@ -11420,12 +11675,14 @@ $root.gauge = (function() {
              * @property {boolean|null} [recoverableError] Flag to indicate if the error is recoverable from.
              * @property {string|null} [errorMessage] The actual error message.
              * @property {string|null} [stackTrace] Stacktrace of the error
-             * @property {Uint8Array|null} [screenShot] [DEPRECATED, use failedScreenshot] Bytes containing screenshot taken at the time of failure.
+             * @property {Uint8Array|null} [screenShot] [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
              * @property {number|Long|null} [executionTime] Holds the time taken for executing this scenario.
              * @property {Array.<string>|null} [message] Additional information at exec time to be available on reports
              * @property {gauge.messages.ProtoExecutionResult.ErrorType|null} [errorType] Type of the Error. Valid values: ASSERTION, VERIFICATION. Default: ASSERTION
-             * @property {Uint8Array|null} [failureScreenshot] Bytes containing screenshot taken at the time of failure.
-             * @property {Array.<Uint8Array>|null} [screenshots] Bytes array containing screenshots at the time of it invoked
+             * @property {Uint8Array|null} [failureScreenshot] [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
+             * @property {Array.<Uint8Array>|null} [screenshots] [DEPRECATED, use screenshotFiles] Bytes array containing screenshots at the time of it invoked
+             * @property {string|null} [failureScreenshotFile] Path to the screenshot file captured at the time of failure.
+             * @property {Array.<string>|null} [screenshotFiles] Path to the screenshot files captured using Gauge screenshsot API.
              */
 
             /**
@@ -11439,6 +11696,7 @@ $root.gauge = (function() {
             function ProtoExecutionResult(properties) {
                 this.message = [];
                 this.screenshots = [];
+                this.screenshotFiles = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -11478,7 +11736,7 @@ $root.gauge = (function() {
             ProtoExecutionResult.prototype.stackTrace = "";
 
             /**
-             * [DEPRECATED, use failedScreenshot] Bytes containing screenshot taken at the time of failure.
+             * [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
              * @member {Uint8Array} screenShot
              * @memberof gauge.messages.ProtoExecutionResult
              * @instance
@@ -11510,7 +11768,7 @@ $root.gauge = (function() {
             ProtoExecutionResult.prototype.errorType = 0;
 
             /**
-             * Bytes containing screenshot taken at the time of failure.
+             * [DEPRECATED, use failureScreenshotFile] Bytes containing screenshot taken at the time of failure.
              * @member {Uint8Array} failureScreenshot
              * @memberof gauge.messages.ProtoExecutionResult
              * @instance
@@ -11518,12 +11776,28 @@ $root.gauge = (function() {
             ProtoExecutionResult.prototype.failureScreenshot = $util.newBuffer([]);
 
             /**
-             * Bytes array containing screenshots at the time of it invoked
+             * [DEPRECATED, use screenshotFiles] Bytes array containing screenshots at the time of it invoked
              * @member {Array.<Uint8Array>} screenshots
              * @memberof gauge.messages.ProtoExecutionResult
              * @instance
              */
             ProtoExecutionResult.prototype.screenshots = $util.emptyArray;
+
+            /**
+             * Path to the screenshot file captured at the time of failure.
+             * @member {string} failureScreenshotFile
+             * @memberof gauge.messages.ProtoExecutionResult
+             * @instance
+             */
+            ProtoExecutionResult.prototype.failureScreenshotFile = "";
+
+            /**
+             * Path to the screenshot files captured using Gauge screenshsot API.
+             * @member {Array.<string>} screenshotFiles
+             * @memberof gauge.messages.ProtoExecutionResult
+             * @instance
+             */
+            ProtoExecutionResult.prototype.screenshotFiles = $util.emptyArray;
 
             /**
              * Creates a new ProtoExecutionResult instance using the specified properties.
@@ -11571,6 +11845,11 @@ $root.gauge = (function() {
                 if (message.screenshots != null && message.screenshots.length)
                     for (var i = 0; i < message.screenshots.length; ++i)
                         writer.uint32(/* id 10, wireType 2 =*/82).bytes(message.screenshots[i]);
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    writer.uint32(/* id 11, wireType 2 =*/90).string(message.failureScreenshotFile);
+                if (message.screenshotFiles != null && message.screenshotFiles.length)
+                    for (var i = 0; i < message.screenshotFiles.length; ++i)
+                        writer.uint32(/* id 12, wireType 2 =*/98).string(message.screenshotFiles[i]);
                 return writer;
             };
 
@@ -11638,6 +11917,14 @@ $root.gauge = (function() {
                         if (!(message.screenshots && message.screenshots.length))
                             message.screenshots = [];
                         message.screenshots.push(reader.bytes());
+                        break;
+                    case 11:
+                        message.failureScreenshotFile = reader.string();
+                        break;
+                    case 12:
+                        if (!(message.screenshotFiles && message.screenshotFiles.length))
+                            message.screenshotFiles = [];
+                        message.screenshotFiles.push(reader.string());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -11717,6 +12004,16 @@ $root.gauge = (function() {
                         if (!(message.screenshots[i] && typeof message.screenshots[i].length === "number" || $util.isString(message.screenshots[i])))
                             return "screenshots: buffer[] expected";
                 }
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    if (!$util.isString(message.failureScreenshotFile))
+                        return "failureScreenshotFile: string expected";
+                if (message.screenshotFiles != null && message.hasOwnProperty("screenshotFiles")) {
+                    if (!Array.isArray(message.screenshotFiles))
+                        return "screenshotFiles: array expected";
+                    for (var i = 0; i < message.screenshotFiles.length; ++i)
+                        if (!$util.isString(message.screenshotFiles[i]))
+                            return "screenshotFiles: string[] expected";
+                }
                 return null;
             };
 
@@ -11786,6 +12083,15 @@ $root.gauge = (function() {
                         else if (object.screenshots[i].length)
                             message.screenshots[i] = object.screenshots[i];
                 }
+                if (object.failureScreenshotFile != null)
+                    message.failureScreenshotFile = String(object.failureScreenshotFile);
+                if (object.screenshotFiles) {
+                    if (!Array.isArray(object.screenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoExecutionResult.screenshotFiles: array expected");
+                    message.screenshotFiles = [];
+                    for (var i = 0; i < object.screenshotFiles.length; ++i)
+                        message.screenshotFiles[i] = String(object.screenshotFiles[i]);
+                }
                 return message;
             };
 
@@ -11805,6 +12111,7 @@ $root.gauge = (function() {
                 if (options.arrays || options.defaults) {
                     object.message = [];
                     object.screenshots = [];
+                    object.screenshotFiles = [];
                 }
                 if (options.defaults) {
                     object.failed = false;
@@ -11831,6 +12138,7 @@ $root.gauge = (function() {
                         if (options.bytes !== Array)
                             object.failureScreenshot = $util.newBuffer(object.failureScreenshot);
                     }
+                    object.failureScreenshotFile = "";
                 }
                 if (message.failed != null && message.hasOwnProperty("failed"))
                     object.failed = message.failed;
@@ -11860,6 +12168,13 @@ $root.gauge = (function() {
                     object.screenshots = [];
                     for (var j = 0; j < message.screenshots.length; ++j)
                         object.screenshots[j] = options.bytes === String ? $util.base64.encode(message.screenshots[j], 0, message.screenshots[j].length) : options.bytes === Array ? Array.prototype.slice.call(message.screenshots[j]) : message.screenshots[j];
+                }
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    object.failureScreenshotFile = message.failureScreenshotFile;
+                if (message.screenshotFiles && message.screenshotFiles.length) {
+                    object.screenshotFiles = [];
+                    for (var j = 0; j < message.screenshotFiles.length; ++j)
+                        object.screenshotFiles[j] = message.screenshotFiles[j];
                 }
                 return object;
             };
@@ -11900,9 +12215,10 @@ $root.gauge = (function() {
              * @interface IProtoHookFailure
              * @property {string|null} [stackTrace] Stacktrace from the failure
              * @property {string|null} [errorMessage] Error message from the failure
-             * @property {Uint8Array|null} [screenShot] [DEPRECATED, use failedScreenshot] Bytes holding the screenshot taken at the time of failure.
+             * @property {Uint8Array|null} [screenShot] [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
              * @property {number|null} [tableRowIndex] ProtoHookFailure tableRowIndex
-             * @property {Uint8Array|null} [failureScreenshot] Bytes holding the screenshot taken at the time of failure.
+             * @property {Uint8Array|null} [failureScreenshot] [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
+             * @property {string|null} [failureScreenshotFile] Path to the screenshot file captured at the time of failure.
              */
 
             /**
@@ -11937,7 +12253,7 @@ $root.gauge = (function() {
             ProtoHookFailure.prototype.errorMessage = "";
 
             /**
-             * [DEPRECATED, use failedScreenshot] Bytes holding the screenshot taken at the time of failure.
+             * [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
              * @member {Uint8Array} screenShot
              * @memberof gauge.messages.ProtoHookFailure
              * @instance
@@ -11953,12 +12269,20 @@ $root.gauge = (function() {
             ProtoHookFailure.prototype.tableRowIndex = 0;
 
             /**
-             * Bytes holding the screenshot taken at the time of failure.
+             * [DEPRECATED, use failureScreenshotFile] Bytes holding the screenshot taken at the time of failure.
              * @member {Uint8Array} failureScreenshot
              * @memberof gauge.messages.ProtoHookFailure
              * @instance
              */
             ProtoHookFailure.prototype.failureScreenshot = $util.newBuffer([]);
+
+            /**
+             * Path to the screenshot file captured at the time of failure.
+             * @member {string} failureScreenshotFile
+             * @memberof gauge.messages.ProtoHookFailure
+             * @instance
+             */
+            ProtoHookFailure.prototype.failureScreenshotFile = "";
 
             /**
              * Creates a new ProtoHookFailure instance using the specified properties.
@@ -11994,6 +12318,8 @@ $root.gauge = (function() {
                     writer.uint32(/* id 4, wireType 0 =*/32).int32(message.tableRowIndex);
                 if (message.failureScreenshot != null && message.hasOwnProperty("failureScreenshot"))
                     writer.uint32(/* id 5, wireType 2 =*/42).bytes(message.failureScreenshot);
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    writer.uint32(/* id 6, wireType 2 =*/50).string(message.failureScreenshotFile);
                 return writer;
             };
 
@@ -12042,6 +12368,9 @@ $root.gauge = (function() {
                         break;
                     case 5:
                         message.failureScreenshot = reader.bytes();
+                        break;
+                    case 6:
+                        message.failureScreenshotFile = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -12093,6 +12422,9 @@ $root.gauge = (function() {
                 if (message.failureScreenshot != null && message.hasOwnProperty("failureScreenshot"))
                     if (!(message.failureScreenshot && typeof message.failureScreenshot.length === "number" || $util.isString(message.failureScreenshot)))
                         return "failureScreenshot: buffer expected";
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    if (!$util.isString(message.failureScreenshotFile))
+                        return "failureScreenshotFile: string expected";
                 return null;
             };
 
@@ -12124,6 +12456,8 @@ $root.gauge = (function() {
                         $util.base64.decode(object.failureScreenshot, message.failureScreenshot = $util.newBuffer($util.base64.length(object.failureScreenshot)), 0);
                     else if (object.failureScreenshot.length)
                         message.failureScreenshot = object.failureScreenshot;
+                if (object.failureScreenshotFile != null)
+                    message.failureScreenshotFile = String(object.failureScreenshotFile);
                 return message;
             };
 
@@ -12158,6 +12492,7 @@ $root.gauge = (function() {
                         if (options.bytes !== Array)
                             object.failureScreenshot = $util.newBuffer(object.failureScreenshot);
                     }
+                    object.failureScreenshotFile = "";
                 }
                 if (message.stackTrace != null && message.hasOwnProperty("stackTrace"))
                     object.stackTrace = message.stackTrace;
@@ -12169,6 +12504,8 @@ $root.gauge = (function() {
                     object.tableRowIndex = message.tableRowIndex;
                 if (message.failureScreenshot != null && message.hasOwnProperty("failureScreenshot"))
                     object.failureScreenshot = options.bytes === String ? $util.base64.encode(message.failureScreenshot, 0, message.failureScreenshot.length) : options.bytes === Array ? Array.prototype.slice.call(message.failureScreenshot) : message.failureScreenshot;
+                if (message.failureScreenshotFile != null && message.hasOwnProperty("failureScreenshotFile"))
+                    object.failureScreenshotFile = message.failureScreenshotFile;
                 return object;
             };
 
@@ -12208,10 +12545,12 @@ $root.gauge = (function() {
              * @property {Array.<string>|null} [postHookMessages] Additional information at post hook exec time to be available on reports
              * @property {Array.<string>|null} [preHookMessage] [DEPRECATED, use preHookMessages] Additional information at pre hook exec time to be available on reports
              * @property {Array.<string>|null} [postHookMessage] [DEPRECATED, use postHookMessages] Additional information at post hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [preHookScreenshots] Capture Screenshot at pre hook exec time to be available on reports
-             * @property {Array.<Uint8Array>|null} [postHookScreenshots] Capture Screenshot at post hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [preHookScreenshots] [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
+             * @property {Array.<Uint8Array>|null} [postHookScreenshots] [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @property {boolean|null} [chunked] ProtoSuiteResult chunked
              * @property {number|Long|null} [chunkSize] ProtoSuiteResult chunkSize
+             * @property {Array.<string>|null} [preHookScreenshotFiles] Screenshots captured on pre hook exec time to be available on reports
+             * @property {Array.<string>|null} [postHookScreenshotFiles] Screenshots captured on post hook exec time to be available on reports
              */
 
             /**
@@ -12230,6 +12569,8 @@ $root.gauge = (function() {
                 this.postHookMessage = [];
                 this.preHookScreenshots = [];
                 this.postHookScreenshots = [];
+                this.preHookScreenshotFiles = [];
+                this.postHookScreenshotFiles = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -12365,7 +12706,7 @@ $root.gauge = (function() {
             ProtoSuiteResult.prototype.postHookMessage = $util.emptyArray;
 
             /**
-             * Capture Screenshot at pre hook exec time to be available on reports
+             * [DEPRECATED, use preHookScreenshotFiles] Capture Screenshot at pre hook exec time to be available on reports
              * @member {Array.<Uint8Array>} preHookScreenshots
              * @memberof gauge.messages.ProtoSuiteResult
              * @instance
@@ -12373,7 +12714,7 @@ $root.gauge = (function() {
             ProtoSuiteResult.prototype.preHookScreenshots = $util.emptyArray;
 
             /**
-             * Capture Screenshot at post hook exec time to be available on reports
+             * [DEPRECATED, use postHookScreenshotFiles] Capture Screenshot at post hook exec time to be available on reports
              * @member {Array.<Uint8Array>} postHookScreenshots
              * @memberof gauge.messages.ProtoSuiteResult
              * @instance
@@ -12395,6 +12736,22 @@ $root.gauge = (function() {
              * @instance
              */
             ProtoSuiteResult.prototype.chunkSize = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Screenshots captured on pre hook exec time to be available on reports
+             * @member {Array.<string>} preHookScreenshotFiles
+             * @memberof gauge.messages.ProtoSuiteResult
+             * @instance
+             */
+            ProtoSuiteResult.prototype.preHookScreenshotFiles = $util.emptyArray;
+
+            /**
+             * Screenshots captured on post hook exec time to be available on reports
+             * @member {Array.<string>} postHookScreenshotFiles
+             * @memberof gauge.messages.ProtoSuiteResult
+             * @instance
+             */
+            ProtoSuiteResult.prototype.postHookScreenshotFiles = $util.emptyArray;
 
             /**
              * Creates a new ProtoSuiteResult instance using the specified properties.
@@ -12467,6 +12824,12 @@ $root.gauge = (function() {
                     writer.uint32(/* id 19, wireType 0 =*/152).bool(message.chunked);
                 if (message.chunkSize != null && message.hasOwnProperty("chunkSize"))
                     writer.uint32(/* id 20, wireType 0 =*/160).int64(message.chunkSize);
+                if (message.preHookScreenshotFiles != null && message.preHookScreenshotFiles.length)
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 21, wireType 2 =*/170).string(message.preHookScreenshotFiles[i]);
+                if (message.postHookScreenshotFiles != null && message.postHookScreenshotFiles.length)
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        writer.uint32(/* id 22, wireType 2 =*/178).string(message.postHookScreenshotFiles[i]);
                 return writer;
             };
 
@@ -12574,6 +12937,16 @@ $root.gauge = (function() {
                         break;
                     case 20:
                         message.chunkSize = reader.int64();
+                        break;
+                    case 21:
+                        if (!(message.preHookScreenshotFiles && message.preHookScreenshotFiles.length))
+                            message.preHookScreenshotFiles = [];
+                        message.preHookScreenshotFiles.push(reader.string());
+                        break;
+                    case 22:
+                        if (!(message.postHookScreenshotFiles && message.postHookScreenshotFiles.length))
+                            message.postHookScreenshotFiles = [];
+                        message.postHookScreenshotFiles.push(reader.string());
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -12704,6 +13077,20 @@ $root.gauge = (function() {
                 if (message.chunkSize != null && message.hasOwnProperty("chunkSize"))
                     if (!$util.isInteger(message.chunkSize) && !(message.chunkSize && $util.isInteger(message.chunkSize.low) && $util.isInteger(message.chunkSize.high)))
                         return "chunkSize: integer|Long expected";
+                if (message.preHookScreenshotFiles != null && message.hasOwnProperty("preHookScreenshotFiles")) {
+                    if (!Array.isArray(message.preHookScreenshotFiles))
+                        return "preHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.preHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.preHookScreenshotFiles[i]))
+                            return "preHookScreenshotFiles: string[] expected";
+                }
+                if (message.postHookScreenshotFiles != null && message.hasOwnProperty("postHookScreenshotFiles")) {
+                    if (!Array.isArray(message.postHookScreenshotFiles))
+                        return "postHookScreenshotFiles: array expected";
+                    for (var i = 0; i < message.postHookScreenshotFiles.length; ++i)
+                        if (!$util.isString(message.postHookScreenshotFiles[i]))
+                            return "postHookScreenshotFiles: string[] expected";
+                }
                 return null;
             };
 
@@ -12823,6 +13210,20 @@ $root.gauge = (function() {
                         message.chunkSize = object.chunkSize;
                     else if (typeof object.chunkSize === "object")
                         message.chunkSize = new $util.LongBits(object.chunkSize.low >>> 0, object.chunkSize.high >>> 0).toNumber();
+                if (object.preHookScreenshotFiles) {
+                    if (!Array.isArray(object.preHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoSuiteResult.preHookScreenshotFiles: array expected");
+                    message.preHookScreenshotFiles = [];
+                    for (var i = 0; i < object.preHookScreenshotFiles.length; ++i)
+                        message.preHookScreenshotFiles[i] = String(object.preHookScreenshotFiles[i]);
+                }
+                if (object.postHookScreenshotFiles) {
+                    if (!Array.isArray(object.postHookScreenshotFiles))
+                        throw TypeError(".gauge.messages.ProtoSuiteResult.postHookScreenshotFiles: array expected");
+                    message.postHookScreenshotFiles = [];
+                    for (var i = 0; i < object.postHookScreenshotFiles.length; ++i)
+                        message.postHookScreenshotFiles[i] = String(object.postHookScreenshotFiles[i]);
+                }
                 return message;
             };
 
@@ -12847,6 +13248,8 @@ $root.gauge = (function() {
                     object.postHookMessage = [];
                     object.preHookScreenshots = [];
                     object.postHookScreenshots = [];
+                    object.preHookScreenshotFiles = [];
+                    object.postHookScreenshotFiles = [];
                 }
                 if (options.defaults) {
                     object.preHookFailure = null;
@@ -12938,6 +13341,16 @@ $root.gauge = (function() {
                         object.chunkSize = options.longs === String ? String(message.chunkSize) : message.chunkSize;
                     else
                         object.chunkSize = options.longs === String ? $util.Long.prototype.toString.call(message.chunkSize) : options.longs === Number ? new $util.LongBits(message.chunkSize.low >>> 0, message.chunkSize.high >>> 0).toNumber() : message.chunkSize;
+                if (message.preHookScreenshotFiles && message.preHookScreenshotFiles.length) {
+                    object.preHookScreenshotFiles = [];
+                    for (var j = 0; j < message.preHookScreenshotFiles.length; ++j)
+                        object.preHookScreenshotFiles[j] = message.preHookScreenshotFiles[j];
+                }
+                if (message.postHookScreenshotFiles && message.postHookScreenshotFiles.length) {
+                    object.postHookScreenshotFiles = [];
+                    for (var j = 0; j < message.postHookScreenshotFiles.length; ++j)
+                        object.postHookScreenshotFiles[j] = message.postHookScreenshotFiles[j];
+                }
                 return object;
             };
 
@@ -12971,6 +13384,7 @@ $root.gauge = (function() {
              * @property {number|null} [scenarioSkippedCount] Holds the number of Scenarios skipped
              * @property {Array.<number>|null} [skippedDataTableRows] Holds the row numbers, for which the execution skipped.
              * @property {Array.<gauge.messages.IError>|null} [errors] Holds parse, validation and skipped errors.
+             * @property {string|null} [timestamp] Holds the timestamp of event starting.
              */
 
             /**
@@ -13072,6 +13486,14 @@ $root.gauge = (function() {
             ProtoSpecResult.prototype.errors = $util.emptyArray;
 
             /**
+             * Holds the timestamp of event starting.
+             * @member {string} timestamp
+             * @memberof gauge.messages.ProtoSpecResult
+             * @instance
+             */
+            ProtoSpecResult.prototype.timestamp = "";
+
+            /**
              * Creates a new ProtoSpecResult instance using the specified properties.
              * @function create
              * @memberof gauge.messages.ProtoSpecResult
@@ -13124,6 +13546,8 @@ $root.gauge = (function() {
                 if (message.errors != null && message.errors.length)
                     for (var i = 0; i < message.errors.length; ++i)
                         $root.gauge.messages.Error.encode(message.errors[i], writer.uint32(/* id 10, wireType 2 =*/82).fork()).ldelim();
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    writer.uint32(/* id 11, wireType 2 =*/90).string(message.timestamp);
                 return writer;
             };
 
@@ -13203,6 +13627,9 @@ $root.gauge = (function() {
                         if (!(message.errors && message.errors.length))
                             message.errors = [];
                         message.errors.push($root.gauge.messages.Error.decode(reader, reader.uint32()));
+                        break;
+                    case 11:
+                        message.timestamp = reader.string();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -13285,6 +13712,9 @@ $root.gauge = (function() {
                             return "errors." + error;
                     }
                 }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    if (!$util.isString(message.timestamp))
+                        return "timestamp: string expected";
                 return null;
             };
 
@@ -13348,6 +13778,8 @@ $root.gauge = (function() {
                         message.errors[i] = $root.gauge.messages.Error.fromObject(object.errors[i]);
                     }
                 }
+                if (object.timestamp != null)
+                    message.timestamp = String(object.timestamp);
                 return message;
             };
 
@@ -13381,6 +13813,7 @@ $root.gauge = (function() {
                         object.executionTime = options.longs === String ? "0" : 0;
                     object.skipped = false;
                     object.scenarioSkippedCount = 0;
+                    object.timestamp = "";
                 }
                 if (message.protoSpec != null && message.hasOwnProperty("protoSpec"))
                     object.protoSpec = $root.gauge.messages.ProtoSpec.toObject(message.protoSpec, options);
@@ -13414,6 +13847,8 @@ $root.gauge = (function() {
                     for (var j = 0; j < message.errors.length; ++j)
                         object.errors[j] = $root.gauge.messages.Error.toObject(message.errors[j], options);
                 }
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = message.timestamp;
                 return object;
             };
 
@@ -13429,6 +13864,508 @@ $root.gauge = (function() {
             };
 
             return ProtoSpecResult;
+        })();
+
+        messages.ProtoScenarioResult = (function() {
+
+            /**
+             * Properties of a ProtoScenarioResult.
+             * @memberof gauge.messages
+             * @interface IProtoScenarioResult
+             * @property {gauge.messages.IProtoItem|null} [protoItem] Collection of scenarios in scenario execution result.
+             * @property {number|Long|null} [executionTime] Holds the time taken for executing the whole suite.
+             * @property {string|null} [timestamp] Holds the timestamp of event starting.
+             */
+
+            /**
+             * Constructs a new ProtoScenarioResult.
+             * @memberof gauge.messages
+             * @classdesc A proto object representing the result of Scenario execution.
+             * @implements IProtoScenarioResult
+             * @constructor
+             * @param {gauge.messages.IProtoScenarioResult=} [properties] Properties to set
+             */
+            function ProtoScenarioResult(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Collection of scenarios in scenario execution result.
+             * @member {gauge.messages.IProtoItem|null|undefined} protoItem
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @instance
+             */
+            ProtoScenarioResult.prototype.protoItem = null;
+
+            /**
+             * Holds the time taken for executing the whole suite.
+             * @member {number|Long} executionTime
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @instance
+             */
+            ProtoScenarioResult.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Holds the timestamp of event starting.
+             * @member {string} timestamp
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @instance
+             */
+            ProtoScenarioResult.prototype.timestamp = "";
+
+            /**
+             * Creates a new ProtoScenarioResult instance using the specified properties.
+             * @function create
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {gauge.messages.IProtoScenarioResult=} [properties] Properties to set
+             * @returns {gauge.messages.ProtoScenarioResult} ProtoScenarioResult instance
+             */
+            ProtoScenarioResult.create = function create(properties) {
+                return new ProtoScenarioResult(properties);
+            };
+
+            /**
+             * Encodes the specified ProtoScenarioResult message. Does not implicitly {@link gauge.messages.ProtoScenarioResult.verify|verify} messages.
+             * @function encode
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {gauge.messages.IProtoScenarioResult} message ProtoScenarioResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ProtoScenarioResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.protoItem != null && message.hasOwnProperty("protoItem"))
+                    $root.gauge.messages.ProtoItem.encode(message.protoItem, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.executionTime);
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.timestamp);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ProtoScenarioResult message, length delimited. Does not implicitly {@link gauge.messages.ProtoScenarioResult.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {gauge.messages.IProtoScenarioResult} message ProtoScenarioResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ProtoScenarioResult.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ProtoScenarioResult message from the specified reader or buffer.
+             * @function decode
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {gauge.messages.ProtoScenarioResult} ProtoScenarioResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ProtoScenarioResult.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.ProtoScenarioResult();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.protoItem = $root.gauge.messages.ProtoItem.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.executionTime = reader.int64();
+                        break;
+                    case 3:
+                        message.timestamp = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ProtoScenarioResult message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {gauge.messages.ProtoScenarioResult} ProtoScenarioResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ProtoScenarioResult.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ProtoScenarioResult message.
+             * @function verify
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ProtoScenarioResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.protoItem != null && message.hasOwnProperty("protoItem")) {
+                    var error = $root.gauge.messages.ProtoItem.verify(message.protoItem);
+                    if (error)
+                        return "protoItem." + error;
+                }
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    if (!$util.isInteger(message.executionTime) && !(message.executionTime && $util.isInteger(message.executionTime.low) && $util.isInteger(message.executionTime.high)))
+                        return "executionTime: integer|Long expected";
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    if (!$util.isString(message.timestamp))
+                        return "timestamp: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ProtoScenarioResult message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {gauge.messages.ProtoScenarioResult} ProtoScenarioResult
+             */
+            ProtoScenarioResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.gauge.messages.ProtoScenarioResult)
+                    return object;
+                var message = new $root.gauge.messages.ProtoScenarioResult();
+                if (object.protoItem != null) {
+                    if (typeof object.protoItem !== "object")
+                        throw TypeError(".gauge.messages.ProtoScenarioResult.protoItem: object expected");
+                    message.protoItem = $root.gauge.messages.ProtoItem.fromObject(object.protoItem);
+                }
+                if (object.executionTime != null)
+                    if ($util.Long)
+                        (message.executionTime = $util.Long.fromValue(object.executionTime)).unsigned = false;
+                    else if (typeof object.executionTime === "string")
+                        message.executionTime = parseInt(object.executionTime, 10);
+                    else if (typeof object.executionTime === "number")
+                        message.executionTime = object.executionTime;
+                    else if (typeof object.executionTime === "object")
+                        message.executionTime = new $util.LongBits(object.executionTime.low >>> 0, object.executionTime.high >>> 0).toNumber();
+                if (object.timestamp != null)
+                    message.timestamp = String(object.timestamp);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ProtoScenarioResult message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @static
+             * @param {gauge.messages.ProtoScenarioResult} message ProtoScenarioResult
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ProtoScenarioResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.protoItem = null;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
+                    object.timestamp = "";
+                }
+                if (message.protoItem != null && message.hasOwnProperty("protoItem"))
+                    object.protoItem = $root.gauge.messages.ProtoItem.toObject(message.protoItem, options);
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    if (typeof message.executionTime === "number")
+                        object.executionTime = options.longs === String ? String(message.executionTime) : message.executionTime;
+                    else
+                        object.executionTime = options.longs === String ? $util.Long.prototype.toString.call(message.executionTime) : options.longs === Number ? new $util.LongBits(message.executionTime.low >>> 0, message.executionTime.high >>> 0).toNumber() : message.executionTime;
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = message.timestamp;
+                return object;
+            };
+
+            /**
+             * Converts this ProtoScenarioResult to JSON.
+             * @function toJSON
+             * @memberof gauge.messages.ProtoScenarioResult
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ProtoScenarioResult.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return ProtoScenarioResult;
+        })();
+
+        messages.ProtoStepResult = (function() {
+
+            /**
+             * Properties of a ProtoStepResult.
+             * @memberof gauge.messages
+             * @interface IProtoStepResult
+             * @property {gauge.messages.IProtoItem|null} [protoItem] Collection of steps in step execution result.
+             * @property {number|Long|null} [executionTime] Holds the time taken for executing the whole suite.
+             * @property {string|null} [timestamp] Holds the timestamp of event starting.
+             */
+
+            /**
+             * Constructs a new ProtoStepResult.
+             * @memberof gauge.messages
+             * @classdesc A proto object representing the result of Step execution.
+             * @implements IProtoStepResult
+             * @constructor
+             * @param {gauge.messages.IProtoStepResult=} [properties] Properties to set
+             */
+            function ProtoStepResult(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Collection of steps in step execution result.
+             * @member {gauge.messages.IProtoItem|null|undefined} protoItem
+             * @memberof gauge.messages.ProtoStepResult
+             * @instance
+             */
+            ProtoStepResult.prototype.protoItem = null;
+
+            /**
+             * Holds the time taken for executing the whole suite.
+             * @member {number|Long} executionTime
+             * @memberof gauge.messages.ProtoStepResult
+             * @instance
+             */
+            ProtoStepResult.prototype.executionTime = $util.Long ? $util.Long.fromBits(0,0,false) : 0;
+
+            /**
+             * Holds the timestamp of event starting.
+             * @member {string} timestamp
+             * @memberof gauge.messages.ProtoStepResult
+             * @instance
+             */
+            ProtoStepResult.prototype.timestamp = "";
+
+            /**
+             * Creates a new ProtoStepResult instance using the specified properties.
+             * @function create
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {gauge.messages.IProtoStepResult=} [properties] Properties to set
+             * @returns {gauge.messages.ProtoStepResult} ProtoStepResult instance
+             */
+            ProtoStepResult.create = function create(properties) {
+                return new ProtoStepResult(properties);
+            };
+
+            /**
+             * Encodes the specified ProtoStepResult message. Does not implicitly {@link gauge.messages.ProtoStepResult.verify|verify} messages.
+             * @function encode
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {gauge.messages.IProtoStepResult} message ProtoStepResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ProtoStepResult.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.protoItem != null && message.hasOwnProperty("protoItem"))
+                    $root.gauge.messages.ProtoItem.encode(message.protoItem, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    writer.uint32(/* id 2, wireType 0 =*/16).int64(message.executionTime);
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    writer.uint32(/* id 3, wireType 2 =*/26).string(message.timestamp);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ProtoStepResult message, length delimited. Does not implicitly {@link gauge.messages.ProtoStepResult.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {gauge.messages.IProtoStepResult} message ProtoStepResult message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ProtoStepResult.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a ProtoStepResult message from the specified reader or buffer.
+             * @function decode
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {gauge.messages.ProtoStepResult} ProtoStepResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ProtoStepResult.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.ProtoStepResult();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.protoItem = $root.gauge.messages.ProtoItem.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.executionTime = reader.int64();
+                        break;
+                    case 3:
+                        message.timestamp = reader.string();
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a ProtoStepResult message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {gauge.messages.ProtoStepResult} ProtoStepResult
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ProtoStepResult.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a ProtoStepResult message.
+             * @function verify
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ProtoStepResult.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.protoItem != null && message.hasOwnProperty("protoItem")) {
+                    var error = $root.gauge.messages.ProtoItem.verify(message.protoItem);
+                    if (error)
+                        return "protoItem." + error;
+                }
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    if (!$util.isInteger(message.executionTime) && !(message.executionTime && $util.isInteger(message.executionTime.low) && $util.isInteger(message.executionTime.high)))
+                        return "executionTime: integer|Long expected";
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    if (!$util.isString(message.timestamp))
+                        return "timestamp: string expected";
+                return null;
+            };
+
+            /**
+             * Creates a ProtoStepResult message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {gauge.messages.ProtoStepResult} ProtoStepResult
+             */
+            ProtoStepResult.fromObject = function fromObject(object) {
+                if (object instanceof $root.gauge.messages.ProtoStepResult)
+                    return object;
+                var message = new $root.gauge.messages.ProtoStepResult();
+                if (object.protoItem != null) {
+                    if (typeof object.protoItem !== "object")
+                        throw TypeError(".gauge.messages.ProtoStepResult.protoItem: object expected");
+                    message.protoItem = $root.gauge.messages.ProtoItem.fromObject(object.protoItem);
+                }
+                if (object.executionTime != null)
+                    if ($util.Long)
+                        (message.executionTime = $util.Long.fromValue(object.executionTime)).unsigned = false;
+                    else if (typeof object.executionTime === "string")
+                        message.executionTime = parseInt(object.executionTime, 10);
+                    else if (typeof object.executionTime === "number")
+                        message.executionTime = object.executionTime;
+                    else if (typeof object.executionTime === "object")
+                        message.executionTime = new $util.LongBits(object.executionTime.low >>> 0, object.executionTime.high >>> 0).toNumber();
+                if (object.timestamp != null)
+                    message.timestamp = String(object.timestamp);
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a ProtoStepResult message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof gauge.messages.ProtoStepResult
+             * @static
+             * @param {gauge.messages.ProtoStepResult} message ProtoStepResult
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ProtoStepResult.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults) {
+                    object.protoItem = null;
+                    if ($util.Long) {
+                        var long = new $util.Long(0, 0, false);
+                        object.executionTime = options.longs === String ? long.toString() : options.longs === Number ? long.toNumber() : long;
+                    } else
+                        object.executionTime = options.longs === String ? "0" : 0;
+                    object.timestamp = "";
+                }
+                if (message.protoItem != null && message.hasOwnProperty("protoItem"))
+                    object.protoItem = $root.gauge.messages.ProtoItem.toObject(message.protoItem, options);
+                if (message.executionTime != null && message.hasOwnProperty("executionTime"))
+                    if (typeof message.executionTime === "number")
+                        object.executionTime = options.longs === String ? String(message.executionTime) : message.executionTime;
+                    else
+                        object.executionTime = options.longs === String ? $util.Long.prototype.toString.call(message.executionTime) : options.longs === Number ? new $util.LongBits(message.executionTime.low >>> 0, message.executionTime.high >>> 0).toNumber() : message.executionTime;
+                if (message.timestamp != null && message.hasOwnProperty("timestamp"))
+                    object.timestamp = message.timestamp;
+                return object;
+            };
+
+            /**
+             * Converts this ProtoStepResult to JSON.
+             * @function toJSON
+             * @memberof gauge.messages.ProtoStepResult
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ProtoStepResult.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return ProtoStepResult;
         })();
 
         messages.Error = (function() {
@@ -13959,166 +14896,6 @@ $root.gauge = (function() {
             };
 
             return ProtoStepValue;
-        })();
-
-        messages.Empty = (function() {
-
-            /**
-             * Properties of an Empty.
-             * @memberof gauge.messages
-             * @interface IEmpty
-             */
-
-            /**
-             * Constructs a new Empty.
-             * @memberof gauge.messages
-             * @classdesc Represents an Empty.
-             * @implements IEmpty
-             * @constructor
-             * @param {gauge.messages.IEmpty=} [properties] Properties to set
-             */
-            function Empty(properties) {
-                if (properties)
-                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
-                        if (properties[keys[i]] != null)
-                            this[keys[i]] = properties[keys[i]];
-            }
-
-            /**
-             * Creates a new Empty instance using the specified properties.
-             * @function create
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {gauge.messages.IEmpty=} [properties] Properties to set
-             * @returns {gauge.messages.Empty} Empty instance
-             */
-            Empty.create = function create(properties) {
-                return new Empty(properties);
-            };
-
-            /**
-             * Encodes the specified Empty message. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
-             * @function encode
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {gauge.messages.IEmpty} message Empty message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Empty.encode = function encode(message, writer) {
-                if (!writer)
-                    writer = $Writer.create();
-                return writer;
-            };
-
-            /**
-             * Encodes the specified Empty message, length delimited. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
-             * @function encodeDelimited
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {gauge.messages.IEmpty} message Empty message or plain object to encode
-             * @param {$protobuf.Writer} [writer] Writer to encode to
-             * @returns {$protobuf.Writer} Writer
-             */
-            Empty.encodeDelimited = function encodeDelimited(message, writer) {
-                return this.encode(message, writer).ldelim();
-            };
-
-            /**
-             * Decodes an Empty message from the specified reader or buffer.
-             * @function decode
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @param {number} [length] Message length if known beforehand
-             * @returns {gauge.messages.Empty} Empty
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Empty.decode = function decode(reader, length) {
-                if (!(reader instanceof $Reader))
-                    reader = $Reader.create(reader);
-                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.Empty();
-                while (reader.pos < end) {
-                    var tag = reader.uint32();
-                    switch (tag >>> 3) {
-                    default:
-                        reader.skipType(tag & 7);
-                        break;
-                    }
-                }
-                return message;
-            };
-
-            /**
-             * Decodes an Empty message from the specified reader or buffer, length delimited.
-             * @function decodeDelimited
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-             * @returns {gauge.messages.Empty} Empty
-             * @throws {Error} If the payload is not a reader or valid buffer
-             * @throws {$protobuf.util.ProtocolError} If required fields are missing
-             */
-            Empty.decodeDelimited = function decodeDelimited(reader) {
-                if (!(reader instanceof $Reader))
-                    reader = new $Reader(reader);
-                return this.decode(reader, reader.uint32());
-            };
-
-            /**
-             * Verifies an Empty message.
-             * @function verify
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {Object.<string,*>} message Plain object to verify
-             * @returns {string|null} `null` if valid, otherwise the reason why it is not
-             */
-            Empty.verify = function verify(message) {
-                if (typeof message !== "object" || message === null)
-                    return "object expected";
-                return null;
-            };
-
-            /**
-             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
-             * @function fromObject
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {Object.<string,*>} object Plain object
-             * @returns {gauge.messages.Empty} Empty
-             */
-            Empty.fromObject = function fromObject(object) {
-                if (object instanceof $root.gauge.messages.Empty)
-                    return object;
-                return new $root.gauge.messages.Empty();
-            };
-
-            /**
-             * Creates a plain object from an Empty message. Also converts values to other types if specified.
-             * @function toObject
-             * @memberof gauge.messages.Empty
-             * @static
-             * @param {gauge.messages.Empty} message Empty
-             * @param {$protobuf.IConversionOptions} [options] Conversion options
-             * @returns {Object.<string,*>} Plain object
-             */
-            Empty.toObject = function toObject() {
-                return {};
-            };
-
-            /**
-             * Converts this Empty to JSON.
-             * @function toJSON
-             * @memberof gauge.messages.Empty
-             * @instance
-             * @returns {Object.<string,*>} JSON object
-             */
-            Empty.prototype.toJSON = function toJSON() {
-                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
-            };
-
-            return Empty;
         })();
 
         messages.lspService = (function() {
@@ -14652,7 +15429,7 @@ $root.gauge = (function() {
              * Properties of an ExecutionStatusResponse.
              * @memberof gauge.messages
              * @interface IExecutionStatusResponse
-             * @property {gauge.messages.IProtoExecutionResult|null} [executionResult] ExecutionStatusResponse executionResult
+             * @property {gauge.messages.IProtoExecutionResult|null} [executionResult] Holds the suite result after suite execution done.
              */
 
             /**
@@ -14671,7 +15448,7 @@ $root.gauge = (function() {
             }
 
             /**
-             * ExecutionStatusResponse executionResult.
+             * Holds the suite result after suite execution done.
              * @member {gauge.messages.IProtoExecutionResult|null|undefined} executionResult
              * @memberof gauge.messages.ExecutionStatusResponse
              * @instance
@@ -14844,7 +15621,9 @@ $root.gauge = (function() {
              * Properties of an ExecutionStartingRequest.
              * @memberof gauge.messages
              * @interface IExecutionStartingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] ExecutionStartingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current suite execution info.
+             * @property {gauge.messages.IProtoSuiteResult|null} [suiteResult] Some fields will not be populated before execution.
+             * @property {number|null} [stream] ExecutionStartingRequest stream
              */
 
             /**
@@ -14863,12 +15642,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * ExecutionStartingRequest currentExecutionInfo.
+             * Holds the current suite execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.ExecutionStartingRequest
              * @instance
              */
             ExecutionStartingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Some fields will not be populated before execution.
+             * @member {gauge.messages.IProtoSuiteResult|null|undefined} suiteResult
+             * @memberof gauge.messages.ExecutionStartingRequest
+             * @instance
+             */
+            ExecutionStartingRequest.prototype.suiteResult = null;
+
+            /**
+             * ExecutionStartingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ExecutionStartingRequest
+             * @instance
+             */
+            ExecutionStartingRequest.prototype.stream = 0;
 
             /**
              * Creates a new ExecutionStartingRequest instance using the specified properties.
@@ -14896,6 +15691,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult"))
+                    $root.gauge.messages.ProtoSuiteResult.encode(message.suiteResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -14932,6 +15731,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.suiteResult = $root.gauge.messages.ProtoSuiteResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -14973,6 +15778,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult")) {
+                    var error = $root.gauge.messages.ProtoSuiteResult.verify(message.suiteResult);
+                    if (error)
+                        return "suiteResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -14993,6 +15806,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.ExecutionStartingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.suiteResult != null) {
+                    if (typeof object.suiteResult !== "object")
+                        throw TypeError(".gauge.messages.ExecutionStartingRequest.suiteResult: object expected");
+                    message.suiteResult = $root.gauge.messages.ProtoSuiteResult.fromObject(object.suiteResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15009,10 +15829,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.suiteResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult"))
+                    object.suiteResult = $root.gauge.messages.ProtoSuiteResult.toObject(message.suiteResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15036,7 +15863,9 @@ $root.gauge = (function() {
              * Properties of an ExecutionEndingRequest.
              * @memberof gauge.messages
              * @interface IExecutionEndingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] ExecutionEndingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current suite execution info.
+             * @property {gauge.messages.IProtoSuiteResult|null} [suiteResult] Holds the suite result in execution ending.
+             * @property {number|null} [stream] ExecutionEndingRequest stream
              */
 
             /**
@@ -15055,12 +15884,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * ExecutionEndingRequest currentExecutionInfo.
+             * Holds the current suite execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.ExecutionEndingRequest
              * @instance
              */
             ExecutionEndingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Holds the suite result in execution ending.
+             * @member {gauge.messages.IProtoSuiteResult|null|undefined} suiteResult
+             * @memberof gauge.messages.ExecutionEndingRequest
+             * @instance
+             */
+            ExecutionEndingRequest.prototype.suiteResult = null;
+
+            /**
+             * ExecutionEndingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ExecutionEndingRequest
+             * @instance
+             */
+            ExecutionEndingRequest.prototype.stream = 0;
 
             /**
              * Creates a new ExecutionEndingRequest instance using the specified properties.
@@ -15088,6 +15933,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult"))
+                    $root.gauge.messages.ProtoSuiteResult.encode(message.suiteResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -15124,6 +15973,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.suiteResult = $root.gauge.messages.ProtoSuiteResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -15165,6 +16020,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult")) {
+                    var error = $root.gauge.messages.ProtoSuiteResult.verify(message.suiteResult);
+                    if (error)
+                        return "suiteResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -15185,6 +16048,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.ExecutionEndingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.suiteResult != null) {
+                    if (typeof object.suiteResult !== "object")
+                        throw TypeError(".gauge.messages.ExecutionEndingRequest.suiteResult: object expected");
+                    message.suiteResult = $root.gauge.messages.ProtoSuiteResult.fromObject(object.suiteResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15201,10 +16071,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.suiteResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.suiteResult != null && message.hasOwnProperty("suiteResult"))
+                    object.suiteResult = $root.gauge.messages.ProtoSuiteResult.toObject(message.suiteResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15228,7 +16105,9 @@ $root.gauge = (function() {
              * Properties of a SpecExecutionStartingRequest.
              * @memberof gauge.messages
              * @interface ISpecExecutionStartingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] SpecExecutionStartingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current spec execution info.
+             * @property {gauge.messages.IProtoSpecResult|null} [specResult] Some fields will not be populated before execution.
+             * @property {number|null} [stream] SpecExecutionStartingRequest stream
              */
 
             /**
@@ -15247,12 +16126,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * SpecExecutionStartingRequest currentExecutionInfo.
+             * Holds the current spec execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.SpecExecutionStartingRequest
              * @instance
              */
             SpecExecutionStartingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Some fields will not be populated before execution.
+             * @member {gauge.messages.IProtoSpecResult|null|undefined} specResult
+             * @memberof gauge.messages.SpecExecutionStartingRequest
+             * @instance
+             */
+            SpecExecutionStartingRequest.prototype.specResult = null;
+
+            /**
+             * SpecExecutionStartingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.SpecExecutionStartingRequest
+             * @instance
+             */
+            SpecExecutionStartingRequest.prototype.stream = 0;
 
             /**
              * Creates a new SpecExecutionStartingRequest instance using the specified properties.
@@ -15280,6 +16175,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.specResult != null && message.hasOwnProperty("specResult"))
+                    $root.gauge.messages.ProtoSpecResult.encode(message.specResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -15316,6 +16215,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.specResult = $root.gauge.messages.ProtoSpecResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -15357,6 +16262,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.specResult != null && message.hasOwnProperty("specResult")) {
+                    var error = $root.gauge.messages.ProtoSpecResult.verify(message.specResult);
+                    if (error)
+                        return "specResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -15377,6 +16290,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.SpecExecutionStartingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.specResult != null) {
+                    if (typeof object.specResult !== "object")
+                        throw TypeError(".gauge.messages.SpecExecutionStartingRequest.specResult: object expected");
+                    message.specResult = $root.gauge.messages.ProtoSpecResult.fromObject(object.specResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15393,10 +16313,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.specResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.specResult != null && message.hasOwnProperty("specResult"))
+                    object.specResult = $root.gauge.messages.ProtoSpecResult.toObject(message.specResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15420,7 +16347,9 @@ $root.gauge = (function() {
              * Properties of a SpecExecutionEndingRequest.
              * @memberof gauge.messages
              * @interface ISpecExecutionEndingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] SpecExecutionEndingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current spec execution info.
+             * @property {gauge.messages.IProtoSpecResult|null} [specResult] Holds the specs result in spec execution ending.
+             * @property {number|null} [stream] SpecExecutionEndingRequest stream
              */
 
             /**
@@ -15439,12 +16368,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * SpecExecutionEndingRequest currentExecutionInfo.
+             * Holds the current spec execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.SpecExecutionEndingRequest
              * @instance
              */
             SpecExecutionEndingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Holds the specs result in spec execution ending.
+             * @member {gauge.messages.IProtoSpecResult|null|undefined} specResult
+             * @memberof gauge.messages.SpecExecutionEndingRequest
+             * @instance
+             */
+            SpecExecutionEndingRequest.prototype.specResult = null;
+
+            /**
+             * SpecExecutionEndingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.SpecExecutionEndingRequest
+             * @instance
+             */
+            SpecExecutionEndingRequest.prototype.stream = 0;
 
             /**
              * Creates a new SpecExecutionEndingRequest instance using the specified properties.
@@ -15472,6 +16417,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.specResult != null && message.hasOwnProperty("specResult"))
+                    $root.gauge.messages.ProtoSpecResult.encode(message.specResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -15508,6 +16457,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.specResult = $root.gauge.messages.ProtoSpecResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -15549,6 +16504,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.specResult != null && message.hasOwnProperty("specResult")) {
+                    var error = $root.gauge.messages.ProtoSpecResult.verify(message.specResult);
+                    if (error)
+                        return "specResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -15569,6 +16532,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.SpecExecutionEndingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.specResult != null) {
+                    if (typeof object.specResult !== "object")
+                        throw TypeError(".gauge.messages.SpecExecutionEndingRequest.specResult: object expected");
+                    message.specResult = $root.gauge.messages.ProtoSpecResult.fromObject(object.specResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15585,10 +16555,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.specResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.specResult != null && message.hasOwnProperty("specResult"))
+                    object.specResult = $root.gauge.messages.ProtoSpecResult.toObject(message.specResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15612,7 +16589,9 @@ $root.gauge = (function() {
              * Properties of a ScenarioExecutionStartingRequest.
              * @memberof gauge.messages
              * @interface IScenarioExecutionStartingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] ScenarioExecutionStartingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current sceanrio execution info.
+             * @property {gauge.messages.IProtoScenarioResult|null} [scenarioResult] Some fields will not be populated before execution.
+             * @property {number|null} [stream] ScenarioExecutionStartingRequest stream
              */
 
             /**
@@ -15631,12 +16610,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * ScenarioExecutionStartingRequest currentExecutionInfo.
+             * Holds the current sceanrio execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.ScenarioExecutionStartingRequest
              * @instance
              */
             ScenarioExecutionStartingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Some fields will not be populated before execution.
+             * @member {gauge.messages.IProtoScenarioResult|null|undefined} scenarioResult
+             * @memberof gauge.messages.ScenarioExecutionStartingRequest
+             * @instance
+             */
+            ScenarioExecutionStartingRequest.prototype.scenarioResult = null;
+
+            /**
+             * ScenarioExecutionStartingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ScenarioExecutionStartingRequest
+             * @instance
+             */
+            ScenarioExecutionStartingRequest.prototype.stream = 0;
 
             /**
              * Creates a new ScenarioExecutionStartingRequest instance using the specified properties.
@@ -15664,6 +16659,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult"))
+                    $root.gauge.messages.ProtoScenarioResult.encode(message.scenarioResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -15700,6 +16699,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.scenarioResult = $root.gauge.messages.ProtoScenarioResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -15741,6 +16746,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult")) {
+                    var error = $root.gauge.messages.ProtoScenarioResult.verify(message.scenarioResult);
+                    if (error)
+                        return "scenarioResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -15761,6 +16774,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.ScenarioExecutionStartingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.scenarioResult != null) {
+                    if (typeof object.scenarioResult !== "object")
+                        throw TypeError(".gauge.messages.ScenarioExecutionStartingRequest.scenarioResult: object expected");
+                    message.scenarioResult = $root.gauge.messages.ProtoScenarioResult.fromObject(object.scenarioResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15777,10 +16797,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.scenarioResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult"))
+                    object.scenarioResult = $root.gauge.messages.ProtoScenarioResult.toObject(message.scenarioResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15804,7 +16831,9 @@ $root.gauge = (function() {
              * Properties of a ScenarioExecutionEndingRequest.
              * @memberof gauge.messages
              * @interface IScenarioExecutionEndingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] ScenarioExecutionEndingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current scenario execution info.
+             * @property {gauge.messages.IProtoScenarioResult|null} [scenarioResult] ScenarioExecutionEndingRequest scenarioResult
+             * @property {number|null} [stream] ScenarioExecutionEndingRequest stream
              */
 
             /**
@@ -15823,12 +16852,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * ScenarioExecutionEndingRequest currentExecutionInfo.
+             * Holds the current scenario execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.ScenarioExecutionEndingRequest
              * @instance
              */
             ScenarioExecutionEndingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * ScenarioExecutionEndingRequest scenarioResult.
+             * @member {gauge.messages.IProtoScenarioResult|null|undefined} scenarioResult
+             * @memberof gauge.messages.ScenarioExecutionEndingRequest
+             * @instance
+             */
+            ScenarioExecutionEndingRequest.prototype.scenarioResult = null;
+
+            /**
+             * ScenarioExecutionEndingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ScenarioExecutionEndingRequest
+             * @instance
+             */
+            ScenarioExecutionEndingRequest.prototype.stream = 0;
 
             /**
              * Creates a new ScenarioExecutionEndingRequest instance using the specified properties.
@@ -15856,6 +16901,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult"))
+                    $root.gauge.messages.ProtoScenarioResult.encode(message.scenarioResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -15892,6 +16941,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.scenarioResult = $root.gauge.messages.ProtoScenarioResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -15933,6 +16988,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult")) {
+                    var error = $root.gauge.messages.ProtoScenarioResult.verify(message.scenarioResult);
+                    if (error)
+                        return "scenarioResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -15953,6 +17016,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.ScenarioExecutionEndingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.scenarioResult != null) {
+                    if (typeof object.scenarioResult !== "object")
+                        throw TypeError(".gauge.messages.ScenarioExecutionEndingRequest.scenarioResult: object expected");
+                    message.scenarioResult = $root.gauge.messages.ProtoScenarioResult.fromObject(object.scenarioResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -15969,10 +17039,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.scenarioResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.scenarioResult != null && message.hasOwnProperty("scenarioResult"))
+                    object.scenarioResult = $root.gauge.messages.ProtoScenarioResult.toObject(message.scenarioResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -15996,7 +17073,9 @@ $root.gauge = (function() {
              * Properties of a StepExecutionStartingRequest.
              * @memberof gauge.messages
              * @interface IStepExecutionStartingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] StepExecutionStartingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current step execution info.
+             * @property {gauge.messages.IProtoStepResult|null} [stepResult] Some fields will not be populated before execution.
+             * @property {number|null} [stream] StepExecutionStartingRequest stream
              */
 
             /**
@@ -16015,12 +17094,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * StepExecutionStartingRequest currentExecutionInfo.
+             * Holds the current step execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.StepExecutionStartingRequest
              * @instance
              */
             StepExecutionStartingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Some fields will not be populated before execution.
+             * @member {gauge.messages.IProtoStepResult|null|undefined} stepResult
+             * @memberof gauge.messages.StepExecutionStartingRequest
+             * @instance
+             */
+            StepExecutionStartingRequest.prototype.stepResult = null;
+
+            /**
+             * StepExecutionStartingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.StepExecutionStartingRequest
+             * @instance
+             */
+            StepExecutionStartingRequest.prototype.stream = 0;
 
             /**
              * Creates a new StepExecutionStartingRequest instance using the specified properties.
@@ -16048,6 +17143,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.stepResult != null && message.hasOwnProperty("stepResult"))
+                    $root.gauge.messages.ProtoStepResult.encode(message.stepResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -16084,6 +17183,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.stepResult = $root.gauge.messages.ProtoStepResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -16125,6 +17230,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.stepResult != null && message.hasOwnProperty("stepResult")) {
+                    var error = $root.gauge.messages.ProtoStepResult.verify(message.stepResult);
+                    if (error)
+                        return "stepResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -16145,6 +17258,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.StepExecutionStartingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.stepResult != null) {
+                    if (typeof object.stepResult !== "object")
+                        throw TypeError(".gauge.messages.StepExecutionStartingRequest.stepResult: object expected");
+                    message.stepResult = $root.gauge.messages.ProtoStepResult.fromObject(object.stepResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -16161,10 +17281,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.stepResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.stepResult != null && message.hasOwnProperty("stepResult"))
+                    object.stepResult = $root.gauge.messages.ProtoStepResult.toObject(message.stepResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -16188,7 +17315,9 @@ $root.gauge = (function() {
              * Properties of a StepExecutionEndingRequest.
              * @memberof gauge.messages
              * @interface IStepExecutionEndingRequest
-             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] StepExecutionEndingRequest currentExecutionInfo
+             * @property {gauge.messages.IExecutionInfo|null} [currentExecutionInfo] Holds the current step execution info.
+             * @property {gauge.messages.IProtoStepResult|null} [stepResult] Holds step result in step execution ending.
+             * @property {number|null} [stream] StepExecutionEndingRequest stream
              */
 
             /**
@@ -16207,12 +17336,28 @@ $root.gauge = (function() {
             }
 
             /**
-             * StepExecutionEndingRequest currentExecutionInfo.
+             * Holds the current step execution info.
              * @member {gauge.messages.IExecutionInfo|null|undefined} currentExecutionInfo
              * @memberof gauge.messages.StepExecutionEndingRequest
              * @instance
              */
             StepExecutionEndingRequest.prototype.currentExecutionInfo = null;
+
+            /**
+             * Holds step result in step execution ending.
+             * @member {gauge.messages.IProtoStepResult|null|undefined} stepResult
+             * @memberof gauge.messages.StepExecutionEndingRequest
+             * @instance
+             */
+            StepExecutionEndingRequest.prototype.stepResult = null;
+
+            /**
+             * StepExecutionEndingRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.StepExecutionEndingRequest
+             * @instance
+             */
+            StepExecutionEndingRequest.prototype.stream = 0;
 
             /**
              * Creates a new StepExecutionEndingRequest instance using the specified properties.
@@ -16240,6 +17385,10 @@ $root.gauge = (function() {
                     writer = $Writer.create();
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     $root.gauge.messages.ExecutionInfo.encode(message.currentExecutionInfo, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                if (message.stepResult != null && message.hasOwnProperty("stepResult"))
+                    $root.gauge.messages.ProtoStepResult.encode(message.stepResult, writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 3, wireType 0 =*/24).int32(message.stream);
                 return writer;
             };
 
@@ -16276,6 +17425,12 @@ $root.gauge = (function() {
                     switch (tag >>> 3) {
                     case 1:
                         message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.decode(reader, reader.uint32());
+                        break;
+                    case 2:
+                        message.stepResult = $root.gauge.messages.ProtoStepResult.decode(reader, reader.uint32());
+                        break;
+                    case 3:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -16317,6 +17472,14 @@ $root.gauge = (function() {
                     if (error)
                         return "currentExecutionInfo." + error;
                 }
+                if (message.stepResult != null && message.hasOwnProperty("stepResult")) {
+                    var error = $root.gauge.messages.ProtoStepResult.verify(message.stepResult);
+                    if (error)
+                        return "stepResult." + error;
+                }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -16337,6 +17500,13 @@ $root.gauge = (function() {
                         throw TypeError(".gauge.messages.StepExecutionEndingRequest.currentExecutionInfo: object expected");
                     message.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.fromObject(object.currentExecutionInfo);
                 }
+                if (object.stepResult != null) {
+                    if (typeof object.stepResult !== "object")
+                        throw TypeError(".gauge.messages.StepExecutionEndingRequest.stepResult: object expected");
+                    message.stepResult = $root.gauge.messages.ProtoStepResult.fromObject(object.stepResult);
+                }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -16353,10 +17523,17 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
-                if (options.defaults)
+                if (options.defaults) {
                     object.currentExecutionInfo = null;
+                    object.stepResult = null;
+                    object.stream = 0;
+                }
                 if (message.currentExecutionInfo != null && message.hasOwnProperty("currentExecutionInfo"))
                     object.currentExecutionInfo = $root.gauge.messages.ExecutionInfo.toObject(message.currentExecutionInfo, options);
+                if (message.stepResult != null && message.hasOwnProperty("stepResult"))
+                    object.stepResult = $root.gauge.messages.ProtoStepResult.toObject(message.stepResult, options);
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -16374,6 +17551,232 @@ $root.gauge = (function() {
             return StepExecutionEndingRequest;
         })();
 
+        messages.ExecutionArg = (function() {
+
+            /**
+             * Properties of an ExecutionArg.
+             * @memberof gauge.messages
+             * @interface IExecutionArg
+             * @property {string|null} [flagName] Holds the flag name passed from command line.
+             * @property {Array.<string>|null} [flagValue] Holds the flag value passed from command line.
+             */
+
+            /**
+             * Constructs a new ExecutionArg.
+             * @memberof gauge.messages
+             * @classdesc Contains command line arguments which passed by user during execution.
+             * @implements IExecutionArg
+             * @constructor
+             * @param {gauge.messages.IExecutionArg=} [properties] Properties to set
+             */
+            function ExecutionArg(properties) {
+                this.flagValue = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Holds the flag name passed from command line.
+             * @member {string} flagName
+             * @memberof gauge.messages.ExecutionArg
+             * @instance
+             */
+            ExecutionArg.prototype.flagName = "";
+
+            /**
+             * Holds the flag value passed from command line.
+             * @member {Array.<string>} flagValue
+             * @memberof gauge.messages.ExecutionArg
+             * @instance
+             */
+            ExecutionArg.prototype.flagValue = $util.emptyArray;
+
+            /**
+             * Creates a new ExecutionArg instance using the specified properties.
+             * @function create
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {gauge.messages.IExecutionArg=} [properties] Properties to set
+             * @returns {gauge.messages.ExecutionArg} ExecutionArg instance
+             */
+            ExecutionArg.create = function create(properties) {
+                return new ExecutionArg(properties);
+            };
+
+            /**
+             * Encodes the specified ExecutionArg message. Does not implicitly {@link gauge.messages.ExecutionArg.verify|verify} messages.
+             * @function encode
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {gauge.messages.IExecutionArg} message ExecutionArg message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ExecutionArg.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.flagName != null && message.hasOwnProperty("flagName"))
+                    writer.uint32(/* id 1, wireType 2 =*/10).string(message.flagName);
+                if (message.flagValue != null && message.flagValue.length)
+                    for (var i = 0; i < message.flagValue.length; ++i)
+                        writer.uint32(/* id 2, wireType 2 =*/18).string(message.flagValue[i]);
+                return writer;
+            };
+
+            /**
+             * Encodes the specified ExecutionArg message, length delimited. Does not implicitly {@link gauge.messages.ExecutionArg.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {gauge.messages.IExecutionArg} message ExecutionArg message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            ExecutionArg.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an ExecutionArg message from the specified reader or buffer.
+             * @function decode
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {gauge.messages.ExecutionArg} ExecutionArg
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ExecutionArg.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.ExecutionArg();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        message.flagName = reader.string();
+                        break;
+                    case 2:
+                        if (!(message.flagValue && message.flagValue.length))
+                            message.flagValue = [];
+                        message.flagValue.push(reader.string());
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an ExecutionArg message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {gauge.messages.ExecutionArg} ExecutionArg
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            ExecutionArg.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an ExecutionArg message.
+             * @function verify
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            ExecutionArg.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.flagName != null && message.hasOwnProperty("flagName"))
+                    if (!$util.isString(message.flagName))
+                        return "flagName: string expected";
+                if (message.flagValue != null && message.hasOwnProperty("flagValue")) {
+                    if (!Array.isArray(message.flagValue))
+                        return "flagValue: array expected";
+                    for (var i = 0; i < message.flagValue.length; ++i)
+                        if (!$util.isString(message.flagValue[i]))
+                            return "flagValue: string[] expected";
+                }
+                return null;
+            };
+
+            /**
+             * Creates an ExecutionArg message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {gauge.messages.ExecutionArg} ExecutionArg
+             */
+            ExecutionArg.fromObject = function fromObject(object) {
+                if (object instanceof $root.gauge.messages.ExecutionArg)
+                    return object;
+                var message = new $root.gauge.messages.ExecutionArg();
+                if (object.flagName != null)
+                    message.flagName = String(object.flagName);
+                if (object.flagValue) {
+                    if (!Array.isArray(object.flagValue))
+                        throw TypeError(".gauge.messages.ExecutionArg.flagValue: array expected");
+                    message.flagValue = [];
+                    for (var i = 0; i < object.flagValue.length; ++i)
+                        message.flagValue[i] = String(object.flagValue[i]);
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from an ExecutionArg message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof gauge.messages.ExecutionArg
+             * @static
+             * @param {gauge.messages.ExecutionArg} message ExecutionArg
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            ExecutionArg.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.flagValue = [];
+                if (options.defaults)
+                    object.flagName = "";
+                if (message.flagName != null && message.hasOwnProperty("flagName"))
+                    object.flagName = message.flagName;
+                if (message.flagValue && message.flagValue.length) {
+                    object.flagValue = [];
+                    for (var j = 0; j < message.flagValue.length; ++j)
+                        object.flagValue[j] = message.flagValue[j];
+                }
+                return object;
+            };
+
+            /**
+             * Converts this ExecutionArg to JSON.
+             * @function toJSON
+             * @memberof gauge.messages.ExecutionArg
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            ExecutionArg.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return ExecutionArg;
+        })();
+
         messages.ExecutionInfo = (function() {
 
             /**
@@ -16384,6 +17787,10 @@ $root.gauge = (function() {
              * @property {gauge.messages.IScenarioInfo|null} [currentScenario] Holds the information of the current Scenario. Valid in context of Scenario execution.
              * @property {gauge.messages.IStepInfo|null} [currentStep] Holds the information of the current Step. Valid in context of Step execution.
              * @property {string|null} [stacktrace] Stacktrace of the execution. Valid only if there is an error in execution.
+             * @property {string|null} [projectName] Holds the project name
+             * @property {Array.<gauge.messages.IExecutionArg>|null} [ExecutionArgs] Holds the command line arguments.
+             * @property {number|null} [numberOfExecutionStreams] Holds the number of running execution streams.
+             * @property {number|null} [runnerId] Holds the runner id for parallel execution.
              */
 
             /**
@@ -16395,6 +17802,7 @@ $root.gauge = (function() {
              * @param {gauge.messages.IExecutionInfo=} [properties] Properties to set
              */
             function ExecutionInfo(properties) {
+                this.ExecutionArgs = [];
                 if (properties)
                     for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                         if (properties[keys[i]] != null)
@@ -16434,6 +17842,38 @@ $root.gauge = (function() {
             ExecutionInfo.prototype.stacktrace = "";
 
             /**
+             * Holds the project name
+             * @member {string} projectName
+             * @memberof gauge.messages.ExecutionInfo
+             * @instance
+             */
+            ExecutionInfo.prototype.projectName = "";
+
+            /**
+             * Holds the command line arguments.
+             * @member {Array.<gauge.messages.IExecutionArg>} ExecutionArgs
+             * @memberof gauge.messages.ExecutionInfo
+             * @instance
+             */
+            ExecutionInfo.prototype.ExecutionArgs = $util.emptyArray;
+
+            /**
+             * Holds the number of running execution streams.
+             * @member {number} numberOfExecutionStreams
+             * @memberof gauge.messages.ExecutionInfo
+             * @instance
+             */
+            ExecutionInfo.prototype.numberOfExecutionStreams = 0;
+
+            /**
+             * Holds the runner id for parallel execution.
+             * @member {number} runnerId
+             * @memberof gauge.messages.ExecutionInfo
+             * @instance
+             */
+            ExecutionInfo.prototype.runnerId = 0;
+
+            /**
              * Creates a new ExecutionInfo instance using the specified properties.
              * @function create
              * @memberof gauge.messages.ExecutionInfo
@@ -16465,6 +17905,15 @@ $root.gauge = (function() {
                     $root.gauge.messages.StepInfo.encode(message.currentStep, writer.uint32(/* id 3, wireType 2 =*/26).fork()).ldelim();
                 if (message.stacktrace != null && message.hasOwnProperty("stacktrace"))
                     writer.uint32(/* id 4, wireType 2 =*/34).string(message.stacktrace);
+                if (message.projectName != null && message.hasOwnProperty("projectName"))
+                    writer.uint32(/* id 5, wireType 2 =*/42).string(message.projectName);
+                if (message.ExecutionArgs != null && message.ExecutionArgs.length)
+                    for (var i = 0; i < message.ExecutionArgs.length; ++i)
+                        $root.gauge.messages.ExecutionArg.encode(message.ExecutionArgs[i], writer.uint32(/* id 6, wireType 2 =*/50).fork()).ldelim();
+                if (message.numberOfExecutionStreams != null && message.hasOwnProperty("numberOfExecutionStreams"))
+                    writer.uint32(/* id 7, wireType 0 =*/56).int32(message.numberOfExecutionStreams);
+                if (message.runnerId != null && message.hasOwnProperty("runnerId"))
+                    writer.uint32(/* id 8, wireType 0 =*/64).int32(message.runnerId);
                 return writer;
             };
 
@@ -16510,6 +17959,20 @@ $root.gauge = (function() {
                         break;
                     case 4:
                         message.stacktrace = reader.string();
+                        break;
+                    case 5:
+                        message.projectName = reader.string();
+                        break;
+                    case 6:
+                        if (!(message.ExecutionArgs && message.ExecutionArgs.length))
+                            message.ExecutionArgs = [];
+                        message.ExecutionArgs.push($root.gauge.messages.ExecutionArg.decode(reader, reader.uint32()));
+                        break;
+                    case 7:
+                        message.numberOfExecutionStreams = reader.int32();
+                        break;
+                    case 8:
+                        message.runnerId = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -16564,6 +18027,24 @@ $root.gauge = (function() {
                 if (message.stacktrace != null && message.hasOwnProperty("stacktrace"))
                     if (!$util.isString(message.stacktrace))
                         return "stacktrace: string expected";
+                if (message.projectName != null && message.hasOwnProperty("projectName"))
+                    if (!$util.isString(message.projectName))
+                        return "projectName: string expected";
+                if (message.ExecutionArgs != null && message.hasOwnProperty("ExecutionArgs")) {
+                    if (!Array.isArray(message.ExecutionArgs))
+                        return "ExecutionArgs: array expected";
+                    for (var i = 0; i < message.ExecutionArgs.length; ++i) {
+                        var error = $root.gauge.messages.ExecutionArg.verify(message.ExecutionArgs[i]);
+                        if (error)
+                            return "ExecutionArgs." + error;
+                    }
+                }
+                if (message.numberOfExecutionStreams != null && message.hasOwnProperty("numberOfExecutionStreams"))
+                    if (!$util.isInteger(message.numberOfExecutionStreams))
+                        return "numberOfExecutionStreams: integer expected";
+                if (message.runnerId != null && message.hasOwnProperty("runnerId"))
+                    if (!$util.isInteger(message.runnerId))
+                        return "runnerId: integer expected";
                 return null;
             };
 
@@ -16596,6 +18077,22 @@ $root.gauge = (function() {
                 }
                 if (object.stacktrace != null)
                     message.stacktrace = String(object.stacktrace);
+                if (object.projectName != null)
+                    message.projectName = String(object.projectName);
+                if (object.ExecutionArgs) {
+                    if (!Array.isArray(object.ExecutionArgs))
+                        throw TypeError(".gauge.messages.ExecutionInfo.ExecutionArgs: array expected");
+                    message.ExecutionArgs = [];
+                    for (var i = 0; i < object.ExecutionArgs.length; ++i) {
+                        if (typeof object.ExecutionArgs[i] !== "object")
+                            throw TypeError(".gauge.messages.ExecutionInfo.ExecutionArgs: object expected");
+                        message.ExecutionArgs[i] = $root.gauge.messages.ExecutionArg.fromObject(object.ExecutionArgs[i]);
+                    }
+                }
+                if (object.numberOfExecutionStreams != null)
+                    message.numberOfExecutionStreams = object.numberOfExecutionStreams | 0;
+                if (object.runnerId != null)
+                    message.runnerId = object.runnerId | 0;
                 return message;
             };
 
@@ -16612,11 +18109,16 @@ $root.gauge = (function() {
                 if (!options)
                     options = {};
                 var object = {};
+                if (options.arrays || options.defaults)
+                    object.ExecutionArgs = [];
                 if (options.defaults) {
                     object.currentSpec = null;
                     object.currentScenario = null;
                     object.currentStep = null;
                     object.stacktrace = "";
+                    object.projectName = "";
+                    object.numberOfExecutionStreams = 0;
+                    object.runnerId = 0;
                 }
                 if (message.currentSpec != null && message.hasOwnProperty("currentSpec"))
                     object.currentSpec = $root.gauge.messages.SpecInfo.toObject(message.currentSpec, options);
@@ -16626,6 +18128,17 @@ $root.gauge = (function() {
                     object.currentStep = $root.gauge.messages.StepInfo.toObject(message.currentStep, options);
                 if (message.stacktrace != null && message.hasOwnProperty("stacktrace"))
                     object.stacktrace = message.stacktrace;
+                if (message.projectName != null && message.hasOwnProperty("projectName"))
+                    object.projectName = message.projectName;
+                if (message.ExecutionArgs && message.ExecutionArgs.length) {
+                    object.ExecutionArgs = [];
+                    for (var j = 0; j < message.ExecutionArgs.length; ++j)
+                        object.ExecutionArgs[j] = $root.gauge.messages.ExecutionArg.toObject(message.ExecutionArgs[j], options);
+                }
+                if (message.numberOfExecutionStreams != null && message.hasOwnProperty("numberOfExecutionStreams"))
+                    object.numberOfExecutionStreams = message.numberOfExecutionStreams;
+                if (message.runnerId != null && message.hasOwnProperty("runnerId"))
+                    object.runnerId = message.runnerId;
                 return object;
             };
 
@@ -17432,6 +18945,7 @@ $root.gauge = (function() {
              * @property {string|null} [parsedStepText] The paramters are replaced with placeholders.
              * @property {boolean|null} [scenarioFailing] Flag to indicate if the execution of the Scenario, containing the current Step, failed.
              * @property {Array.<gauge.messages.IParameter>|null} [parameters] Collection of parameters applicable to the current Step.
+             * @property {number|null} [stream] ExecuteStepRequest stream
              */
 
             /**
@@ -17483,6 +18997,14 @@ $root.gauge = (function() {
             ExecuteStepRequest.prototype.parameters = $util.emptyArray;
 
             /**
+             * ExecuteStepRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ExecuteStepRequest
+             * @instance
+             */
+            ExecuteStepRequest.prototype.stream = 0;
+
+            /**
              * Creates a new ExecuteStepRequest instance using the specified properties.
              * @function create
              * @memberof gauge.messages.ExecuteStepRequest
@@ -17515,6 +19037,8 @@ $root.gauge = (function() {
                 if (message.parameters != null && message.parameters.length)
                     for (var i = 0; i < message.parameters.length; ++i)
                         $root.gauge.messages.Parameter.encode(message.parameters[i], writer.uint32(/* id 4, wireType 2 =*/34).fork()).ldelim();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 5, wireType 0 =*/40).int32(message.stream);
                 return writer;
             };
 
@@ -17562,6 +19086,9 @@ $root.gauge = (function() {
                         if (!(message.parameters && message.parameters.length))
                             message.parameters = [];
                         message.parameters.push($root.gauge.messages.Parameter.decode(reader, reader.uint32()));
+                        break;
+                    case 5:
+                        message.stream = reader.int32();
                         break;
                     default:
                         reader.skipType(tag & 7);
@@ -17616,6 +19143,9 @@ $root.gauge = (function() {
                             return "parameters." + error;
                     }
                 }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -17647,6 +19177,8 @@ $root.gauge = (function() {
                         message.parameters[i] = $root.gauge.messages.Parameter.fromObject(object.parameters[i]);
                     }
                 }
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
                 return message;
             };
 
@@ -17669,6 +19201,7 @@ $root.gauge = (function() {
                     object.actualStepText = "";
                     object.parsedStepText = "";
                     object.scenarioFailing = false;
+                    object.stream = 0;
                 }
                 if (message.actualStepText != null && message.hasOwnProperty("actualStepText"))
                     object.actualStepText = message.actualStepText;
@@ -17681,6 +19214,8 @@ $root.gauge = (function() {
                     for (var j = 0; j < message.parameters.length; ++j)
                         object.parameters[j] = $root.gauge.messages.Parameter.toObject(message.parameters[j], options);
                 }
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
                 return object;
             };
 
@@ -18969,6 +20504,7 @@ $root.gauge = (function() {
              * Properties of a ScenarioDataStoreInitRequest.
              * @memberof gauge.messages
              * @interface IScenarioDataStoreInitRequest
+             * @property {number|null} [stream] ScenarioDataStoreInitRequest stream
              */
 
             /**
@@ -18985,6 +20521,14 @@ $root.gauge = (function() {
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
+
+            /**
+             * ScenarioDataStoreInitRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.ScenarioDataStoreInitRequest
+             * @instance
+             */
+            ScenarioDataStoreInitRequest.prototype.stream = 0;
 
             /**
              * Creates a new ScenarioDataStoreInitRequest instance using the specified properties.
@@ -19010,6 +20554,8 @@ $root.gauge = (function() {
             ScenarioDataStoreInitRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.stream);
                 return writer;
             };
 
@@ -19044,6 +20590,9 @@ $root.gauge = (function() {
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
+                    case 1:
+                        message.stream = reader.int32();
+                        break;
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -19079,6 +20628,9 @@ $root.gauge = (function() {
             ScenarioDataStoreInitRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -19093,7 +20645,10 @@ $root.gauge = (function() {
             ScenarioDataStoreInitRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.gauge.messages.ScenarioDataStoreInitRequest)
                     return object;
-                return new $root.gauge.messages.ScenarioDataStoreInitRequest();
+                var message = new $root.gauge.messages.ScenarioDataStoreInitRequest();
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
+                return message;
             };
 
             /**
@@ -19105,8 +20660,15 @@ $root.gauge = (function() {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            ScenarioDataStoreInitRequest.toObject = function toObject() {
-                return {};
+            ScenarioDataStoreInitRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.stream = 0;
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
+                return object;
             };
 
             /**
@@ -19129,6 +20691,7 @@ $root.gauge = (function() {
              * Properties of a SpecDataStoreInitRequest.
              * @memberof gauge.messages
              * @interface ISpecDataStoreInitRequest
+             * @property {number|null} [stream] SpecDataStoreInitRequest stream
              */
 
             /**
@@ -19145,6 +20708,14 @@ $root.gauge = (function() {
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
+
+            /**
+             * SpecDataStoreInitRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.SpecDataStoreInitRequest
+             * @instance
+             */
+            SpecDataStoreInitRequest.prototype.stream = 0;
 
             /**
              * Creates a new SpecDataStoreInitRequest instance using the specified properties.
@@ -19170,6 +20741,8 @@ $root.gauge = (function() {
             SpecDataStoreInitRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.stream);
                 return writer;
             };
 
@@ -19204,6 +20777,9 @@ $root.gauge = (function() {
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
+                    case 1:
+                        message.stream = reader.int32();
+                        break;
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -19239,6 +20815,9 @@ $root.gauge = (function() {
             SpecDataStoreInitRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -19253,7 +20832,10 @@ $root.gauge = (function() {
             SpecDataStoreInitRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.gauge.messages.SpecDataStoreInitRequest)
                     return object;
-                return new $root.gauge.messages.SpecDataStoreInitRequest();
+                var message = new $root.gauge.messages.SpecDataStoreInitRequest();
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
+                return message;
             };
 
             /**
@@ -19265,8 +20847,15 @@ $root.gauge = (function() {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SpecDataStoreInitRequest.toObject = function toObject() {
-                return {};
+            SpecDataStoreInitRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.stream = 0;
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
+                return object;
             };
 
             /**
@@ -19289,6 +20878,7 @@ $root.gauge = (function() {
              * Properties of a SuiteDataStoreInitRequest.
              * @memberof gauge.messages
              * @interface ISuiteDataStoreInitRequest
+             * @property {number|null} [stream] SuiteDataStoreInitRequest stream
              */
 
             /**
@@ -19305,6 +20895,14 @@ $root.gauge = (function() {
                         if (properties[keys[i]] != null)
                             this[keys[i]] = properties[keys[i]];
             }
+
+            /**
+             * SuiteDataStoreInitRequest stream.
+             * @member {number} stream
+             * @memberof gauge.messages.SuiteDataStoreInitRequest
+             * @instance
+             */
+            SuiteDataStoreInitRequest.prototype.stream = 0;
 
             /**
              * Creates a new SuiteDataStoreInitRequest instance using the specified properties.
@@ -19330,6 +20928,8 @@ $root.gauge = (function() {
             SuiteDataStoreInitRequest.encode = function encode(message, writer) {
                 if (!writer)
                     writer = $Writer.create();
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    writer.uint32(/* id 1, wireType 0 =*/8).int32(message.stream);
                 return writer;
             };
 
@@ -19364,6 +20964,9 @@ $root.gauge = (function() {
                 while (reader.pos < end) {
                     var tag = reader.uint32();
                     switch (tag >>> 3) {
+                    case 1:
+                        message.stream = reader.int32();
+                        break;
                     default:
                         reader.skipType(tag & 7);
                         break;
@@ -19399,6 +21002,9 @@ $root.gauge = (function() {
             SuiteDataStoreInitRequest.verify = function verify(message) {
                 if (typeof message !== "object" || message === null)
                     return "object expected";
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    if (!$util.isInteger(message.stream))
+                        return "stream: integer expected";
                 return null;
             };
 
@@ -19413,7 +21019,10 @@ $root.gauge = (function() {
             SuiteDataStoreInitRequest.fromObject = function fromObject(object) {
                 if (object instanceof $root.gauge.messages.SuiteDataStoreInitRequest)
                     return object;
-                return new $root.gauge.messages.SuiteDataStoreInitRequest();
+                var message = new $root.gauge.messages.SuiteDataStoreInitRequest();
+                if (object.stream != null)
+                    message.stream = object.stream | 0;
+                return message;
             };
 
             /**
@@ -19425,8 +21034,15 @@ $root.gauge = (function() {
              * @param {$protobuf.IConversionOptions} [options] Conversion options
              * @returns {Object.<string,*>} Plain object
              */
-            SuiteDataStoreInitRequest.toObject = function toObject() {
-                return {};
+            SuiteDataStoreInitRequest.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.defaults)
+                    object.stream = 0;
+                if (message.stream != null && message.hasOwnProperty("stream"))
+                    object.stream = message.stream;
+                return object;
             };
 
             /**
@@ -23678,6 +25294,610 @@ $root.gauge = (function() {
             return KeepAlive;
         })();
 
+        messages.SpecDetails = (function() {
+
+            /**
+             * Properties of a SpecDetails.
+             * @memberof gauge.messages
+             * @interface ISpecDetails
+             * @property {Array.<gauge.messages.SpecDetails.ISpecDetail>|null} [details] Holds a collection of Spec details.
+             */
+
+            /**
+             * Constructs a new SpecDetails.
+             * @memberof gauge.messages
+             * @classdesc Represents a SpecDetails.
+             * @implements ISpecDetails
+             * @constructor
+             * @param {gauge.messages.ISpecDetails=} [properties] Properties to set
+             */
+            function SpecDetails(properties) {
+                this.details = [];
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Holds a collection of Spec details.
+             * @member {Array.<gauge.messages.SpecDetails.ISpecDetail>} details
+             * @memberof gauge.messages.SpecDetails
+             * @instance
+             */
+            SpecDetails.prototype.details = $util.emptyArray;
+
+            /**
+             * Creates a new SpecDetails instance using the specified properties.
+             * @function create
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {gauge.messages.ISpecDetails=} [properties] Properties to set
+             * @returns {gauge.messages.SpecDetails} SpecDetails instance
+             */
+            SpecDetails.create = function create(properties) {
+                return new SpecDetails(properties);
+            };
+
+            /**
+             * Encodes the specified SpecDetails message. Does not implicitly {@link gauge.messages.SpecDetails.verify|verify} messages.
+             * @function encode
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {gauge.messages.ISpecDetails} message SpecDetails message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SpecDetails.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                if (message.details != null && message.details.length)
+                    for (var i = 0; i < message.details.length; ++i)
+                        $root.gauge.messages.SpecDetails.SpecDetail.encode(message.details[i], writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified SpecDetails message, length delimited. Does not implicitly {@link gauge.messages.SpecDetails.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {gauge.messages.ISpecDetails} message SpecDetails message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            SpecDetails.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes a SpecDetails message from the specified reader or buffer.
+             * @function decode
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {gauge.messages.SpecDetails} SpecDetails
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SpecDetails.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.SpecDetails();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    case 1:
+                        if (!(message.details && message.details.length))
+                            message.details = [];
+                        message.details.push($root.gauge.messages.SpecDetails.SpecDetail.decode(reader, reader.uint32()));
+                        break;
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes a SpecDetails message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {gauge.messages.SpecDetails} SpecDetails
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            SpecDetails.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies a SpecDetails message.
+             * @function verify
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            SpecDetails.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                if (message.details != null && message.hasOwnProperty("details")) {
+                    if (!Array.isArray(message.details))
+                        return "details: array expected";
+                    for (var i = 0; i < message.details.length; ++i) {
+                        var error = $root.gauge.messages.SpecDetails.SpecDetail.verify(message.details[i]);
+                        if (error)
+                            return "details." + error;
+                    }
+                }
+                return null;
+            };
+
+            /**
+             * Creates a SpecDetails message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {gauge.messages.SpecDetails} SpecDetails
+             */
+            SpecDetails.fromObject = function fromObject(object) {
+                if (object instanceof $root.gauge.messages.SpecDetails)
+                    return object;
+                var message = new $root.gauge.messages.SpecDetails();
+                if (object.details) {
+                    if (!Array.isArray(object.details))
+                        throw TypeError(".gauge.messages.SpecDetails.details: array expected");
+                    message.details = [];
+                    for (var i = 0; i < object.details.length; ++i) {
+                        if (typeof object.details[i] !== "object")
+                            throw TypeError(".gauge.messages.SpecDetails.details: object expected");
+                        message.details[i] = $root.gauge.messages.SpecDetails.SpecDetail.fromObject(object.details[i]);
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Creates a plain object from a SpecDetails message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof gauge.messages.SpecDetails
+             * @static
+             * @param {gauge.messages.SpecDetails} message SpecDetails
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            SpecDetails.toObject = function toObject(message, options) {
+                if (!options)
+                    options = {};
+                var object = {};
+                if (options.arrays || options.defaults)
+                    object.details = [];
+                if (message.details && message.details.length) {
+                    object.details = [];
+                    for (var j = 0; j < message.details.length; ++j)
+                        object.details[j] = $root.gauge.messages.SpecDetails.SpecDetail.toObject(message.details[j], options);
+                }
+                return object;
+            };
+
+            /**
+             * Converts this SpecDetails to JSON.
+             * @function toJSON
+             * @memberof gauge.messages.SpecDetails
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            SpecDetails.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            SpecDetails.SpecDetail = (function() {
+
+                /**
+                 * Properties of a SpecDetail.
+                 * @memberof gauge.messages.SpecDetails
+                 * @interface ISpecDetail
+                 * @property {gauge.messages.IProtoSpec|null} [spec] Holds a collection of Specs that are defined in the project.
+                 * @property {Array.<gauge.messages.IError>|null} [parseErrors] Holds a collection of parse errors present in the above spec.
+                 */
+
+                /**
+                 * Constructs a new SpecDetail.
+                 * @memberof gauge.messages.SpecDetails
+                 * @classdesc Represents a SpecDetail.
+                 * @implements ISpecDetail
+                 * @constructor
+                 * @param {gauge.messages.SpecDetails.ISpecDetail=} [properties] Properties to set
+                 */
+                function SpecDetail(properties) {
+                    this.parseErrors = [];
+                    if (properties)
+                        for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                            if (properties[keys[i]] != null)
+                                this[keys[i]] = properties[keys[i]];
+                }
+
+                /**
+                 * Holds a collection of Specs that are defined in the project.
+                 * @member {gauge.messages.IProtoSpec|null|undefined} spec
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @instance
+                 */
+                SpecDetail.prototype.spec = null;
+
+                /**
+                 * Holds a collection of parse errors present in the above spec.
+                 * @member {Array.<gauge.messages.IError>} parseErrors
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @instance
+                 */
+                SpecDetail.prototype.parseErrors = $util.emptyArray;
+
+                /**
+                 * Creates a new SpecDetail instance using the specified properties.
+                 * @function create
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {gauge.messages.SpecDetails.ISpecDetail=} [properties] Properties to set
+                 * @returns {gauge.messages.SpecDetails.SpecDetail} SpecDetail instance
+                 */
+                SpecDetail.create = function create(properties) {
+                    return new SpecDetail(properties);
+                };
+
+                /**
+                 * Encodes the specified SpecDetail message. Does not implicitly {@link gauge.messages.SpecDetails.SpecDetail.verify|verify} messages.
+                 * @function encode
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {gauge.messages.SpecDetails.ISpecDetail} message SpecDetail message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                SpecDetail.encode = function encode(message, writer) {
+                    if (!writer)
+                        writer = $Writer.create();
+                    if (message.spec != null && message.hasOwnProperty("spec"))
+                        $root.gauge.messages.ProtoSpec.encode(message.spec, writer.uint32(/* id 1, wireType 2 =*/10).fork()).ldelim();
+                    if (message.parseErrors != null && message.parseErrors.length)
+                        for (var i = 0; i < message.parseErrors.length; ++i)
+                            $root.gauge.messages.Error.encode(message.parseErrors[i], writer.uint32(/* id 2, wireType 2 =*/18).fork()).ldelim();
+                    return writer;
+                };
+
+                /**
+                 * Encodes the specified SpecDetail message, length delimited. Does not implicitly {@link gauge.messages.SpecDetails.SpecDetail.verify|verify} messages.
+                 * @function encodeDelimited
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {gauge.messages.SpecDetails.ISpecDetail} message SpecDetail message or plain object to encode
+                 * @param {$protobuf.Writer} [writer] Writer to encode to
+                 * @returns {$protobuf.Writer} Writer
+                 */
+                SpecDetail.encodeDelimited = function encodeDelimited(message, writer) {
+                    return this.encode(message, writer).ldelim();
+                };
+
+                /**
+                 * Decodes a SpecDetail message from the specified reader or buffer.
+                 * @function decode
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @param {number} [length] Message length if known beforehand
+                 * @returns {gauge.messages.SpecDetails.SpecDetail} SpecDetail
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                SpecDetail.decode = function decode(reader, length) {
+                    if (!(reader instanceof $Reader))
+                        reader = $Reader.create(reader);
+                    var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.SpecDetails.SpecDetail();
+                    while (reader.pos < end) {
+                        var tag = reader.uint32();
+                        switch (tag >>> 3) {
+                        case 1:
+                            message.spec = $root.gauge.messages.ProtoSpec.decode(reader, reader.uint32());
+                            break;
+                        case 2:
+                            if (!(message.parseErrors && message.parseErrors.length))
+                                message.parseErrors = [];
+                            message.parseErrors.push($root.gauge.messages.Error.decode(reader, reader.uint32()));
+                            break;
+                        default:
+                            reader.skipType(tag & 7);
+                            break;
+                        }
+                    }
+                    return message;
+                };
+
+                /**
+                 * Decodes a SpecDetail message from the specified reader or buffer, length delimited.
+                 * @function decodeDelimited
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+                 * @returns {gauge.messages.SpecDetails.SpecDetail} SpecDetail
+                 * @throws {Error} If the payload is not a reader or valid buffer
+                 * @throws {$protobuf.util.ProtocolError} If required fields are missing
+                 */
+                SpecDetail.decodeDelimited = function decodeDelimited(reader) {
+                    if (!(reader instanceof $Reader))
+                        reader = new $Reader(reader);
+                    return this.decode(reader, reader.uint32());
+                };
+
+                /**
+                 * Verifies a SpecDetail message.
+                 * @function verify
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {Object.<string,*>} message Plain object to verify
+                 * @returns {string|null} `null` if valid, otherwise the reason why it is not
+                 */
+                SpecDetail.verify = function verify(message) {
+                    if (typeof message !== "object" || message === null)
+                        return "object expected";
+                    if (message.spec != null && message.hasOwnProperty("spec")) {
+                        var error = $root.gauge.messages.ProtoSpec.verify(message.spec);
+                        if (error)
+                            return "spec." + error;
+                    }
+                    if (message.parseErrors != null && message.hasOwnProperty("parseErrors")) {
+                        if (!Array.isArray(message.parseErrors))
+                            return "parseErrors: array expected";
+                        for (var i = 0; i < message.parseErrors.length; ++i) {
+                            var error = $root.gauge.messages.Error.verify(message.parseErrors[i]);
+                            if (error)
+                                return "parseErrors." + error;
+                        }
+                    }
+                    return null;
+                };
+
+                /**
+                 * Creates a SpecDetail message from a plain object. Also converts values to their respective internal types.
+                 * @function fromObject
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {Object.<string,*>} object Plain object
+                 * @returns {gauge.messages.SpecDetails.SpecDetail} SpecDetail
+                 */
+                SpecDetail.fromObject = function fromObject(object) {
+                    if (object instanceof $root.gauge.messages.SpecDetails.SpecDetail)
+                        return object;
+                    var message = new $root.gauge.messages.SpecDetails.SpecDetail();
+                    if (object.spec != null) {
+                        if (typeof object.spec !== "object")
+                            throw TypeError(".gauge.messages.SpecDetails.SpecDetail.spec: object expected");
+                        message.spec = $root.gauge.messages.ProtoSpec.fromObject(object.spec);
+                    }
+                    if (object.parseErrors) {
+                        if (!Array.isArray(object.parseErrors))
+                            throw TypeError(".gauge.messages.SpecDetails.SpecDetail.parseErrors: array expected");
+                        message.parseErrors = [];
+                        for (var i = 0; i < object.parseErrors.length; ++i) {
+                            if (typeof object.parseErrors[i] !== "object")
+                                throw TypeError(".gauge.messages.SpecDetails.SpecDetail.parseErrors: object expected");
+                            message.parseErrors[i] = $root.gauge.messages.Error.fromObject(object.parseErrors[i]);
+                        }
+                    }
+                    return message;
+                };
+
+                /**
+                 * Creates a plain object from a SpecDetail message. Also converts values to other types if specified.
+                 * @function toObject
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @static
+                 * @param {gauge.messages.SpecDetails.SpecDetail} message SpecDetail
+                 * @param {$protobuf.IConversionOptions} [options] Conversion options
+                 * @returns {Object.<string,*>} Plain object
+                 */
+                SpecDetail.toObject = function toObject(message, options) {
+                    if (!options)
+                        options = {};
+                    var object = {};
+                    if (options.arrays || options.defaults)
+                        object.parseErrors = [];
+                    if (options.defaults)
+                        object.spec = null;
+                    if (message.spec != null && message.hasOwnProperty("spec"))
+                        object.spec = $root.gauge.messages.ProtoSpec.toObject(message.spec, options);
+                    if (message.parseErrors && message.parseErrors.length) {
+                        object.parseErrors = [];
+                        for (var j = 0; j < message.parseErrors.length; ++j)
+                            object.parseErrors[j] = $root.gauge.messages.Error.toObject(message.parseErrors[j], options);
+                    }
+                    return object;
+                };
+
+                /**
+                 * Converts this SpecDetail to JSON.
+                 * @function toJSON
+                 * @memberof gauge.messages.SpecDetails.SpecDetail
+                 * @instance
+                 * @returns {Object.<string,*>} JSON object
+                 */
+                SpecDetail.prototype.toJSON = function toJSON() {
+                    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+                };
+
+                return SpecDetail;
+            })();
+
+            return SpecDetails;
+        })();
+
+        messages.Empty = (function() {
+
+            /**
+             * Properties of an Empty.
+             * @memberof gauge.messages
+             * @interface IEmpty
+             */
+
+            /**
+             * Constructs a new Empty.
+             * @memberof gauge.messages
+             * @classdesc Represents an Empty.
+             * @implements IEmpty
+             * @constructor
+             * @param {gauge.messages.IEmpty=} [properties] Properties to set
+             */
+            function Empty(properties) {
+                if (properties)
+                    for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                        if (properties[keys[i]] != null)
+                            this[keys[i]] = properties[keys[i]];
+            }
+
+            /**
+             * Creates a new Empty instance using the specified properties.
+             * @function create
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {gauge.messages.IEmpty=} [properties] Properties to set
+             * @returns {gauge.messages.Empty} Empty instance
+             */
+            Empty.create = function create(properties) {
+                return new Empty(properties);
+            };
+
+            /**
+             * Encodes the specified Empty message. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
+             * @function encode
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {gauge.messages.IEmpty} message Empty message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Empty.encode = function encode(message, writer) {
+                if (!writer)
+                    writer = $Writer.create();
+                return writer;
+            };
+
+            /**
+             * Encodes the specified Empty message, length delimited. Does not implicitly {@link gauge.messages.Empty.verify|verify} messages.
+             * @function encodeDelimited
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {gauge.messages.IEmpty} message Empty message or plain object to encode
+             * @param {$protobuf.Writer} [writer] Writer to encode to
+             * @returns {$protobuf.Writer} Writer
+             */
+            Empty.encodeDelimited = function encodeDelimited(message, writer) {
+                return this.encode(message, writer).ldelim();
+            };
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer.
+             * @function decode
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @param {number} [length] Message length if known beforehand
+             * @returns {gauge.messages.Empty} Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Empty.decode = function decode(reader, length) {
+                if (!(reader instanceof $Reader))
+                    reader = $Reader.create(reader);
+                var end = length === undefined ? reader.len : reader.pos + length, message = new $root.gauge.messages.Empty();
+                while (reader.pos < end) {
+                    var tag = reader.uint32();
+                    switch (tag >>> 3) {
+                    default:
+                        reader.skipType(tag & 7);
+                        break;
+                    }
+                }
+                return message;
+            };
+
+            /**
+             * Decodes an Empty message from the specified reader or buffer, length delimited.
+             * @function decodeDelimited
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+             * @returns {gauge.messages.Empty} Empty
+             * @throws {Error} If the payload is not a reader or valid buffer
+             * @throws {$protobuf.util.ProtocolError} If required fields are missing
+             */
+            Empty.decodeDelimited = function decodeDelimited(reader) {
+                if (!(reader instanceof $Reader))
+                    reader = new $Reader(reader);
+                return this.decode(reader, reader.uint32());
+            };
+
+            /**
+             * Verifies an Empty message.
+             * @function verify
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {Object.<string,*>} message Plain object to verify
+             * @returns {string|null} `null` if valid, otherwise the reason why it is not
+             */
+            Empty.verify = function verify(message) {
+                if (typeof message !== "object" || message === null)
+                    return "object expected";
+                return null;
+            };
+
+            /**
+             * Creates an Empty message from a plain object. Also converts values to their respective internal types.
+             * @function fromObject
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {Object.<string,*>} object Plain object
+             * @returns {gauge.messages.Empty} Empty
+             */
+            Empty.fromObject = function fromObject(object) {
+                if (object instanceof $root.gauge.messages.Empty)
+                    return object;
+                return new $root.gauge.messages.Empty();
+            };
+
+            /**
+             * Creates a plain object from an Empty message. Also converts values to other types if specified.
+             * @function toObject
+             * @memberof gauge.messages.Empty
+             * @static
+             * @param {gauge.messages.Empty} message Empty
+             * @param {$protobuf.IConversionOptions} [options] Conversion options
+             * @returns {Object.<string,*>} Plain object
+             */
+            Empty.toObject = function toObject() {
+                return {};
+            };
+
+            /**
+             * Converts this Empty to JSON.
+             * @function toJSON
+             * @memberof gauge.messages.Empty
+             * @instance
+             * @returns {Object.<string,*>} JSON object
+             */
+            Empty.prototype.toJSON = function toJSON() {
+                return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+            };
+
+            return Empty;
+        })();
+
         messages.Message = (function() {
 
             /**
@@ -25103,6 +27323,1233 @@ $root.gauge = (function() {
             })();
 
             return Message;
+        })();
+
+        messages.Runner = (function() {
+
+            /**
+             * Constructs a new Runner service.
+             * @memberof gauge.messages
+             * @classdesc Represents a Runner
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function Runner(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (Runner.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = Runner;
+
+            /**
+             * Creates new Runner service using the specified rpc implementation.
+             * @function create
+             * @memberof gauge.messages.Runner
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {Runner} RPC service. Useful where requests and/or responses are streamed.
+             */
+            Runner.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#validateStep}.
+             * @memberof gauge.messages.Runner
+             * @typedef ValidateStepCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.StepValidateResponse} [response] StepValidateResponse
+             */
+
+            /**
+             * Calls ValidateStep.
+             * @function validateStep
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepValidateRequest} request StepValidateRequest message or plain object
+             * @param {gauge.messages.Runner.ValidateStepCallback} callback Node-style callback called with the error, if any, and StepValidateResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.validateStep = function validateStep(request, callback) {
+                return this.rpcCall(validateStep, $root.gauge.messages.StepValidateRequest, $root.gauge.messages.StepValidateResponse, request, callback);
+            }, "name", { value: "ValidateStep" });
+
+            /**
+             * Calls ValidateStep.
+             * @function validateStep
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepValidateRequest} request StepValidateRequest message or plain object
+             * @returns {Promise<gauge.messages.StepValidateResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeSuiteDataStore}.
+             * @memberof gauge.messages.Runner
+             * @typedef InitializeSuiteDataStoreCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls InitializeSuiteDataStore.
+             * @function initializeSuiteDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISuiteDataStoreInitRequest} request SuiteDataStoreInitRequest message or plain object
+             * @param {gauge.messages.Runner.InitializeSuiteDataStoreCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.initializeSuiteDataStore = function initializeSuiteDataStore(request, callback) {
+                return this.rpcCall(initializeSuiteDataStore, $root.gauge.messages.SuiteDataStoreInitRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "InitializeSuiteDataStore" });
+
+            /**
+             * Calls InitializeSuiteDataStore.
+             * @function initializeSuiteDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISuiteDataStoreInitRequest} request SuiteDataStoreInitRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef StartExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls StartExecution.
+             * @function startExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecutionStartingRequest} request ExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Runner.StartExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.startExecution = function startExecution(request, callback) {
+                return this.rpcCall(startExecution, $root.gauge.messages.ExecutionStartingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "StartExecution" });
+
+            /**
+             * Calls StartExecution.
+             * @function startExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecutionStartingRequest} request ExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeSpecDataStore}.
+             * @memberof gauge.messages.Runner
+             * @typedef InitializeSpecDataStoreCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls InitializeSpecDataStore.
+             * @function initializeSpecDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecDataStoreInitRequest} request SpecDataStoreInitRequest message or plain object
+             * @param {gauge.messages.Runner.InitializeSpecDataStoreCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.initializeSpecDataStore = function initializeSpecDataStore(request, callback) {
+                return this.rpcCall(initializeSpecDataStore, $root.gauge.messages.SpecDataStoreInitRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "InitializeSpecDataStore" });
+
+            /**
+             * Calls InitializeSpecDataStore.
+             * @function initializeSpecDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecDataStoreInitRequest} request SpecDataStoreInitRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startSpecExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef StartSpecExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls StartSpecExecution.
+             * @function startSpecExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecExecutionStartingRequest} request SpecExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Runner.StartSpecExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.startSpecExecution = function startSpecExecution(request, callback) {
+                return this.rpcCall(startSpecExecution, $root.gauge.messages.SpecExecutionStartingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "StartSpecExecution" });
+
+            /**
+             * Calls StartSpecExecution.
+             * @function startSpecExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecExecutionStartingRequest} request SpecExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#initializeScenarioDataStore}.
+             * @memberof gauge.messages.Runner
+             * @typedef InitializeScenarioDataStoreCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls InitializeScenarioDataStore.
+             * @function initializeScenarioDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioDataStoreInitRequest} request ScenarioDataStoreInitRequest message or plain object
+             * @param {gauge.messages.Runner.InitializeScenarioDataStoreCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.initializeScenarioDataStore = function initializeScenarioDataStore(request, callback) {
+                return this.rpcCall(initializeScenarioDataStore, $root.gauge.messages.ScenarioDataStoreInitRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "InitializeScenarioDataStore" });
+
+            /**
+             * Calls InitializeScenarioDataStore.
+             * @function initializeScenarioDataStore
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioDataStoreInitRequest} request ScenarioDataStoreInitRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startScenarioExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef StartScenarioExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls StartScenarioExecution.
+             * @function startScenarioExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionStartingRequest} request ScenarioExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Runner.StartScenarioExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.startScenarioExecution = function startScenarioExecution(request, callback) {
+                return this.rpcCall(startScenarioExecution, $root.gauge.messages.ScenarioExecutionStartingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "StartScenarioExecution" });
+
+            /**
+             * Calls StartScenarioExecution.
+             * @function startScenarioExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionStartingRequest} request ScenarioExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#startStepExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef StartStepExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls StartStepExecution.
+             * @function startStepExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepExecutionStartingRequest} request StepExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Runner.StartStepExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.startStepExecution = function startStepExecution(request, callback) {
+                return this.rpcCall(startStepExecution, $root.gauge.messages.StepExecutionStartingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "StartStepExecution" });
+
+            /**
+             * Calls StartStepExecution.
+             * @function startStepExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepExecutionStartingRequest} request StepExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#executeStep}.
+             * @memberof gauge.messages.Runner
+             * @typedef ExecuteStepCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls ExecuteStep.
+             * @function executeStep
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecuteStepRequest} request ExecuteStepRequest message or plain object
+             * @param {gauge.messages.Runner.ExecuteStepCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.executeStep = function executeStep(request, callback) {
+                return this.rpcCall(executeStep, $root.gauge.messages.ExecuteStepRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "ExecuteStep" });
+
+            /**
+             * Calls ExecuteStep.
+             * @function executeStep
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecuteStepRequest} request ExecuteStepRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishStepExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef FinishStepExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls FinishStepExecution.
+             * @function finishStepExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepExecutionEndingRequest} request StepExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Runner.FinishStepExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.finishStepExecution = function finishStepExecution(request, callback) {
+                return this.rpcCall(finishStepExecution, $root.gauge.messages.StepExecutionEndingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "FinishStepExecution" });
+
+            /**
+             * Calls FinishStepExecution.
+             * @function finishStepExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepExecutionEndingRequest} request StepExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishScenarioExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef FinishScenarioExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls FinishScenarioExecution.
+             * @function finishScenarioExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionEndingRequest} request ScenarioExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Runner.FinishScenarioExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.finishScenarioExecution = function finishScenarioExecution(request, callback) {
+                return this.rpcCall(finishScenarioExecution, $root.gauge.messages.ScenarioExecutionEndingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "FinishScenarioExecution" });
+
+            /**
+             * Calls FinishScenarioExecution.
+             * @function finishScenarioExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionEndingRequest} request ScenarioExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishSpecExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef FinishSpecExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls FinishSpecExecution.
+             * @function finishSpecExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecExecutionEndingRequest} request SpecExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Runner.FinishSpecExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.finishSpecExecution = function finishSpecExecution(request, callback) {
+                return this.rpcCall(finishSpecExecution, $root.gauge.messages.SpecExecutionEndingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "FinishSpecExecution" });
+
+            /**
+             * Calls FinishSpecExecution.
+             * @function finishSpecExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ISpecExecutionEndingRequest} request SpecExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#finishExecution}.
+             * @memberof gauge.messages.Runner
+             * @typedef FinishExecutionCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ExecutionStatusResponse} [response] ExecutionStatusResponse
+             */
+
+            /**
+             * Calls FinishExecution.
+             * @function finishExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecutionEndingRequest} request ExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Runner.FinishExecutionCallback} callback Node-style callback called with the error, if any, and ExecutionStatusResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.finishExecution = function finishExecution(request, callback) {
+                return this.rpcCall(finishExecution, $root.gauge.messages.ExecutionEndingRequest, $root.gauge.messages.ExecutionStatusResponse, request, callback);
+            }, "name", { value: "FinishExecution" });
+
+            /**
+             * Calls FinishExecution.
+             * @function finishExecution
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IExecutionEndingRequest} request ExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.ExecutionStatusResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#cacheFile}.
+             * @memberof gauge.messages.Runner
+             * @typedef CacheFileCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls CacheFile.
+             * @function cacheFile
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ICacheFileRequest} request CacheFileRequest message or plain object
+             * @param {gauge.messages.Runner.CacheFileCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.cacheFile = function cacheFile(request, callback) {
+                return this.rpcCall(cacheFile, $root.gauge.messages.CacheFileRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "CacheFile" });
+
+            /**
+             * Calls CacheFile.
+             * @function cacheFile
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.ICacheFileRequest} request CacheFileRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepName}.
+             * @memberof gauge.messages.Runner
+             * @typedef GetStepNameCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.StepNameResponse} [response] StepNameResponse
+             */
+
+            /**
+             * Calls GetStepName.
+             * @function getStepName
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepNameRequest} request StepNameRequest message or plain object
+             * @param {gauge.messages.Runner.GetStepNameCallback} callback Node-style callback called with the error, if any, and StepNameResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.getStepName = function getStepName(request, callback) {
+                return this.rpcCall(getStepName, $root.gauge.messages.StepNameRequest, $root.gauge.messages.StepNameResponse, request, callback);
+            }, "name", { value: "GetStepName" });
+
+            /**
+             * Calls GetStepName.
+             * @function getStepName
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepNameRequest} request StepNameRequest message or plain object
+             * @returns {Promise<gauge.messages.StepNameResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getGlobPatterns}.
+             * @memberof gauge.messages.Runner
+             * @typedef GetGlobPatternsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ImplementationFileGlobPatternResponse} [response] ImplementationFileGlobPatternResponse
+             */
+
+            /**
+             * Calls GetGlobPatterns.
+             * @function getGlobPatterns
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IEmpty} request Empty message or plain object
+             * @param {gauge.messages.Runner.GetGlobPatternsCallback} callback Node-style callback called with the error, if any, and ImplementationFileGlobPatternResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.getGlobPatterns = function getGlobPatterns(request, callback) {
+                return this.rpcCall(getGlobPatterns, $root.gauge.messages.Empty, $root.gauge.messages.ImplementationFileGlobPatternResponse, request, callback);
+            }, "name", { value: "GetGlobPatterns" });
+
+            /**
+             * Calls GetGlobPatterns.
+             * @function getGlobPatterns
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IEmpty} request Empty message or plain object
+             * @returns {Promise<gauge.messages.ImplementationFileGlobPatternResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepNames}.
+             * @memberof gauge.messages.Runner
+             * @typedef GetStepNamesCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.StepNamesResponse} [response] StepNamesResponse
+             */
+
+            /**
+             * Calls GetStepNames.
+             * @function getStepNames
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepNamesRequest} request StepNamesRequest message or plain object
+             * @param {gauge.messages.Runner.GetStepNamesCallback} callback Node-style callback called with the error, if any, and StepNamesResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.getStepNames = function getStepNames(request, callback) {
+                return this.rpcCall(getStepNames, $root.gauge.messages.StepNamesRequest, $root.gauge.messages.StepNamesResponse, request, callback);
+            }, "name", { value: "GetStepNames" });
+
+            /**
+             * Calls GetStepNames.
+             * @function getStepNames
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepNamesRequest} request StepNamesRequest message or plain object
+             * @returns {Promise<gauge.messages.StepNamesResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getStepPositions}.
+             * @memberof gauge.messages.Runner
+             * @typedef GetStepPositionsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.StepPositionsResponse} [response] StepPositionsResponse
+             */
+
+            /**
+             * Calls GetStepPositions.
+             * @function getStepPositions
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepPositionsRequest} request StepPositionsRequest message or plain object
+             * @param {gauge.messages.Runner.GetStepPositionsCallback} callback Node-style callback called with the error, if any, and StepPositionsResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.getStepPositions = function getStepPositions(request, callback) {
+                return this.rpcCall(getStepPositions, $root.gauge.messages.StepPositionsRequest, $root.gauge.messages.StepPositionsResponse, request, callback);
+            }, "name", { value: "GetStepPositions" });
+
+            /**
+             * Calls GetStepPositions.
+             * @function getStepPositions
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStepPositionsRequest} request StepPositionsRequest message or plain object
+             * @returns {Promise<gauge.messages.StepPositionsResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#getImplementationFiles}.
+             * @memberof gauge.messages.Runner
+             * @typedef GetImplementationFilesCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.ImplementationFileListResponse} [response] ImplementationFileListResponse
+             */
+
+            /**
+             * Calls GetImplementationFiles.
+             * @function getImplementationFiles
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IEmpty} request Empty message or plain object
+             * @param {gauge.messages.Runner.GetImplementationFilesCallback} callback Node-style callback called with the error, if any, and ImplementationFileListResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.getImplementationFiles = function getImplementationFiles(request, callback) {
+                return this.rpcCall(getImplementationFiles, $root.gauge.messages.Empty, $root.gauge.messages.ImplementationFileListResponse, request, callback);
+            }, "name", { value: "GetImplementationFiles" });
+
+            /**
+             * Calls GetImplementationFiles.
+             * @function getImplementationFiles
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IEmpty} request Empty message or plain object
+             * @returns {Promise<gauge.messages.ImplementationFileListResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#implementStub}.
+             * @memberof gauge.messages.Runner
+             * @typedef ImplementStubCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.FileDiff} [response] FileDiff
+             */
+
+            /**
+             * Calls ImplementStub.
+             * @function implementStub
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStubImplementationCodeRequest} request StubImplementationCodeRequest message or plain object
+             * @param {gauge.messages.Runner.ImplementStubCallback} callback Node-style callback called with the error, if any, and FileDiff
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.implementStub = function implementStub(request, callback) {
+                return this.rpcCall(implementStub, $root.gauge.messages.StubImplementationCodeRequest, $root.gauge.messages.FileDiff, request, callback);
+            }, "name", { value: "ImplementStub" });
+
+            /**
+             * Calls ImplementStub.
+             * @function implementStub
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IStubImplementationCodeRequest} request StubImplementationCodeRequest message or plain object
+             * @returns {Promise<gauge.messages.FileDiff>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#refactor}.
+             * @memberof gauge.messages.Runner
+             * @typedef RefactorCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.RefactorResponse} [response] RefactorResponse
+             */
+
+            /**
+             * Calls Refactor.
+             * @function refactor
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IRefactorRequest} request RefactorRequest message or plain object
+             * @param {gauge.messages.Runner.RefactorCallback} callback Node-style callback called with the error, if any, and RefactorResponse
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.refactor = function refactor(request, callback) {
+                return this.rpcCall(refactor, $root.gauge.messages.RefactorRequest, $root.gauge.messages.RefactorResponse, request, callback);
+            }, "name", { value: "Refactor" });
+
+            /**
+             * Calls Refactor.
+             * @function refactor
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IRefactorRequest} request RefactorRequest message or plain object
+             * @returns {Promise<gauge.messages.RefactorResponse>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Runner#kill}.
+             * @memberof gauge.messages.Runner
+             * @typedef KillCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @param {gauge.messages.Runner.KillCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Runner.prototype.kill = function kill(request, callback) {
+                return this.rpcCall(kill, $root.gauge.messages.KillProcessRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "Kill" });
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Runner
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            return Runner;
+        })();
+
+        messages.Reporter = (function() {
+
+            /**
+             * Constructs a new Reporter service.
+             * @memberof gauge.messages
+             * @classdesc Represents a Reporter
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function Reporter(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (Reporter.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = Reporter;
+
+            /**
+             * Creates new Reporter service using the specified rpc implementation.
+             * @function create
+             * @memberof gauge.messages.Reporter
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {Reporter} RPC service. Useful where requests and/or responses are streamed.
+             */
+            Reporter.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyExecutionStarting}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyExecutionStartingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyExecutionStarting.
+             * @function notifyExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IExecutionStartingRequest} request ExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyExecutionStartingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyExecutionStarting = function notifyExecutionStarting(request, callback) {
+                return this.rpcCall(notifyExecutionStarting, $root.gauge.messages.ExecutionStartingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyExecutionStarting" });
+
+            /**
+             * Calls NotifyExecutionStarting.
+             * @function notifyExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IExecutionStartingRequest} request ExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySpecExecutionStarting}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifySpecExecutionStartingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifySpecExecutionStarting.
+             * @function notifySpecExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISpecExecutionStartingRequest} request SpecExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifySpecExecutionStartingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifySpecExecutionStarting = function notifySpecExecutionStarting(request, callback) {
+                return this.rpcCall(notifySpecExecutionStarting, $root.gauge.messages.SpecExecutionStartingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifySpecExecutionStarting" });
+
+            /**
+             * Calls NotifySpecExecutionStarting.
+             * @function notifySpecExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISpecExecutionStartingRequest} request SpecExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyScenarioExecutionStarting}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyScenarioExecutionStartingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyScenarioExecutionStarting.
+             * @function notifyScenarioExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionStartingRequest} request ScenarioExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyScenarioExecutionStartingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyScenarioExecutionStarting = function notifyScenarioExecutionStarting(request, callback) {
+                return this.rpcCall(notifyScenarioExecutionStarting, $root.gauge.messages.ScenarioExecutionStartingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyScenarioExecutionStarting" });
+
+            /**
+             * Calls NotifyScenarioExecutionStarting.
+             * @function notifyScenarioExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionStartingRequest} request ScenarioExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyStepExecutionStarting}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyStepExecutionStartingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyStepExecutionStarting.
+             * @function notifyStepExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IStepExecutionStartingRequest} request StepExecutionStartingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyStepExecutionStartingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyStepExecutionStarting = function notifyStepExecutionStarting(request, callback) {
+                return this.rpcCall(notifyStepExecutionStarting, $root.gauge.messages.StepExecutionStartingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyStepExecutionStarting" });
+
+            /**
+             * Calls NotifyStepExecutionStarting.
+             * @function notifyStepExecutionStarting
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IStepExecutionStartingRequest} request StepExecutionStartingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyStepExecutionEnding}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyStepExecutionEndingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyStepExecutionEnding.
+             * @function notifyStepExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IStepExecutionEndingRequest} request StepExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyStepExecutionEndingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyStepExecutionEnding = function notifyStepExecutionEnding(request, callback) {
+                return this.rpcCall(notifyStepExecutionEnding, $root.gauge.messages.StepExecutionEndingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyStepExecutionEnding" });
+
+            /**
+             * Calls NotifyStepExecutionEnding.
+             * @function notifyStepExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IStepExecutionEndingRequest} request StepExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyScenarioExecutionEnding}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyScenarioExecutionEndingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyScenarioExecutionEnding.
+             * @function notifyScenarioExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionEndingRequest} request ScenarioExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyScenarioExecutionEndingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyScenarioExecutionEnding = function notifyScenarioExecutionEnding(request, callback) {
+                return this.rpcCall(notifyScenarioExecutionEnding, $root.gauge.messages.ScenarioExecutionEndingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyScenarioExecutionEnding" });
+
+            /**
+             * Calls NotifyScenarioExecutionEnding.
+             * @function notifyScenarioExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IScenarioExecutionEndingRequest} request ScenarioExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySpecExecutionEnding}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifySpecExecutionEndingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifySpecExecutionEnding.
+             * @function notifySpecExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISpecExecutionEndingRequest} request SpecExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifySpecExecutionEndingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifySpecExecutionEnding = function notifySpecExecutionEnding(request, callback) {
+                return this.rpcCall(notifySpecExecutionEnding, $root.gauge.messages.SpecExecutionEndingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifySpecExecutionEnding" });
+
+            /**
+             * Calls NotifySpecExecutionEnding.
+             * @function notifySpecExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISpecExecutionEndingRequest} request SpecExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifyExecutionEnding}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifyExecutionEndingCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifyExecutionEnding.
+             * @function notifyExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IExecutionEndingRequest} request ExecutionEndingRequest message or plain object
+             * @param {gauge.messages.Reporter.NotifyExecutionEndingCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifyExecutionEnding = function notifyExecutionEnding(request, callback) {
+                return this.rpcCall(notifyExecutionEnding, $root.gauge.messages.ExecutionEndingRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifyExecutionEnding" });
+
+            /**
+             * Calls NotifyExecutionEnding.
+             * @function notifyExecutionEnding
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IExecutionEndingRequest} request ExecutionEndingRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#notifySuiteResult}.
+             * @memberof gauge.messages.Reporter
+             * @typedef NotifySuiteResultCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls NotifySuiteResult.
+             * @function notifySuiteResult
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISuiteExecutionResult} request SuiteExecutionResult message or plain object
+             * @param {gauge.messages.Reporter.NotifySuiteResultCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.notifySuiteResult = function notifySuiteResult(request, callback) {
+                return this.rpcCall(notifySuiteResult, $root.gauge.messages.SuiteExecutionResult, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "NotifySuiteResult" });
+
+            /**
+             * Calls NotifySuiteResult.
+             * @function notifySuiteResult
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.ISuiteExecutionResult} request SuiteExecutionResult message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Reporter#kill}.
+             * @memberof gauge.messages.Reporter
+             * @typedef KillCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @param {gauge.messages.Reporter.KillCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Reporter.prototype.kill = function kill(request, callback) {
+                return this.rpcCall(kill, $root.gauge.messages.KillProcessRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "Kill" });
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Reporter
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            return Reporter;
+        })();
+
+        messages.Documenter = (function() {
+
+            /**
+             * Constructs a new Documenter service.
+             * @memberof gauge.messages
+             * @classdesc Represents a Documenter
+             * @extends $protobuf.rpc.Service
+             * @constructor
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             */
+            function Documenter(rpcImpl, requestDelimited, responseDelimited) {
+                $protobuf.rpc.Service.call(this, rpcImpl, requestDelimited, responseDelimited);
+            }
+
+            (Documenter.prototype = Object.create($protobuf.rpc.Service.prototype)).constructor = Documenter;
+
+            /**
+             * Creates new Documenter service using the specified rpc implementation.
+             * @function create
+             * @memberof gauge.messages.Documenter
+             * @static
+             * @param {$protobuf.RPCImpl} rpcImpl RPC implementation
+             * @param {boolean} [requestDelimited=false] Whether requests are length-delimited
+             * @param {boolean} [responseDelimited=false] Whether responses are length-delimited
+             * @returns {Documenter} RPC service. Useful where requests and/or responses are streamed.
+             */
+            Documenter.create = function create(rpcImpl, requestDelimited, responseDelimited) {
+                return new this(rpcImpl, requestDelimited, responseDelimited);
+            };
+
+            /**
+             * Callback as used by {@link gauge.messages.Documenter#generateDocs}.
+             * @memberof gauge.messages.Documenter
+             * @typedef GenerateDocsCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls GenerateDocs.
+             * @function generateDocs
+             * @memberof gauge.messages.Documenter
+             * @instance
+             * @param {gauge.messages.ISpecDetails} request SpecDetails message or plain object
+             * @param {gauge.messages.Documenter.GenerateDocsCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Documenter.prototype.generateDocs = function generateDocs(request, callback) {
+                return this.rpcCall(generateDocs, $root.gauge.messages.SpecDetails, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "GenerateDocs" });
+
+            /**
+             * Calls GenerateDocs.
+             * @function generateDocs
+             * @memberof gauge.messages.Documenter
+             * @instance
+             * @param {gauge.messages.ISpecDetails} request SpecDetails message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            /**
+             * Callback as used by {@link gauge.messages.Documenter#kill}.
+             * @memberof gauge.messages.Documenter
+             * @typedef KillCallback
+             * @type {function}
+             * @param {Error|null} error Error, if any
+             * @param {gauge.messages.Empty} [response] Empty
+             */
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Documenter
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @param {gauge.messages.Documenter.KillCallback} callback Node-style callback called with the error, if any, and Empty
+             * @returns {undefined}
+             * @variation 1
+             */
+            Object.defineProperty(Documenter.prototype.kill = function kill(request, callback) {
+                return this.rpcCall(kill, $root.gauge.messages.KillProcessRequest, $root.gauge.messages.Empty, request, callback);
+            }, "name", { value: "Kill" });
+
+            /**
+             * Calls Kill.
+             * @function kill
+             * @memberof gauge.messages.Documenter
+             * @instance
+             * @param {gauge.messages.IKillProcessRequest} request KillProcessRequest message or plain object
+             * @returns {Promise<gauge.messages.Empty>} Promise
+             * @variation 2
+             */
+
+            return Documenter;
         })();
 
         return messages;

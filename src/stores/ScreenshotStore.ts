@@ -1,17 +1,17 @@
 export class ScreenshotStore {
-    private static screenshots: Array<Uint8Array> = new Array();
+    private static screenshotFiles: Array<string> = new Array();
 
-    public static pendingScreenshots() {
-        let s = this.screenshots;
+    public static pendingScreenshots(): Array<string> {
+        let s = this.screenshotFiles;
         this.clear();
         return s;
     }
 
-    public static addScreenshot(screenshot: Uint8Array) {
-        this.screenshots.push(screenshot);
+    public static addScreenshot(screenshotFile: string) {
+        this.screenshotFiles.push(screenshotFile);
     }
 
     public static clear() {
-        this.screenshots = new Array<Uint8Array>();
+        this.screenshotFiles = new Array<string>();
     }
 }

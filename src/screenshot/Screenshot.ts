@@ -1,27 +1,47 @@
-import { tmpdir } from 'os';
-import { join } from "path";
+import { writeFileSync } from "fs";
+import { basename } from "path";
 import { Util } from "../utils/Util";
 
 export class Screenshot {
+
+
+    private static customScreenshotWriter: Function;
     private static customScreenGrabber: Function;
-    public static async capture(): Promise<Uint8Array> {
+
+    public static async capture(): Promise<string> {
         try {
-            if (!this.customScreenGrabber) {
-                return Promise.resolve(this.captureScreenshot());
+
+            if (this.customScreenshotWriter != null) {
+                if (Util.isAsync(this.customScreenshotWriter)) {
+                    return await this.customScreenshotWriter();
+                } else {
+                    return Promise.resolve(this.customScreenshotWriter());
+                }
+            } else if (this.customScreenshotWriter != null) {
+                let data: Uint8Array;
+                if (Util.isAsync(this.customScreenshotWriter)) {
+                    data = await this.customScreenGrabber();
+                } else {
+                    data = this.customScreenGrabber();
+                }
+                let file = Util.getUniqueScreenshotFileName();
+                writeFileSync(file, data)
+                return basename(file);
             }
-            if (Util.isAsync(this.customScreenGrabber)) return await this.customScreenGrabber();
-            return Promise.resolve(this.customScreenGrabber());
+            else {
+                return this.captureScreenshot();
+            }
         } catch (error) {
             console.log(error)
         }
-        return Promise.resolve(new Uint8Array());
+        return Promise.resolve("");
     }
 
-    private static captureScreenshot(): Uint8Array {
+    private static captureScreenshot(): string {
         try {
-            let tmpFile = join(tmpdir(), `${Date.now()}_screenshot.png`);
-            Util.spawn("gauge_screenshot", [tmpFile]);
-            return new Uint8Array(Util.readFileBuffer(tmpFile));
+            let filename = Util.getUniqueScreenshotFileName();
+            Util.spawn("gauge_screenshot", [filename]);
+            return basename(filename);
         } catch (error) {
             throw new Error(`\nFailed to take screenshot using gauge_screenshot.\n${error}`)
         }
@@ -29,5 +49,9 @@ export class Screenshot {
 
     public static setCustomScreenGrabber(grabber: Function) {
         this.customScreenGrabber = grabber;
+    }
+
+    public static setCustomScreenshotWriter(writer: any) {
+        this.customScreenshotWriter = writer;
     }
 }
