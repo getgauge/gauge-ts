@@ -21,7 +21,10 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - run: npm install
-      - run: npm build
+      - name: package
+        run: |
+          npm build
+          ./build.sh package
 
       - name: Setup git
         run: |
