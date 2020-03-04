@@ -1,10 +1,11 @@
 name: Release
 
 on:
-  [deployment]
+  repository_dispatch
 
 jobs:
   release:
+    if: github.event.deployment.environment == 'production'
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
@@ -33,25 +34,27 @@ jobs:
         run: |
           version=$(grep '"version"' package.json | sed 's/"version":[[:space:]]*"//' | sed 's/",//' | tr -d [:space:])
           echo "::set-env name=VERSION::$version"
+          echo "::set-env name=BRANCH::typescript-$version"
           if [ -z "$version" ]; then
-              echo "Taiko version is not set"
+              echo "Version is not set"
               exit 1
           fi
           echo -e "gauge-ts v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-ts BugDiver)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          hub release create -F ./desc.txt "v$version"
+          # hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
 
-      - name: Deploy npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --access=public
+      # - name: Deploy npm
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     npm publish --access=public
 
       - name: Create metadata pr in gauge-repository
         run: |
+
           (hub clone gauge-repository) || (hub clone getgauge/gauge-repository && cd gauge-repository && hub fork)
 
           cd gauge-repository
@@ -68,10 +71,10 @@ jobs:
           git add ./ts.json
           git commit -m "Update typescript metadata for v$VERSION"
 
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/BugDiver/gauge-repository.git" typescript-$VERSION
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/BugDiver/gauge-repository.git" $BRANCH
 
           echo -e "gauge-ts v$GAUGE_VERSION \n\n Please cc BugDiver for any issue." > desc.txt
-          hub pull-request --base Homebrew:master --head BugDiver:$BRANCH -F ./desc.txt
+          hub pull-request --base getgauge:master --head BugDiver:$BRANCH -F ./desc.txt
 
       - name: Bump up version
         env:
