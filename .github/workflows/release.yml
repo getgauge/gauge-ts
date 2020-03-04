@@ -1,0 +1,83 @@
+name: Release
+
+on:
+  [deployment]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      NPM_TOKEN: '${{ secrets.NPM_TOKEN }}'
+      CI: true
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: geertvdc/setup-hub@master
+
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '10.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: npm install
+        run: |
+          npm install
+
+      - name: Setup git
+        run: |
+          git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
+          git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
+
+      - name: Deploy on github
+        run: |
+          version=$(grep '"version"' package.json | sed 's/"version":[[:space:]]*"//' | sed 's/",//' | tr -d [:space:])
+          echo "::set-env name=VERSION::$version"
+          if [ -z "$version" ]; then
+              echo "Taiko version is not set"
+              exit 1
+          fi
+          echo -e "gauge-ts v$version\n\n" > desc.txt
+          release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-ts BugDiver)
+          echo "$release_description" >> desc.txt
+          echo "Creating new draft for release v$version"
+          hub release create -F ./desc.txt "v$version"
+          rm -rf desc.txt
+
+      - name: Deploy npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access=public
+
+      - name: Create metadata pr in gauge-repository
+        run: |
+          (hub clone gauge-repository) || (hub clone getgauge/gauge-repository && cd gauge-repository && hub fork)
+
+          cd gauge-repository
+          git remote add upstream https://github.com/getgauge/gauge-repository.git
+          git fetch upstream
+          git checkout master
+          git merge upstream/master
+
+          git branch -D $BRANCH || true
+          git checkout -b $BRANCH
+
+          python update_metadata.py ts $VERSION
+
+          git add ./ts.json
+          git commit -m "Update typescript metadata for v$VERSION"
+
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/BugDiver/gauge-repository.git" typescript-$VERSION
+
+          echo -e "gauge-ts v$GAUGE_VERSION \n\n Please cc BugDiver for any issue." > desc.txt
+          hub pull-request --base Homebrew:master --head BugDiver:$BRANCH -F ./desc.txt
+
+      - name: Bump up version
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        run: |
+          git checkout master git checkout . && git pull --rebase
+          version=$(npm version patch --no-git-tag-version)
+          git commit -am "Bumping up -> $version"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
