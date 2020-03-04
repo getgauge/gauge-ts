@@ -52,11 +52,11 @@ jobs:
               fi
           done
 
-      - name: Deploy npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --access=public
+      # - name: Deploy npm
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      #   run: |
+      #     npm publish --access=public
 
       - name: 'deployment success'
         if: success()
@@ -74,7 +74,7 @@ jobs:
 
       - name: Bump up version
         env:
-          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+          GITHUB_TOKEN: '${{ secrets.PERSONAL_GITHUB_TOKEN }}'
         run: |
           git clean -dfx
           git checkout master git checkout . && git pull --rebase
