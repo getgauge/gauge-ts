@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 
+var tsVersion = require("./ts.json").version;
 
 var version = process.versions.node.split(".");
 if (parseInt(version[0]) < 10) {
@@ -55,9 +56,7 @@ let packageJson = `
   "version": "0.0.1",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "dependencies": {
-    "gauge-ts": "0.0.3",
-    "ts-node": "latest",
-    "typescript": "latest"
+    "gauge-ts": "${tsVersion}"
   },
   "devDependencies": {
     "@types/node": "latest"
@@ -140,17 +139,16 @@ if (process.argv[2] === "--init") {
 }
 
 else if (process.argv[2] === "--start") {
-  var script = `import {GaugeRuntime} from "gauge-ts/dist/GaugeRuntime";`
+  var script = 'import { GaugeRuntime }  from "gauge-ts/dist/GaugeRuntime";'
     + `let runner = new GaugeRuntime();`
     + `runner.start();`
   var opts = [
-    "--no-install",
-    'ts-node',
     '-O', `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`,
     ...hasModule('tsconfig-paths') ? ['-r', 'tsconfig-paths/register'] : [],
     '-e', script
   ];
-  var runner = cp.spawn(getCommand("npx"), opts, {
+  let tsNode = path.join(GAUGE_PROJECT_ROOT, 'node_modules', '.bin', 'ts-node');
+  var runner = cp.spawn(getCommand(tsNode), opts, {
     env: process.env,
     silent: false,
     stdio: "inherit",
@@ -166,7 +164,6 @@ function hasModule(name) {
     require.resolve(name, { paths: [GAUGE_PROJECT_ROOT] });
     return true;
   } catch(e) {
-    console.log(e);
     return false;
   }
 }
