@@ -42,7 +42,7 @@ jobs:
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-ts BugDiver)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          # hub release create -F ./desc.txt "v$version"
+          hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
@@ -52,11 +52,11 @@ jobs:
               fi
           done
 
-      # - name: Deploy npm
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: |
-      #     npm publish --access=public
+      - name: Deploy npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access=public
 
       - name: 'deployment success'
         if: success()
@@ -72,12 +72,3 @@ jobs:
           state: 'failure'
           token: '${{ secrets.GITHUB_TOKEN }}'
 
-      - name: Bump up version
-        env:
-          GITHUB_TOKEN: '${{ secrets.PERSONAL_GITHUB_TOKEN }}'
-        run: |
-          git clean -dfx
-          git checkout master git checkout . && git pull --rebase
-          version=$(python update_version.py)
-          git commit -am "Bumping up -> $version"
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
