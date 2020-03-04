@@ -44,12 +44,11 @@ jobs:
           # hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
 
-      # - name: Deploy npm
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: |
-      #     npm build
-      #     npm publish --access=public
+      - name: Deploy npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access=public
 
       - name: 'deployment success'
         if: success()
@@ -93,7 +92,8 @@ jobs:
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
+          git clean -dfx
           git checkout master git checkout . && git pull --rebase
-          version=$(npm version patch --no-git-tag-version)
+          version=$(python update_version.py)
           git commit -am "Bumping up -> $version"
           git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
