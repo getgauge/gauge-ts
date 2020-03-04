@@ -33,18 +33,16 @@ jobs:
 
       - name: Deploy on github
         run: |
-          version=$(grep '"version"' package.json | sed 's/"version":[[:space:]]*"//' | sed 's/",//' | tr -d [:space:])
-          echo "::set-env name=VERSION::$version"
-          echo "::set-env name=BRANCH::typescript-$version"
+          cd artifacts
           if [ -z "$version" ]; then
-              echo "Version is not set"
-              exit 1
+            version=$(ls gauge-ts* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-ts-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           fi
+          echo "::set-env name=VERSION::$version"
           echo -e "gauge-ts v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" gauge-ts BugDiver)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
-          hub release create -F ./desc.txt "v$version"
+          # hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
