@@ -43,12 +43,19 @@ jobs:
           echo "Creating new draft for release v$version"
           hub release create -F ./desc.txt "v$version"
           rm -rf desc.txt
+          echo "Start uploading assets..."
+          for i in `ls $artifacts`; do
+              hub release edit -m "" -a $i "v$version"
+              if [ $? -ne 0 ];then
+                  exit 1
+              fi
+          done
 
-      # - name: Deploy npm
-      #   env:
-      #     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      #   run: |
-      #     npm publish --access=public
+      - name: Deploy npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --access=public
 
       - name: 'deployment success'
         if: success()
@@ -63,30 +70,6 @@ jobs:
         with:
           state: 'failure'
           token: '${{ secrets.GITHUB_TOKEN }}'
-
-      - name: Create metadata pr in gauge-repository
-        run: |
-
-          (hub clone gauge-repository) || (hub clone getgauge/gauge-repository && cd gauge-repository && hub fork)
-
-          cd gauge-repository
-          git remote add upstream https://github.com/getgauge/gauge-repository.git
-          git fetch upstream
-          git checkout master
-          git merge upstream/master
-
-          git branch -D $BRANCH || true
-          git checkout -b $BRANCH
-
-          python update_metadata.py ts $VERSION
-
-          git add ./ts-install.json
-          git commit -m "Update typescript metadata for v$VERSION"
-
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/BugDiver/gauge-repository.git" $BRANCH
-
-          echo -e "gauge-ts v$GAUGE_VERSION \n\n Please cc BugDiver for any issue." > desc.txt
-          hub pull-request --base getgauge:master --head BugDiver:$BRANCH -F ./desc.txt
 
       - name: Bump up version
         env:
