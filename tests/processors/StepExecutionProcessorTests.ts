@@ -16,7 +16,7 @@ describe('StepExecutionProcessor', () => {
     })
 
     describe('.process', () => {
-        it('should process stepex exection request when step is unimplemeted', async () => {
+        it('should process step execution request when step is unimplemented', async () => {
             let message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecuteStep,
@@ -32,7 +32,7 @@ describe('StepExecutionProcessor', () => {
             expect(result.errorMessage).toBe('Step Implementation not found');
         })
 
-        it('should process stepex exection request when there is param lenght mismatch', async () => {
+        it('should process step execution request when there is param lenght mismatch', async () => {
             let capture = jest.spyOn(Screenshot, "capture");
             registry.isImplemented = jest.fn().mockReturnValue(true);
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello', 'hello', 'StepImpl.ts', (a: any) => { }))
@@ -48,11 +48,11 @@ describe('StepExecutionProcessor', () => {
             let response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
             let result = response.executionResult as gauge.messages.ProtoExecutionResult;
             expect(result.failed).toBe(true);
-            expect(result.errorMessage).toBe('Argument length mismatch for `hello`. Actual Count: [1], Exepected Count: [0]');
+            expect(result.errorMessage).toBe('Argument length mismatch for `hello`. Actual Count: [1], Expected Count: [0]');
             expect(capture).toBeCalled();
         })
 
-        it('should process stepex exection request', async () => {
+        it('should process step execution request', async () => {
             registry.isImplemented = jest.fn().mockReturnValue(true);
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello <world> to <table>',
                 'hello {} to {}',
@@ -85,7 +85,7 @@ describe('StepExecutionProcessor', () => {
             expect(result.errorMessage).toBe('');
         })
 
-        it('should process stepex exection request when step is recoverable', async () => {
+        it('should process step execution request when step is recoverable', async () => {
             let capture = jest.spyOn(Screenshot, "capture");
             process.env.screenshot_on_failure = 'false';
 

@@ -71,7 +71,7 @@ describe('ExecutionEndingProcessor', () => {
             let pRes = res.executionResult as gauge.messages.ProtoExecutionResult;
             expect(pRes.failed).toBe(true);
             expect(pRes.errorMessage).toBe("failed");
-            expect(pRes.screenShot.length).toBe(10);
+            expect(pRes.failureScreenshotFile).toBeTruthy();
         })
     })
 

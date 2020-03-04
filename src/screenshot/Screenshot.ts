@@ -10,14 +10,13 @@ export class Screenshot {
 
     public static async capture(): Promise<string> {
         try {
-
             if (this.customScreenshotWriter != null) {
                 if (Util.isAsync(this.customScreenshotWriter)) {
                     return await this.customScreenshotWriter();
                 } else {
                     return Promise.resolve(this.customScreenshotWriter());
                 }
-            } else if (this.customScreenshotWriter != null) {
+            } else if (this.customScreenGrabber != null) {
                 let data: Uint8Array;
                 if (Util.isAsync(this.customScreenshotWriter)) {
                     data = await this.customScreenGrabber();

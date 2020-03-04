@@ -37,7 +37,6 @@
     "uuid": "^7.0.1"
   },
   "devDependencies": {
-    "@types/fs-extra": "^8.0.1",
     "@types/jest": "^24.9.1",
     "@types/klaw-sync": "^6.0.0",
     "@types/uuid": "^7.0.0",
