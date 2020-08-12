@@ -1,16 +1,17 @@
 {
   "name": "gauge-ts",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Typescript language runner for gauge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
-    "test:coverage": "jest  --coverage",
+    "lint": "eslint */**/*.ts",
+    "build": "npm run lint & tsc",
+    "test:coverage": "jest --coverage",
     "codecov": "codecov",
     "test": "jest --verbose",
     "gen-proto": "sh genproto.sh",
-    "prepublish": "tsc"
+    "prepublish": "npm run build"
   },
   "repository": {
     "type": "git",
@@ -40,7 +41,10 @@
     "@types/jest": "^24.9.1",
     "@types/klaw-sync": "^6.0.0",
     "@types/uuid": "^7.0.0",
+    "@typescript-eslint/eslint-plugin": "^3.9.0",
+    "@typescript-eslint/parser": "^3.9.0",
     "codecov": "^3.6.5",
+    "eslint": "^7.6.0",
     "jest": "^24.9.0",
     "jest-mock-process": "^1.3.2",
     "ts-jest": "^24.3.0"

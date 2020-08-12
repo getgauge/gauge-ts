@@ -44,7 +44,6 @@ export class MessageProcessorFactory extends EventEmitter {
             [gauge.messages.Message.MessageType.StepPositionsRequest, new StepPositionsProcessor()],
             [gauge.messages.Message.MessageType.ImplementationFileGlobPatternRequest, new ImplementationFileGlobPatternProcessor()],
 
-
             [gauge.messages.Message.MessageType.SuiteDataStoreInit, new DataStoreInitProcessor()],
             [gauge.messages.Message.MessageType.SpecDataStoreInit, new DataStoreInitProcessor()],
             [gauge.messages.Message.MessageType.ScenarioDataStoreInit, new DataStoreInitProcessor()],
@@ -67,28 +66,35 @@ export class MessageProcessorFactory extends EventEmitter {
         return this._processors.get(messageType) as IMessageProcessor;
     }
 
-    public async process(message: gauge.messages.IMessage) {
+    public async process(message: gauge.messages.IMessage): Promise<void> {
         switch (message.messageType) {
             case gauge.messages.Message.MessageType.KillProcessRequest:
                 process.exit(0);
+
                 return;
-            case gauge.messages.Message.MessageType.ExecutionStarting:
-                let loader = new ImplLoader();
+            case gauge.messages.Message.MessageType.ExecutionStarting: {
+                const loader = new ImplLoader();
+
                 await loader.loadImplementations();
                 break;
+            }
         }
+
         await this._process(message);
     }
 
     private async _process(message: gauge.messages.IMessage) {
         try {
-            let processor = this._processors.get(message.messageType as gauge.messages.Message.MessageType);
+            const processor = this._processors.get(message.messageType as gauge.messages.Message.MessageType);
+
             if (processor) {
-                let res = await processor.process(message);
+                const res = await processor.process(message);
+
                 this.emit('messageProcessed', res);
             } else {
-                throw new Error('Unknown message type ' +
-                    gauge.messages.Message.MessageType[message.messageType as number]);
+                console.error(new Error('Unknown message type ' +
+                    gauge.messages.Message.MessageType[message.messageType as number]));
+                process.exit(1);
             }
         }
         catch (error) {
@@ -96,5 +102,5 @@ export class MessageProcessorFactory extends EventEmitter {
             process.exit(1);
         }
     }
-}
 
+}

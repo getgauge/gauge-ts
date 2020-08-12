@@ -12,7 +12,7 @@ import { Util } from '../../src/utils/Util';
 
 describe('GRPCHandler', () => {
 
-    let text1 = `import { Step } from "gauge-ts";` + EOL +
+    const TEXT_1 = `import { Step } from "gauge-ts";` + EOL +
         `export default class StepImpl {` + EOL +
         `    @Step("foo")` + EOL +
         `    public async foo() {` + EOL +
@@ -34,11 +34,13 @@ describe('GRPCHandler', () => {
 
     describe('.getStepNames', () => {
         it('should give all the step names', () => {
-            let res = new gauge.messages.StepNamesRequest({});
+            const res = new gauge.messages.StepNamesRequest({});
+
             Util.getImplDirs = jest.fn().mockReturnValue(['src', 'tests'])
             hanlder.getGlobPatterns({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.ImplementationFileGlobPatternResponse) => {
                 expect(err).toBe(null);
-                let patterns = (res as gauge.messages.ImplementationFileGlobPatternResponse).globPatterns;
+                const patterns = (res as gauge.messages.ImplementationFileGlobPatternResponse).globPatterns;
+
                 expect(patterns).toStrictEqual(['src/**/*.ts', 'tests/**/*.ts']);
             })
         })
@@ -46,11 +48,12 @@ describe('GRPCHandler', () => {
 
     describe('.cacheFile', () => {
         it('should update the registry', () => {
-            let res = new gauge.messages.CacheFileRequest({
-                content: text1,
+            const res = new gauge.messages.CacheFileRequest({
+                content: TEXT_1,
                 filePath: 'StepImpl.ts',
                 status: gauge.messages.CacheFileRequest.FileStatus.OPENED
             })
+
             hanlder.cacheFile({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.Empty) => {
                 expect(err).toBe(null);
                 expect(registry.isImplemented('foo')).toBe(true);
@@ -60,7 +63,8 @@ describe('GRPCHandler', () => {
 
     describe('.getStepNames', () => {
         it('should give all the step names', () => {
-            let res = new gauge.messages.StepNamesRequest({});
+            const res = new gauge.messages.StepNamesRequest({});
+
             registry.getStepTexts = jest.fn().mockReturnValue(['foo']);
             hanlder.getStepNames({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.StepNamesResponse) => {
                 expect(err).toBe(null);
@@ -71,14 +75,17 @@ describe('GRPCHandler', () => {
 
     describe('.getStepPositions', () => {
         it('should give step positions', () => {
-            let res = new gauge.messages.StepPositionsRequest({ filePath: "StepImpl.ts" });
+            const res = new gauge.messages.StepPositionsRequest({ filePath: "StepImpl.ts" });
+
             registry.getStepPositions = jest.fn().mockReturnValue([{ stepValue: 'foo', span: new Range(new Position(3, 5), new Position(8, 5)) }])
             hanlder.getStepPositions({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.StepPositionsResponse) => {
                 expect(err).toBe(null);
-                let positions = (res as gauge.messages.StepPositionsResponse).stepPositions;
+                const positions = (res as gauge.messages.StepPositionsResponse).stepPositions;
+
                 expect(positions.length).toBe(1);
                 expect(positions[0].stepValue).toBe('foo');
-                let span = positions[0].span as gauge.messages.Span;
+                const span = positions[0].span as gauge.messages.Span;
+
                 expect(span.start).toBe(3);
                 expect(span.startChar).toBe(5);
                 expect(span.end).toBe(8);
@@ -89,7 +96,8 @@ describe('GRPCHandler', () => {
 
     describe('.getImplementationFiles', () => {
         it('should give all the step impl files', () => {
-            let res = new gauge.messages.ImplementationFileListRequest({});
+            const res = new gauge.messages.ImplementationFileListRequest({});
+
             Util.getListOfFiles = jest.fn().mockReturnValue(['StepImpl.ts']);
             hanlder.getImplementationFiles({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.ImplementationFileListRequest) => {
                 expect(err).toBe(null);
@@ -101,19 +109,21 @@ describe('GRPCHandler', () => {
     describe('.implementStub', () => {
         it('implement a stub', () => {
             Util.exists = jest.fn().mockReturnValue(true);
-            Util.readFile = jest.fn().mockReturnValue(text1);
-            let code = `@Step("bar")` + EOL +
+            Util.readFile = jest.fn().mockReturnValue(TEXT_1);
+            const code = `@Step("bar")` + EOL +
                 `public async foo() {` + EOL +
                 `    console.log("Hello World");` + EOL +
                 `}`
-            let res = new gauge.messages.StubImplementationCodeRequest({
+            const res = new gauge.messages.StubImplementationCodeRequest({
                 implementationFilePath: 'StepImpl.ts',
                 codes: [code],
             });
+
             hanlder.implementStub({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.FileDiff) => {
                 expect(err).toBe(null);
                 expect((res as gauge.messages.FileDiff).filePath).toStrictEqual('StepImpl.ts');
-                let diffs = (res as gauge.messages.FileDiff).textDiffs.map((d) => { return d as gauge.messages.TextDiff });
+                const diffs = (res as gauge.messages.FileDiff).textDiffs.map((d) => { return d as gauge.messages.TextDiff });
+
                 expect(diffs[0].content).toBe(code.split(EOL).map((p) => { return `\t${p}` }).join(EOL) + EOL);
             })
         })
@@ -122,12 +132,13 @@ describe('GRPCHandler', () => {
     describe('.validateStep', () => {
         it('should valiadate a step', () => {
             registry.isImplemented = jest.fn().mockReturnValue(true);
-            let res = new gauge.messages.StepValidateRequest({
+            const res = new gauge.messages.StepValidateRequest({
                 stepText: "foo",
                 stepValue: new gauge.messages.ProtoStepValue({
                     stepValue: "foo", parameterizedStepValue: "foo"
                 }),
             });
+
             hanlder.validateStep({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.StepValidateResponse) => {
                 expect(err).toBe(null);
                 expect((res as gauge.messages.StepValidateResponse).isValid).toBe(true);
@@ -137,8 +148,8 @@ describe('GRPCHandler', () => {
 
     describe('.refactor', () => {
         it('should refactor a step', () => {
-            loader.loadStepsFromText('StepImpl.ts', text1);
-            let res = new gauge.messages.RefactorRequest({
+            loader.loadStepsFromText('StepImpl.ts', TEXT_1);
+            const res = new gauge.messages.RefactorRequest({
                 oldStepValue: new gauge.messages.ProtoStepValue({
                     stepValue: "foo",
                     parameterizedStepValue: "foo",
@@ -149,6 +160,7 @@ describe('GRPCHandler', () => {
                 }), paramPositions: [],
                 saveChanges: false
             });
+
             hanlder.refactor({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.RefactorResponse) => {
                 expect(err).toBe(null);
                 expect((res as gauge.messages.RefactorResponse).success).toBe(true);
@@ -158,10 +170,11 @@ describe('GRPCHandler', () => {
 
     describe('.getStepName', () => {
         it('should give a step info', () => {
-            loader.loadStepsFromText('StepImpl.ts', text1);
-            let res = new gauge.messages.StepNameRequest({
+            loader.loadStepsFromText('StepImpl.ts', TEXT_1);
+            const res = new gauge.messages.StepNameRequest({
                 stepValue: "foo",
             });
+
             hanlder.getStepName({ request: res }, (err: gauge.messages.Error | null, res?: gauge.messages.StepNameResponse) => {
                 expect(err).toBe(null);
                 expect((res as gauge.messages.StepNameResponse).fileName).toBe('StepImpl.ts');
@@ -172,11 +185,13 @@ describe('GRPCHandler', () => {
 
     describe('.killProcess', () => {
         it('should give a step info', () => {
-            let s = new Server();
+            const s = new Server();
+
             hanlder = new GRPCHandler(s, factory);
             mockProcessExit();
-            let mockShutdown = jest.spyOn(s, 'forceShutdown');
-            let req = new gauge.messages.KillProcessRequest();
+            const mockShutdown = jest.spyOn(s, 'forceShutdown');
+            const req = new gauge.messages.KillProcessRequest();
+
             hanlder.killProcess({ request: req }, (err: gauge.messages.Error | null, res?: gauge.messages.Empty) => {
                 expect(err).toBe(null);
                 expect(mockShutdown).toHaveBeenCalled();

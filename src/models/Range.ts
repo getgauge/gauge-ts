@@ -1,6 +1,7 @@
 import { Position } from "./Position";
 
 export class Range {
+
     private readonly _start: Position;
     private readonly _end: Position;
 

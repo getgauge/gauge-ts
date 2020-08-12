@@ -18,8 +18,9 @@ describe('ExecutionEndingProcessor', () => {
 
     describe('.process', () => {
         it('should process ExecutionEndingRequest and run AfterSuite hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.AfterSuite, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 executionEndingRequest: new gauge.messages.ExecutionEndingRequest({
@@ -27,8 +28,9 @@ describe('ExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
 
@@ -37,7 +39,7 @@ describe('ExecutionEndingProcessor', () => {
             hookRegistry.addHook(HookType.AfterSuite, new HookMethod(jest.fn().mockImplementation(() => {
                 throw new Error("failed");
             }), "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 executionEndingRequest: new gauge.messages.ExecutionEndingRequest({
@@ -45,9 +47,10 @@ describe('ExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
-            let pRes = res.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const pRes = res.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(pRes.failed).toBe(true);
             expect(pRes.errorMessage).toBe("failed");
             expect(pRes.screenShot.length).toBe(0);
@@ -58,7 +61,7 @@ describe('ExecutionEndingProcessor', () => {
             hookRegistry.addHook(HookType.AfterSuite, new HookMethod(jest.fn().mockImplementation(() => {
                 throw new Error("failed");
             }), "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 executionEndingRequest: new gauge.messages.ExecutionEndingRequest({
@@ -66,9 +69,10 @@ describe('ExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
-            let pRes = res.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const pRes = res.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(pRes.failed).toBe(true);
             expect(pRes.errorMessage).toBe("failed");
             expect(pRes.failureScreenshotFile).toBeTruthy();

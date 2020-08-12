@@ -5,12 +5,10 @@ import { StepNamesProcessor } from '../../src/processors/StepNamesProcessor';
 describe('StepNamesProcessor', () => {
     describe('.process', () => {
 
-        let processor: StepNamesProcessor
-
         it('should give the all the step texts ', async () => {
             registry.getStepTexts = jest.fn().mockReturnValue(['foo', 'bar']);
-            let processor = new StepNamesProcessor();
-            let message = new gauge.messages.Message({
+            const processor = new StepNamesProcessor();
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.StepNameRequest,
                 stepNamesRequest: new gauge.messages.StepNamesRequest({
@@ -18,8 +16,9 @@ describe('StepNamesProcessor', () => {
                 })
             })
 
-            let resMess = await processor.process(message);
-            let res = resMess.stepNamesResponse as gauge.messages.StepNamesResponse;
+            const resMess = await processor.process(message);
+            const res = resMess.stepNamesResponse as gauge.messages.StepNamesResponse;
+
             expect(res.steps).toStrictEqual(['foo', 'bar'])
             jest.clearAllMocks();
         })

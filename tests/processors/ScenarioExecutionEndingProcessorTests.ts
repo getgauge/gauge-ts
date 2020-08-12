@@ -17,8 +17,9 @@ describe('ScenarioExecutionEndingProcessor', () => {
 
     describe('.process', () => {
         it('should process ScenarioExecutionEndingRequest and run AfterScenario hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.AfterScenario, new HookMethod(async () => { }, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ScenarioExecutionEnding,
                 scenarioExecutionEndingRequest: new gauge.messages.ScenarioExecutionEndingRequest({
@@ -38,8 +39,9 @@ describe('ScenarioExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

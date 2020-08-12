@@ -1,17 +1,21 @@
 export class MessageStore {
-    private static message: Array<string> = new Array<string>();
 
-    public static pendingMessages() {
-        let m = this.message;
+    private static message: Array<string> = [];
+
+    public static pendingMessages(): Array<string> {
+        const m = this.message;
+
         this.clear();
+
         return m;
     }
 
-    public static addMessage(message: string) {
+    public static addMessage(message: string): void {
         this.message.push(message);
     }
 
-    public static clear() {
+    public static clear(): void {
         this.message = new Array<string>();
     }
+
 }

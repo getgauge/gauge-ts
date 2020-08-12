@@ -5,26 +5,31 @@ import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
 import { HookExecutionProcessor } from "./HookExecutionProcessor";
 
+const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
+
 export class ExecutionStartingProcessor extends HookExecutionProcessor {
 
     protected hookType: HookType = HookType.BeforeSuite
-    attachDebuggerEvent: string = "Runner Ready for Debugging";
+
     constructor() {
         super();
     }
 
-    private sleepFor(ms: number) {
-        var now = new Date().getTime();
+    private static sleepFor(ms: number) {
+        const now = new Date().getTime();
+
         while (new Date().getTime() < now + ms) { /* do nothing */ }
     }
 
     protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
         if (process.env.DEBUGGING) {
-            var port = parseInt(process.env.DEBUG_PORT as string);
-            console.log(this.attachDebuggerEvent);
+            const port = parseInt(process.env.DEBUG_PORT as string);
+
+            console.log(ATTACH_DEBUGGER_EVENT);
             open(port, "127.0.0.1", true);
-            this.sleepFor(1000);
+            ExecutionStartingProcessor.sleepFor(1000);
         }
+
         return (message.executionStartingRequest as gauge.messages.ExecutionStartingRequest)
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
@@ -32,5 +37,5 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
     protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         return hookRegistry.get(this.hookType, [])
     }
-}
 
+}

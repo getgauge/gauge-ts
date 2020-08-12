@@ -1,10 +1,10 @@
 import { DataStore } from "./DataStore";
 
 export class DataStoreFactory {
-    private static _suiteDataStore: DataStore = new DataStore();
-    private static _specDataStore: DataStore = new DataStore();
-    private static _scenarioDataStore: DataStore = new DataStore();
 
+    private static readonly _suiteDataStore: DataStore = new DataStore();
+    private static readonly _specDataStore: DataStore = new DataStore();
+    private static readonly _scenarioDataStore: DataStore = new DataStore();
 
     public static getSuiteDataStore(): DataStore {
         return this._suiteDataStore;
@@ -17,4 +17,5 @@ export class DataStoreFactory {
     public static getScenarioDataStore(): DataStore {
         return this._scenarioDataStore;
     }
+
 }

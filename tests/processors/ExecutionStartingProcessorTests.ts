@@ -19,8 +19,9 @@ describe('ExecutionStartingProcessor', () => {
 
     describe('.process', () => {
         it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 executionStartingRequest: new gauge.messages.ExecutionStartingRequest({
@@ -28,18 +29,21 @@ describe('ExecutionStartingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
 
         it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
             console.log = jest.fn();
-            let open = jest.spyOn(inspector, 'open');
+            const open = jest.spyOn(inspector, 'open');
+
             process.env.DEBUGGING = 'true';
             process.env.DEBUG_PORT = '1234';
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.AfterSuite, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 executionStartingRequest: new gauge.messages.ExecutionStartingRequest({

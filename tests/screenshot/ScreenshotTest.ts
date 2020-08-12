@@ -26,7 +26,8 @@ describe('Screenshot', () => {
             Util.readFileBuffer = jest.fn().mockReturnValue(new ArrayBuffer(10));
             Util.spawn = jest.fn().mockImplementation(() => { throw new Error('failed to spawn') });
             console.log = jest.fn();
-            let file = await Screenshot.capture();
+            const file = await Screenshot.capture();
+
             expect(file).toBe("");
         })
 
@@ -39,6 +40,7 @@ describe('Screenshot', () => {
 
         it('should capture screenshot using async custom screen grabber and write data to file', async () => {
             process.env.gauge_screenshots_dir = "";
+            // eslint-disable-next-line @typescript-eslint/require-await
             Screenshot.setCustomScreenGrabber(async () => { return new Uint8Array(new ArrayBuffer(5)) })
             screenshotFile = await Screenshot.capture();
             expect(screenshotFile.endsWith('png')).toBeTruthy();
