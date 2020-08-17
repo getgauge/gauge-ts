@@ -1,6 +1,6 @@
 name: Node CI
 
-on: [push]
+on: [push, pull_request]
 
 jobs:
   test:
@@ -56,7 +56,6 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-
       - uses: BugDiver/setup-gauge@master
 
       - name: Use Node.js ${{ matrix.node-version }}
