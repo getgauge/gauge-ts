@@ -5,14 +5,16 @@ import { Util } from "../utils/Util";
 import { IMessageProcessor } from "./IMessageProcessor";
 
 export class CacheFileProcessor implements IMessageProcessor {
+
     private readonly _loader: StaticLoader;
 
     constructor(loader: StaticLoader) {
         this._loader = loader;
     }
 
-    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        let req = message.cacheFileRequest as gauge.messages.CacheFileRequest
+    public process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
+        const req = message.cacheFileRequest as gauge.messages.CacheFileRequest
+
         switch (req.status) {
             case gauge.messages.CacheFileRequest.FileStatus.CHANGED:
             case gauge.messages.CacheFileRequest.FileStatus.OPENED:
@@ -33,11 +35,15 @@ export class CacheFileProcessor implements IMessageProcessor {
                 this._loader.reloadSteps(req.content, req.filePath)
                 break;
         }
-        return new gauge.messages.Message();
+
+        return Promise.resolve(new gauge.messages.Message());
     }
 
     private loadFromDisk(filePath: string) {
-        if (!Util.exists(filePath)) return;
+        if (!Util.exists(filePath)) {
+            return;
+        }
+
         this._loader.reloadSteps(Util.readFile(filePath), filePath)
     }
 

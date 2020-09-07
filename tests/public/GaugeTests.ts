@@ -1,7 +1,8 @@
-import { Gauge } from '../../src/public/Gauge';
+import { Gauge } from '../../src';
 import { Screenshot } from '../../src/screenshot/Screenshot';
 import { MessageStore } from '../../src/stores/MessageStore';
 import { ScreenshotStore } from '../../src/stores/ScreenshotStore';
+
 describe('Gauge', () => {
     describe('captureScreenshot', () => {
         it('should capture', async () => {
@@ -15,7 +16,8 @@ describe('Gauge', () => {
         it('should capture', () => {
             Gauge.writeMessage("Hello");
             Gauge.writeMessage("World");
-            let m = MessageStore.pendingMessages();
+            const m = MessageStore.pendingMessages();
+
             expect(m.length).toBe(2);
             expect(m).toStrictEqual(["Hello", "World"]);
         })

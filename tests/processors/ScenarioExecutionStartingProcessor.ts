@@ -18,8 +18,9 @@ describe('ScenarioExecutionStartingProcessor', () => {
 
     describe('.process', () => {
         it('should process ScenarioExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ScenarioExecutionStarting,
                 scenarioExecutionStartingRequest: new gauge.messages.ScenarioExecutionStartingRequest({
@@ -37,8 +38,9 @@ describe('ScenarioExecutionStartingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

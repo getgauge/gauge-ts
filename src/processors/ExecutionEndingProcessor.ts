@@ -20,4 +20,5 @@ export class ExecutionEndingProcessor extends HookExecutionProcessor {
         return (message.executionEndingRequest as gauge.messages.ExecutionEndingRequest)
             .currentExecutionInfo as gauge.messages.ExecutionInfo;
     }
+
 }

@@ -18,8 +18,9 @@ describe('StepExecutionStartingProcessor', () => {
 
     describe('.process', () => {
         it('should process StepExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.BeforeStep, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.StepExecutionStarting,
                 stepExecutionStartingRequest: new gauge.messages.StepExecutionStartingRequest({
@@ -38,8 +39,9 @@ describe('StepExecutionStartingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

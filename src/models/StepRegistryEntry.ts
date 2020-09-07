@@ -1,17 +1,18 @@
 import { Range } from "./Range";
+import {CommonFunction} from '../utils/Util';
 
 export class StepRegistryEntry {
 
-    private readonly _method: Function | undefined;
+    private readonly _method: CommonFunction | undefined;
     private readonly _filePath: string | undefined;
     private readonly _span: Range | undefined;
     private readonly _stepText: string;
     private readonly _stepValue: string;
 
-    private _instance: object | undefined;
-    private _hasAlias = false;
+    private _instance: Record<string, unknown> | undefined;
+    private readonly _hasAlias: boolean;
 
-    constructor(stepText: string, stepValue: string, filePath: string, method?: Function, span?: Range, hasAlias?: boolean) {
+    constructor(stepText: string, stepValue: string, filePath: string, method?: CommonFunction, span?: Range, hasAlias?: boolean) {
         this._stepText = stepText;
         this._stepValue = stepValue;
         this._method = method;
@@ -20,15 +21,15 @@ export class StepRegistryEntry {
         this._hasAlias = hasAlias || false;
     }
 
-    public getMethod() {
+    public getMethod(): CommonFunction | undefined {
         return this._method;
     }
 
-    public getInstance() {
+    public getInstance(): Record<string, unknown> | undefined {
         return this._instance;
     }
 
-    public setInstance(instance: object) {
+    public setInstance(instance: Record<string, unknown>): Record<string, unknown> {
         return this._instance = instance;
     }
 
@@ -36,7 +37,7 @@ export class StepRegistryEntry {
         return this._filePath as string;
     }
 
-    public getRange() {
+    public getRange(): Range | undefined {
         return this._span;
     }
 
@@ -47,4 +48,5 @@ export class StepRegistryEntry {
     public hasAlias(): boolean {
         return this._hasAlias;
     }
+
 }

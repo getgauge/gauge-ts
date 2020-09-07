@@ -16,11 +16,11 @@ describe('StepPositionsProcessor', () => {
     describe('.prcoess', () => {
         it('should StepPositionsRequest and give step positions for a given file', async () => {
             registry.getStepPositions = jest.fn().mockReturnValue([
-                {stepValue: 'foo', span: new Range(new Position(3,3), new Position(5,3))},
-                {stepValue: 'bar', span: new Range(new Position(7,3), new Position(9,3))},
-                {stepValue: 'foo', span: new Range(new Position(11,3), new Position(15,3))}
+                {stepValue: 'foo', span: new Range(new Position(3, 3), new Position(5, 3))},
+                {stepValue: 'bar', span: new Range(new Position(7, 3), new Position(9, 3))},
+                {stepValue: 'foo', span: new Range(new Position(11, 3), new Position(15, 3))}
             ])
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId:0,
                 messageType: gauge.messages.Message.MessageType.StepPositionsRequest,
                 stepPositionsRequest: new gauge.messages.StepPositionsRequest({
@@ -28,8 +28,9 @@ describe('StepPositionsProcessor', () => {
                 })
             })
 
-            let resMess = await processor.process(message);
-            let positions = resMess.stepPositionsResponse as gauge.messages.StepPositionsResponse
+            const resMess = await processor.process(message);
+            const positions = resMess.stepPositionsResponse as gauge.messages.StepPositionsResponse
+
             expect(positions.error).toBe("");
             expect(positions.stepPositions.length).toBe(3);
         })

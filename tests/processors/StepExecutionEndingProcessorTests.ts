@@ -17,8 +17,9 @@ describe('StepExecutionEndingProcessor', () => {
 
     describe('.process', () => {
         it('should process StepExecutionEndingRequest and run AfterStepe hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.AfterStep, new HookMethod(async () => { }, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ScenarioExecutionEnding,
                 stepExecutionEndingRequest: new gauge.messages.StepExecutionEndingRequest({
@@ -40,8 +41,9 @@ describe('StepExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

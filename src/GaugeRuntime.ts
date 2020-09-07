@@ -10,21 +10,28 @@ export class GaugeRuntime {
 
     private lspProtoPath: string = join(__dirname, 'gen', 'lsp.proto')
 
-    public async start() {
-        let loader = new StaticLoader();
+    public start(): void {
+        const loader = new StaticLoader();
+
         loader.loadImplementations();
-        let factory = new MessageProcessorFactory(loader);
+        const factory = new MessageProcessorFactory(loader);
+
         if (process.env.GAUGE_LSP_GRPC) {
-            let pd: PackageDefinition = loadSync(this.lspProtoPath)
-            let lspService = (loadPackageDefinition(pd) as any).gauge.messages.lspService.service;
-            let server = new Server();
+            const pd: PackageDefinition = loadSync(this.lspProtoPath)
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any
+            const lspService = (loadPackageDefinition(pd) as any).gauge.messages.lspService.service;
+            const server = new Server();
+
             server.addService(lspService, new GRPCHandler(server, factory))
-            var p = server.bind("127.0.0.1:0", ServerCredentials.createInsecure());
-            console.log("Listening on port:" + p);
+            const p = server.bind("127.0.0.1:0", ServerCredentials.createInsecure());
+
+            console.log(`Listening on port: ${p}`);
             server.start();
         } else {
-            let listener = new GaugeListener(factory);
+            const listener = new GaugeListener(factory);
+
             listener.pollForMessages();
         }
     }
+
 }

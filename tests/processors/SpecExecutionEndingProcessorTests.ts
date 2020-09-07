@@ -17,8 +17,9 @@ describe('SpecExecutionEndingProcessor', () => {
 
     describe('.process', () => {
         it('should process SpecExecutionEndingRequest and run AfterSpec hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.AfterSpec, new HookMethod(async () => { }, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecutionEnding,
                 specExecutionEndingRequest: new gauge.messages.SpecExecutionEndingRequest({
@@ -33,8 +34,9 @@ describe('SpecExecutionEndingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

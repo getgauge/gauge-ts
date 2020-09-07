@@ -1,16 +1,16 @@
 import { AssertionError } from "assert";
 import { Range } from './Range';
 import { StepRegistryEntry } from "./StepRegistryEntry";
-
+import {CommonFunction} from '../utils/Util';
 
 export class StepRegistry {
 
     private _registry: Map<string, Array<StepRegistryEntry>>;
-    private _continuOnFailureFuncs: Map<Function, Array<string>>;
+    private _continueOnFailureFunctions: Map<CommonFunction, Array<string>>;
 
     constructor() {
-        this._registry = new Map();
-        this._continuOnFailureFuncs = new Map();
+        this._registry = new Map<string, Array<StepRegistryEntry>>();
+        this._continueOnFailureFunctions = new Map<CommonFunction, Array<string>>();
     }
 
     public get(text: string): StepRegistryEntry {
@@ -26,7 +26,7 @@ export class StepRegistry {
             ((this._registry.get(stepText) as Array<StepRegistryEntry>)).length > 1;
     }
 
-    public add(text: string, entry: StepRegistryEntry) {
+    public add(text: string, entry: StepRegistryEntry): void {
         if (this._registry.has(text)) {
             (this._registry.get(text) as Array<StepRegistryEntry>).push(entry);
         } else {
@@ -34,19 +34,21 @@ export class StepRegistry {
         }
     }
 
-    public addContinueOnFailure(func: Function, exceptions?: Array<string>) {
-        if (!exceptions) exceptions = [AssertionError.name];
-        this._continuOnFailureFuncs.set(func, exceptions)
+    public addContinueOnFailure(func: CommonFunction, exceptions?: Array<string>): void {
+        this._continueOnFailureFunctions.set(func, exceptions || [AssertionError.name])
     }
 
+    public getContinueOnFailureFunctions(func: CommonFunction): Array<string> {
+        if (this._continueOnFailureFunctions.has(func)) {
+            return this._continueOnFailureFunctions.get(func) as Array<string>;
+        }
 
-    public getContinueOnFailureFuncs(func: Function): Array<string> {
-        if (this._continuOnFailureFuncs.has(func)) return this._continuOnFailureFuncs.get(func) as Array<string>;
         return [];
     }
 
     public getStepPositions(filePath: string): Array<{ stepValue: string, span: Range }> {
-        let positions: Array<{ stepValue: string, span: Range }> = new Array();
+        const positions: Array<{ stepValue: string, span: Range }> = [];
+
         this._registry.forEach((entries, step) => {
             entries.forEach((entry) => {
                 if (entry.getFilePath() === filePath) {
@@ -57,35 +59,44 @@ export class StepRegistry {
                 }
             });
         });
+
         return positions;
     }
 
     public getStepTexts(): Array<string> {
-        let steps: Array<string> = new Array();
+        let steps: Array<string> = [];
+
         this._registry.forEach((v: StepRegistryEntry[], k) => {
             steps = steps.concat(v[0].getStepText())
         });
-        return steps;
 
+        return steps;
     }
 
     public isFileCached(filePath: string): boolean {
         for (const kv of this._registry) {
-            if (kv[1].some(i => i.getFilePath() === filePath)) return true;
+            if (kv[1].some(i => i.getFilePath() === filePath)) {
+                return true;
+            }
         }
+
         return false;
     }
 
-    public removeSteps(filePath: string) {
-        let newReg = new Map<string, Array<StepRegistryEntry>>();
+    public removeSteps(filePath: string): void {
+        const newReg = new Map<string, Array<StepRegistryEntry>>();
+
         this._registry.forEach((entries, stepValue) => {
-            let methods = entries.filter(entry => entry.getFilePath() !== filePath);
-            if (methods.length > 0) newReg.set(stepValue, methods);
+            const methods = entries.filter(entry => entry.getFilePath() !== filePath);
+
+            if (methods.length > 0) {
+                newReg.set(stepValue, methods);
+            }
         });
         this._registry = newReg;
     }
 
-    public setInstanceForMethodsIn(file: string, instance: object) {
+    public setInstanceForMethodsIn(file: string, instance: Record<string, unknown>): void {
         this._registry.forEach((entries, _) => {
             entries.forEach((entry) => {
                 if (entry.getFilePath() === file) {
@@ -95,13 +106,13 @@ export class StepRegistry {
         });
     }
 
-    public clear() {
+    public clear(): void {
         this._registry.clear();
-        this._continuOnFailureFuncs.clear();
+        this._continueOnFailureFunctions.clear();
     }
+
 }
 
-
 const registry = new StepRegistry();
-export default registry;
 
+export default registry;

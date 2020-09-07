@@ -1,4 +1,5 @@
 export class Position {
+
     private readonly _line: number;
     private readonly _char: number;
 
@@ -14,4 +15,5 @@ export class Position {
     public getChar(): number {
         return this._char;
     }
+
 }

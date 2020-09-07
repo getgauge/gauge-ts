@@ -18,8 +18,9 @@ describe('SpecExecutionStartingProcessor', () => {
 
     describe('.process', () => {
         it('should process SpecExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             hookRegistry.addHook(HookType.BeforeSpec, new HookMethod(async () => {}, "Hooks.ts"))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.SpecExecutionStarting,
                 specExecutionStartingRequest: new gauge.messages.SpecExecutionStartingRequest({
@@ -32,8 +33,9 @@ describe('SpecExecutionStartingProcessor', () => {
                 })
             })
 
-            let resMessage = await processor.process(message);
-            let res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const resMessage = await processor.process(message);
+            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+
             expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
         })
     })

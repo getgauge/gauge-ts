@@ -17,7 +17,7 @@ describe('StepExecutionProcessor', () => {
 
     describe('.process', () => {
         it('should process step execution request when step is unimplemented', async () => {
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecuteStep,
                 executeStepRequest: new gauge.messages.ExecuteStepRequest({
@@ -25,18 +25,21 @@ describe('StepExecutionProcessor', () => {
                     actualStepText: "hello",
                 })
             })
-            let resMess = await processor.process(message);
-            let response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
-            let result = response.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMess = await processor.process(message);
+            const response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
+            const result = response.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(result.failed).toBe(true);
             expect(result.errorMessage).toBe('Step Implementation not found');
         })
 
         it('should process step execution request when there is param lenght mismatch', async () => {
-            let capture = jest.spyOn(Screenshot, "capture");
+            const capture = jest.spyOn(Screenshot, "capture");
+
             registry.isImplemented = jest.fn().mockReturnValue(true);
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello', 'hello', 'StepImpl.ts', (a: any) => { }))
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecuteStep,
                 executeStepRequest: new gauge.messages.ExecuteStepRequest({
@@ -44,9 +47,10 @@ describe('StepExecutionProcessor', () => {
                     actualStepText: "hello",
                 })
             })
-            let resMess = await processor.process(message);
-            let response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
-            let result = response.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMess = await processor.process(message);
+            const response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
+            const result = response.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(result.failed).toBe(true);
             expect(result.errorMessage).toBe('Argument length mismatch for `hello`. Actual Count: [1], Expected Count: [0]');
             expect(capture).toBeCalled();
@@ -57,9 +61,10 @@ describe('StepExecutionProcessor', () => {
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello <world> to <table>',
                 'hello {} to {}',
                 'StepImpl.ts',
+                // eslint-disable-next-line @typescript-eslint/no-empty-function
                 (arg0: any, arg1: any) => { }
             ));
-            let message = new gauge.messages.Message({
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecuteStep,
                 executeStepRequest: new gauge.messages.ExecuteStepRequest({
@@ -78,22 +83,25 @@ describe('StepExecutionProcessor', () => {
                     ]
                 })
             })
-            let resMess = await processor.process(message);
-            let response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
-            let result = response.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMess = await processor.process(message);
+            const response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
+            const result = response.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(result.failed).toBe(false);
             expect(result.errorMessage).toBe('');
         })
 
         it('should process step execution request when step is recoverable', async () => {
-            let capture = jest.spyOn(Screenshot, "capture");
+            const capture = jest.spyOn(Screenshot, "capture");
+
             process.env.screenshot_on_failure = 'false';
 
             registry.isImplemented = jest.fn().mockReturnValue(true);
-            let method = () => { equal(1, 2) };
+            const method = () => { equal(1, 2) };
+
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello', 'hello', 'StepImpl.ts', method))
-            registry.getContinueOnFailureFuncs = jest.fn().mockReturnValue(['AssertionError'])
-            let message = new gauge.messages.Message({
+            registry.getContinueOnFailureFunctions = jest.fn().mockReturnValue(['AssertionError'])
+            const message = new gauge.messages.Message({
                 messageId: 0,
                 messageType: gauge.messages.Message.MessageType.ExecuteStep,
                 executeStepRequest: new gauge.messages.ExecuteStepRequest({
@@ -101,9 +109,10 @@ describe('StepExecutionProcessor', () => {
                     actualStepText: "hello",
                 })
             })
-            let resMess = await processor.process(message);
-            let response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
-            let result = response.executionResult as gauge.messages.ProtoExecutionResult;
+            const resMess = await processor.process(message);
+            const response = resMess.executionStatusResponse as gauge.messages.ExecutionStatusResponse;
+            const result = response.executionResult as gauge.messages.ProtoExecutionResult;
+
             expect(result.failed).toBe(true);
             expect(result.errorMessage).toBe('1 == 2');
             expect(result.recoverableError).toBe(true);

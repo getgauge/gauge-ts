@@ -1,47 +1,54 @@
 import { EventEmitter } from "events";
 import { Socket } from "net";
-import { Reader } from 'protobufjs';
-import { gauge } from '../gen/messages';
+import { Reader } from "protobufjs";
+import { gauge } from "../gen/messages";
 
 export class GaugeConnection extends EventEmitter {
 
-    private _socket: Socket;
-    private _host: string;
+  private readonly _socket: Socket;
+  private readonly _host: string;
 
-    constructor() {
-        super();
-        this._socket = new Socket();
-        this._host = '127.0.0.1'
+  constructor() {
+    super();
+    this._socket = new Socket();
+    this._host = "127.0.0.1";
+  }
+
+  public start(): void {
+    this._socket.connect(GaugeConnection.getGaugeInternalPort(), this._host);
+    this._socket.on("data", (data: ArrayBuffer | SharedArrayBuffer) => {
+      this.messageHandler(data);
+    });
+    this._socket.on("error", (err) => {
+      throw err;
+    });
+  }
+
+  public write(message: gauge.messages.IMessage): void {
+    const m = gauge.messages.Message.create(message);
+    const encoded = gauge.messages.Message.encodeDelimited(m);
+
+    this._socket.write(encoded.finish());
+  }
+
+  private messageHandler(data: ArrayBuffer | SharedArrayBuffer): void {
+    const r = new Reader(Buffer.from(data));
+
+    while (r.pos < r.len) {
+      const m = gauge.messages.Message.decodeDelimited(r);
+
+      this.emit("messageReceived", m);
+    }
+  }
+
+  private static getGaugeInternalPort(): number {
+    const p = process.env.GAUGE_INTERNAL_PORT;
+
+    if (p == "") {
+      throw `GAUGE_INTERNAL_PORT is not set`;
     }
 
-    public start() {
-        this._socket.connect(this.getGaugeInternalPort(), this._host);
-        this._socket.on('data', (data: any) => {
-            this.messageHandler(data);
-        });
-        this._socket.on('error', (err) => { throw err; });
-    }
+    return (p as unknown) as number;
+  }
 
-
-    public write(message: gauge.messages.IMessage) {
-        const m = gauge.messages.Message.create(message);
-        const encoded = gauge.messages.Message.encodeDelimited(m);
-        this._socket.write(encoded.finish());
-    }
-
-    private messageHandler(data: any): any {
-        let r = new Reader(Buffer.from(data));
-        while (r.pos < r.len) {
-            const m = gauge.messages.Message.decodeDelimited(r);
-            this.emit("messageReceived", m);
-        }
-    }
-
-    private getGaugeInternalPort(): number {
-        let p = process.env.GAUGE_INTERNAL_PORT;
-        if (p == "") {
-            throw `GAUGE_INTERNAL_PORT is not set`;
-        }
-        return (p as unknown) as number;
-    }
 }

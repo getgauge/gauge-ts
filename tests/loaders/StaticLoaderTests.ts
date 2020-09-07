@@ -6,7 +6,7 @@ import { Util } from '../../src/utils/Util';
 describe('StaticLoaderTests', () => {
 
     let loader: StaticLoader;
-    let text1 = `import { Step } from "gauge-ts";` + EOL +
+    const TEXT_1 = `import { Step } from "gauge-ts";` + EOL +
         `export default class StepImpl {` + EOL +
         `    @Step("foo")` + EOL +
         `    public async foo() {` + EOL +
@@ -14,7 +14,7 @@ describe('StaticLoaderTests', () => {
         `    }` + EOL +
         `}`;
 
-    let text2 = `import { Step } from "gauge-ts";` + EOL +
+    const TEXT_2 = `import { Step } from "gauge-ts";` + EOL +
         `export default class StepImpl {` + EOL +
         `    @Step("bar")` + EOL +
         `    public async bar() {` + EOL +
@@ -30,8 +30,9 @@ describe('StaticLoaderTests', () => {
 
     describe('.loadFromText', () => {
         it('should load steps from given text', () => {
-            let file = 'StepImpl.ts';
-            loader.loadStepsFromText(file, text1);
+            const file = 'StepImpl.ts';
+
+            loader.loadStepsFromText(file, TEXT_1);
 
             expect(registry.isImplemented("foo")).toBe(true);
         })
@@ -39,12 +40,13 @@ describe('StaticLoaderTests', () => {
 
     describe('.reloadSteps', () => {
         it('should reload steps from given test', () => {
-            let file = 'StepImpl.ts';
-            loader.loadStepsFromText(file, text1);
+            const file = 'StepImpl.ts';
+
+            loader.loadStepsFromText(file, TEXT_1);
 
             expect(registry.isImplemented("foo")).toBe(true);
 
-            loader.reloadSteps(text2, file)
+            loader.reloadSteps(TEXT_2, file)
 
             expect(registry.isImplemented("foo")).toBe(false);
             expect(registry.isImplemented("bar")).toBe(true);
@@ -54,10 +56,11 @@ describe('StaticLoaderTests', () => {
 
     describe('.removeSteps', () => {
         it('should remove steps for a given file', () => {
-            let file = 'StepImpl.ts';
-            let file2 = 'StepImpl2.ts';
-            loader.loadStepsFromText(file, text1);
-            loader.loadStepsFromText(file2, text2);
+            const file = 'StepImpl.ts';
+            const file2 = 'StepImpl2.ts';
+
+            loader.loadStepsFromText(file, TEXT_1);
+            loader.loadStepsFromText(file2, TEXT_2);
 
             expect(registry.isImplemented("foo")).toBe(true);
             expect(registry.isImplemented("bar")).toBe(true);
@@ -69,15 +72,15 @@ describe('StaticLoaderTests', () => {
 
     })
 
-
     describe('.loadImplementations', () => {
         it('should load steps from all the files', () => {
-            let file1 = 'StepImpl.ts';
-            let file2 = 'StepImpl2.ts';
+            const file1 = 'StepImpl.ts';
+            const file2 = 'StepImpl2.ts';
 
-            let mockFn = jest.fn().mockImplementation((file: string) => {
-                return file == file1 ? text1 : text2;
+            const mockFn = jest.fn().mockImplementation((file: string) => {
+                return file == file1 ? TEXT_1 : TEXT_2;
             });
+
             Util.readFile = mockFn;
             Util.getListOfFiles = jest.fn().mockReturnValue([file1, file2]);
 

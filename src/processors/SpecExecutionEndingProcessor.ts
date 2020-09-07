@@ -18,9 +18,8 @@ export class SpecExecutionEndingProcessor extends HookExecutionProcessor {
 
     protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
         const request = message.specExecutionEndingRequest as gauge.messages.SpecExecutionEndingRequest;
-        const execInfo = request.currentExecutionInfo as gauge.messages.ExecutionInfo;
-        const specInfo = execInfo.currentSpec as gauge.messages.ISpecInfo;
-        const tags = specInfo.tags ? specInfo.tags : [];
-        return hookRegistry.get(this.hookType, tags);
+
+        return this.getApplicableHooksInternal(request);
     }
+
 }

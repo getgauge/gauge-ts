@@ -3,6 +3,7 @@ import { Specification } from "./Specification";
 import { StepInfo } from "./StepInfo";
 
 export class ExecutionContext {
+
     private readonly _spec: Specification | null;
     private readonly _scenario: Scenario | null;
     private readonly _step: StepInfo | null;
@@ -30,4 +31,5 @@ export class ExecutionContext {
     public getStacktrace(): string | null {
         return this._stackTrace;
     }
+
 }
