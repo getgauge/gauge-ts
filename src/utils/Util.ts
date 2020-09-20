@@ -92,11 +92,11 @@ export class Util {
 
   public static isAsync(m: CommonFunction): boolean {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return m instanceof (async () => {}).constructor;
+    return m instanceof (async () => { }).constructor;
   }
 
   public static getUniqueScreenshotFileName(): string {
-    const dir = process.env.gauge_screenshots_dir as string;
+    const dir = process.env.gauge_screenshots_dir as string ?? '';
 
     return join(dir, `screenshot-${v4()}.png`);
   }

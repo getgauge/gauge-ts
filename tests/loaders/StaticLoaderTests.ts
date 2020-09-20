@@ -21,12 +21,19 @@ describe('StaticLoaderTests', () => {
         `        console.log("Hello World");` + EOL +
         `    }` + EOL +
         `}`;
+    const TEXT_3 = `import { Step } from "gauge-ts";` + EOL +
+        `export default class StepImpl {` + EOL +
+        `    @Step(["hello","hi"])` + EOL +
+        `    public async bar() {` + EOL +
+        `        console.log("Hello World");` + EOL +
+        `    }` + EOL +
+        `}`;
 
     beforeEach(() => {
         jest.clearAllMocks();
         loader = new StaticLoader();
         registry.clear();
-    })
+    });
 
     describe('.loadFromText', () => {
         it('should load steps from given text', () => {
@@ -35,8 +42,15 @@ describe('StaticLoaderTests', () => {
             loader.loadStepsFromText(file, TEXT_1);
 
             expect(registry.isImplemented("foo")).toBe(true);
-        })
-    })
+        });
+
+        it('should load steps from file with alias', () => {
+            const file = 'StepImpl.ts';
+
+            loader.loadStepsFromText(file, TEXT_3);
+            expect(registry.isImplemented("hello")).toBe(true);
+        });
+    });
 
     describe('.reloadSteps', () => {
         it('should reload steps from given test', () => {
@@ -46,13 +60,13 @@ describe('StaticLoaderTests', () => {
 
             expect(registry.isImplemented("foo")).toBe(true);
 
-            loader.reloadSteps(TEXT_2, file)
+            loader.reloadSteps(TEXT_2, file);
 
             expect(registry.isImplemented("foo")).toBe(false);
             expect(registry.isImplemented("bar")).toBe(true);
-        })
+        });
 
-    })
+    });
 
     describe('.removeSteps', () => {
         it('should remove steps for a given file', () => {
@@ -65,12 +79,12 @@ describe('StaticLoaderTests', () => {
             expect(registry.isImplemented("foo")).toBe(true);
             expect(registry.isImplemented("bar")).toBe(true);
 
-            loader.removeSteps(file)
+            loader.removeSteps(file);
             expect(registry.isImplemented("foo")).toBe(false);
             expect(registry.isImplemented("bar")).toBe(true);
-        })
+        });
 
-    })
+    });
 
     describe('.loadImplementations', () => {
         it('should load steps from all the files', () => {
@@ -88,8 +102,8 @@ describe('StaticLoaderTests', () => {
 
             expect(registry.isImplemented("foo")).toBe(true);
             expect(registry.isImplemented("bar")).toBe(true);
-        })
+        });
 
-    })
+    });
 
-})
+});

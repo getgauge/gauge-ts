@@ -1,26 +1,22 @@
-import { gauge } from "../gen/messages";
-import {CommonFunction, Util} from "../utils/Util";
-import { IMessageProcessor } from "./IMessageProcessor";
+import { Util, CommonFunction } from "../utils/Util";
+import { ExecutionStatusResponse } from "../gen/messages_pb";
+import { ProtoExecutionResult } from "../gen/spec_pb";
 
-export abstract class ExecutionProcessor implements IMessageProcessor {
+export class ExecutionProcessor {
 
-    abstract process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage>
+    protected createExecutionResponse(result: ProtoExecutionResult): ExecutionStatusResponse {
+        const res = new ExecutionStatusResponse();
 
-    protected wrapInMessage(result: gauge.messages.ProtoExecutionResult, request: gauge.messages.IMessage): gauge.messages.Message {
-        return new gauge.messages.Message({
-            messageId: request.messageId,
-            messageType: gauge.messages.Message.MessageType.ExecutionStatusResponse,
-            executionStatusResponse: new gauge.messages.ExecutionStatusResponse({
-                executionResult: result
-            })
-        })
+        res.setExecutionresult(result);
+
+        return res;
     }
 
     protected async executeMethod(instance: Record<string, unknown>, method: CommonFunction, params: unknown[]): Promise<void> {
-        const promise = method.apply(instance, params);
-
         if (Util.isAsync(method)) {
-            await promise;
+            await method.apply(instance, params);
+        } else {
+            method.apply(instance, params);
         }
     }
 

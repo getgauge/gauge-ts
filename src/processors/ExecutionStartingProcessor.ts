@@ -1,9 +1,9 @@
 import { open } from "inspector";
-import { gauge } from "../gen/messages";
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
-import { HookExecutionProcessor } from "./HookExecutionProcessor";
+import { HookExecutionProcessor, HookExectionRequest } from "./HookExecutionProcessor";
+import { ExecutionInfo, ExecutionStartingRequest } from "../gen/messages_pb";
 
 const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 
@@ -21,7 +21,7 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
         while (new Date().getTime() < now + ms) { /* do nothing */ }
     }
 
-    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
+    protected getExecutionInfo(message: HookExectionRequest): ExecutionInfo {
         if (process.env.DEBUGGING) {
             const port = parseInt(process.env.DEBUG_PORT as string);
 
@@ -29,13 +29,13 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
             open(port, "127.0.0.1", true);
             ExecutionStartingProcessor.sleepFor(1000);
         }
+        const req = message as ExecutionStartingRequest;
 
-        return (message.executionStartingRequest as gauge.messages.ExecutionStartingRequest)
-            .currentExecutionInfo as gauge.messages.ExecutionInfo;
+        return req.getCurrentexecutioninfo() as ExecutionInfo;
     }
 
-    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
-        return hookRegistry.get(this.hookType, [])
+    protected getApplicableHooks(): Array<HookMethod> {
+        return hookRegistry.get(this.hookType, []);
     }
 
 }

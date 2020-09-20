@@ -1,5 +1,5 @@
 import * as inspector from 'inspector';
-import { gauge } from '../../src/gen/messages';
+import { ExecutionInfo, ExecutionStartingRequest } from '../../src/gen/messages_pb';
 import { HookMethod } from '../../src/models/HookMethod';
 import hookRegistry from '../../src/models/HookRegistry';
 import { HookType } from '../../src/models/HookType';
@@ -8,53 +8,45 @@ jest.mock('inspector');
 
 describe('ExecutionStartingProcessor', () => {
 
-    let processor: ExecutionStartingProcessor
+    let processor: ExecutionStartingProcessor;
 
     beforeEach(() => {
         jest.clearAllMocks();
         hookRegistry.clear();
         process.env.screenshot_on_failure = "";
         processor = new ExecutionStartingProcessor();
-    })
+    });
 
     describe('.process', () => {
         it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(async () => {}, "Hooks.ts"))
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.ExecutionEnding,
-                executionStartingRequest: new gauge.messages.ExecutionStartingRequest({
-                    currentExecutionInfo: new gauge.messages.ExecutionInfo()
-                })
-            })
+            hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(async () => { }, "Hooks.ts"));
 
-            const resMessage = await processor.process(message);
-            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            const req = new ExecutionStartingRequest();
 
-            expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
-        })
+            req.setCurrentexecutioninfo(new ExecutionInfo());
 
-        it('should process ExecutionStartingRequest and run BeforeSuite hooks', async () => {
+            const res = await processor.process(req);
+
+            expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+        });
+
+        it('should process ExecutionStartingRequest and start debugger', async () => {
             console.log = jest.fn();
             const open = jest.spyOn(inspector, 'open');
 
             process.env.DEBUGGING = 'true';
             process.env.DEBUG_PORT = '1234';
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            hookRegistry.addHook(HookType.AfterSuite, new HookMethod(async () => {}, "Hooks.ts"))
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.ExecutionEnding,
-                executionStartingRequest: new gauge.messages.ExecutionStartingRequest({
-                    currentExecutionInfo: new gauge.messages.ExecutionInfo()
-                })
-            })
+            hookRegistry.addHook(HookType.AfterSuite, new HookMethod(async () => { }, "Hooks.ts"));
 
-            await processor.process(message);
+            const req = new ExecutionStartingRequest();
+
+            req.setCurrentexecutioninfo(new ExecutionInfo());
+
+            await processor.process(req);
+
             expect(open).toHaveBeenCalledWith(1234, '127.0.0.1', true);
-        })
-
-    })
-
-})
+        });
+    });
+});

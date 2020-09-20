@@ -1,42 +1,33 @@
-import {gauge} from "../gen/messages";
-import {Range} from "../models/Range";
+import { StepNameRequest, StepNameResponse } from "../gen/messages_pb";
+import { Span } from "../gen/spec_pb";
+import { Range } from "../models/Range";
 import registry from "../models/StepRegistry";
-import {IMessageProcessor} from "./IMessageProcessor";
 
-export class StepNameProcessor implements IMessageProcessor {
+export class StepNameProcessor {
 
-    public process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        const req = message.stepNameRequest as gauge.messages.StepNameRequest;
+    public process(req: StepNameRequest): StepNameResponse {
+        const res = new StepNameResponse();
 
-        const resMes = new gauge.messages.Message({
-            messageId: message.messageId,
-            messageType: gauge.messages.Message.MessageType.StepNameResponse,
-        });
+        if (!registry.isImplemented(req.getStepvalue())) {
+            res.setIssteppresent(false);
+        } else {
+            const info = registry.get(req.getStepvalue());
+            const range = info.getRange() as Range;
 
-        if (!registry.isImplemented(req.stepValue)) {
-            resMes.stepNameResponse = new gauge.messages.StepNameResponse({isStepPresent: false});
+            res.setIssteppresent(true);
+            res.setFilename(info.getFilePath());
+            res.setHasalias(info.hasAlias());
+            res.setStepnameList([info.getStepText()]);
+            const span = new Span();
 
-            return Promise.resolve(resMes);
+            span.setStart(range.getStart().getLine());
+            span.setStartchar(range.getStart().getChar());
+            span.setEnd(range.getEnd().getLine());
+            span.setEndchar(range.getEnd().getChar());
+            res.setSpan(span);
         }
 
-        const info = registry.get(req.stepValue);
-        const span = info.getRange() as Range;
-
-        resMes.stepNameResponse = new gauge.messages.StepNameResponse({
-            isStepPresent: true,
-            fileName: info.getFilePath(),
-            hasAlias: info.hasAlias(),
-            stepName: [info.getStepText()],
-            span: new gauge.messages.Span({
-                start: span.getStart().getLine(),
-                startChar: span.getStart().getChar(),
-                end: span.getEnd().getLine(),
-                endChar: span.getEnd().getChar(),
-            }),
-
-        });
-
-        return Promise.resolve(resMes);
+        return res;
     }
 
 }

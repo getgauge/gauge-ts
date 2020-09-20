@@ -1,4 +1,4 @@
-import { gauge } from '../../src/gen/messages';
+import { ExecutionInfo, SpecExecutionEndingRequest, SpecInfo } from '../../src/gen/messages_pb';
 import { HookMethod } from '../../src/models/HookMethod';
 import hookRegistry from '../../src/models/HookRegistry';
 import { HookType } from '../../src/models/HookType';
@@ -6,39 +6,35 @@ import { SpecExecutionEndingProcessor } from '../../src/processors/SpecExecution
 
 describe('SpecExecutionEndingProcessor', () => {
 
-    let processor: SpecExecutionEndingProcessor
+    let processor: SpecExecutionEndingProcessor;
 
     beforeEach(() => {
         jest.clearAllMocks();
         hookRegistry.clear();
         process.env.screenshot_on_failure = "";
         processor = new SpecExecutionEndingProcessor();
-    })
+    });
 
     describe('.process', () => {
         it('should process SpecExecutionEndingRequest and run AfterSpec hooks', async () => {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            hookRegistry.addHook(HookType.AfterSpec, new HookMethod(async () => { }, "Hooks.ts"))
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.ExecutionEnding,
-                specExecutionEndingRequest: new gauge.messages.SpecExecutionEndingRequest({
-                    currentExecutionInfo: new gauge.messages.ExecutionInfo({
-                        currentSpec: new gauge.messages.SpecInfo({
-                            fileName: "foo.spec",
-                            name: "foo",
-                            tags: ["hello"],
-                            isFailed: false
-                        })
-                    })
-                })
-            })
+            hookRegistry.addHook(HookType.AfterSpec, new HookMethod(async () => { }, "Hooks.ts"));
+            const currentSpec = new SpecInfo();
 
-            const resMessage = await processor.process(message);
-            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            currentSpec.setName("foo");
+            currentSpec.setFilename("foo.spec");
+            currentSpec.setTagsList(["hello"]);
+            const info = new ExecutionInfo();
 
-            expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
-        })
-    })
+            info.setCurrentspec(currentSpec);
+            const req = new SpecExecutionEndingRequest();
 
-})
+            req.setCurrentexecutioninfo(info);
+
+            const res = (await processor.process(req)).getExecutionresult();
+
+            expect(res?.getFailed()).toBe(false);
+        });
+    });
+
+});

@@ -1,4 +1,5 @@
 import { existsSync, unlinkSync } from 'fs';
+import { tmpdir } from 'os';
 import { Screenshot } from '../../src/screenshot/Screenshot';
 import { Util } from '../../src/utils/Util';
 
@@ -8,42 +9,57 @@ describe('Screenshot', () => {
 
     describe('.capture', () => {
 
+        beforeAll(() => {
+            process.env.gauge_screenshots_dir = tmpdir();
+        });
+
         afterEach(() => {
             if (existsSync(screenshotFile)) {
                 unlinkSync(screenshotFile);
             }
-        })
+        });
 
         it('should capture screen shot and return the buffer', async () => {
-            process.env.gauge_screenshots_dir = "";
             Util.readFileBuffer = jest.fn().mockReturnValue(new ArrayBuffer(10));
             Util.spawn = jest.fn();
             screenshotFile = await Screenshot.capture();
             expect(screenshotFile.endsWith('.png')).toBe(true);
-        })
+        });
 
         it('should return empty buffer if fails to capture screenshot', async () => {
             Util.readFileBuffer = jest.fn().mockReturnValue(new ArrayBuffer(10));
-            Util.spawn = jest.fn().mockImplementation(() => { throw new Error('failed to spawn') });
+            Util.spawn = jest.fn().mockImplementation(() => { throw new Error('failed to spawn'); });
             console.log = jest.fn();
             const file = await Screenshot.capture();
 
             expect(file).toBe("");
-        })
+        });
 
         it('should capture screenshot using custom screen grabber and write data to file', async () => {
-            process.env.gauge_screenshots_dir = process.cwd();
-            Screenshot.setCustomScreenGrabber(() => { return new Uint8Array(new ArrayBuffer(10)) })
+            Screenshot.setCustomScreenGrabber(() => { return new Uint8Array(new ArrayBuffer(10)); });
             screenshotFile = await Screenshot.capture();
             expect(screenshotFile.endsWith('png')).toBeTruthy();
-        })
+        });
 
         it('should capture screenshot using async custom screen grabber and write data to file', async () => {
-            process.env.gauge_screenshots_dir = "";
             // eslint-disable-next-line @typescript-eslint/require-await
-            Screenshot.setCustomScreenGrabber(async () => { return new Uint8Array(new ArrayBuffer(5)) })
+            Screenshot.setCustomScreenGrabber(async () => { return new Uint8Array(new ArrayBuffer(5)); });
             screenshotFile = await Screenshot.capture();
             expect(screenshotFile.endsWith('png')).toBeTruthy();
-        })
-    })
-})
+        });
+
+        it('should capture screenshot using custom screen writer', async () => {
+            Screenshot.setCustomScreenshotWriter(() => { return 'foo.png'; });
+            screenshotFile = await Screenshot.capture();
+            expect(screenshotFile.endsWith('png')).toBeTruthy();
+        });
+
+        it('should capture screenshot using async custom screen writer', async () => {
+            // eslint-disable-next-line @typescript-eslint/require-await
+            Screenshot.setCustomScreenshotWriter(async () => { return 'foo.png'; });
+            screenshotFile = await Screenshot.capture();
+            expect(screenshotFile.endsWith('png')).toBeTruthy();
+        });
+
+    });
+});

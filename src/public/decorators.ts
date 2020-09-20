@@ -43,7 +43,7 @@ export function BeforeSuite(): MethodDecorator {
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(descriptor.value, file))
+        hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(descriptor.value, file));
     };
 }
 
@@ -51,7 +51,7 @@ export function AfterSuite(): MethodDecorator {
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.AfterSuite, new HookMethod(descriptor.value, file))
+        hookRegistry.addHook(HookType.AfterSuite, new HookMethod(descriptor.value, file));
     };
 }
 
@@ -59,7 +59,7 @@ export function BeforeSpec(options?: { tags: Array<string>, operator?: Operator 
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.BeforeSpec, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.BeforeSpec, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -67,7 +67,7 @@ export function AfterSpec(options?: { tags: Array<string>, operator?: Operator }
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.AfterSpec, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.AfterSpec, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -75,7 +75,7 @@ export function BeforeScenario(options?: { tags: Array<string>, operator?: Opera
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.BeforeScenario, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -83,7 +83,7 @@ export function AfterScenario(options?: { tags: Array<string>, operator?: Operat
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.AfterScenario, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.AfterScenario, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -91,7 +91,7 @@ export function BeforeStep(options?: { tags: Array<string>, operator?: Operator 
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.BeforeStep, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.BeforeStep, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -99,7 +99,7 @@ export function AfterStep(options?: { tags: Array<string>, operator?: Operator }
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         const file = process.env.STEP_FILE_PATH as string;
 
-        hookRegistry.addHook(HookType.AfterStep, new HookMethod(descriptor.value, file, options))
+        hookRegistry.addHook(HookType.AfterStep, new HookMethod(descriptor.value, file, options));
     };
 }
 
@@ -107,7 +107,7 @@ export function AfterStep(options?: { tags: Array<string>, operator?: Operator }
  * @deprecated Use CustomScreenshotWriter instead.
  */
 export function CustomScreenGrabber(): MethodDecorator {
-    console.warn("CustomScreenGrabber is deprecated. Please use CustomScreenWriter.")
+    console.warn("CustomScreenGrabber is deprecated. Please use CustomScreenWriter.");
 
     return function (target: unknown, _propertyKey, descriptor: PropertyDescriptor) {
         Screenshot.setCustomScreenGrabber(descriptor.value);

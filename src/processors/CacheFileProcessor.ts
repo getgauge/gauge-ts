@@ -1,10 +1,9 @@
-import { gauge } from "../gen/messages";
 import { StaticLoader } from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
-import { IMessageProcessor } from "./IMessageProcessor";
+import { CacheFileRequest } from "../gen/messages_pb";
 
-export class CacheFileProcessor implements IMessageProcessor {
+export class CacheFileProcessor {
 
     private readonly _loader: StaticLoader;
 
@@ -12,39 +11,31 @@ export class CacheFileProcessor implements IMessageProcessor {
         this._loader = loader;
     }
 
-    public process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        const req = message.cacheFileRequest as gauge.messages.CacheFileRequest
-
-        switch (req.status) {
-            case gauge.messages.CacheFileRequest.FileStatus.CHANGED:
-            case gauge.messages.CacheFileRequest.FileStatus.OPENED:
-                this._loader.reloadSteps(req.content, req.filePath)
+    public process(req: CacheFileRequest): void {
+        switch (req.getStatus()) {
+            case CacheFileRequest.FileStatus.CHANGED:
+            case CacheFileRequest.FileStatus.OPENED:
+                this._loader.reloadSteps(req.getContent(), req.getFilepath());
                 break;
-            case gauge.messages.CacheFileRequest.FileStatus.CREATED:
-                if (!registry.isFileCached(req.filePath)) {
-                    this.loadFromDisk(req.filePath);
+            case CacheFileRequest.FileStatus.CREATED:
+                if (!registry.isFileCached(req.getFilepath())) {
+                    this.loadFromDisk(req.getFilepath());
                 }
                 break;
-            case gauge.messages.CacheFileRequest.FileStatus.CLOSED:
-                this.loadFromDisk(req.filePath);
+            case CacheFileRequest.FileStatus.CLOSED:
+                this.loadFromDisk(req.getFilepath());
                 break;
-            case gauge.messages.CacheFileRequest.FileStatus.DELETED:
-                this._loader.removeSteps(req.filePath);
-                break;
-            default:
-                this._loader.reloadSteps(req.content, req.filePath)
+            case CacheFileRequest.FileStatus.DELETED:
+                this._loader.removeSteps(req.getFilepath());
                 break;
         }
-
-        return Promise.resolve(new gauge.messages.Message());
     }
 
     private loadFromDisk(filePath: string) {
         if (!Util.exists(filePath)) {
             return;
         }
-
-        this._loader.reloadSteps(Util.readFile(filePath), filePath)
+        this._loader.reloadSteps(Util.readFile(filePath), filePath);
     }
 
 }

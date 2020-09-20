@@ -10,3 +10,4 @@ package.json
 package-lock.json
 .eslintrc.js
 src/gen
+config.ts

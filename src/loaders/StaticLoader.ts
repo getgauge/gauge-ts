@@ -23,7 +23,7 @@ export class StaticLoader extends CodeHelper {
     }
 
     public loadStepsFromText(file: string, text: string): void {
-        const source = createSourceFile(file, text, ScriptTarget.Latest)
+        const source = createSourceFile(file, text, ScriptTarget.Latest);
 
         forEachChild(source, (childNode: Node) => {
             if (isClassDeclaration(childNode)) {
@@ -31,14 +31,14 @@ export class StaticLoader extends CodeHelper {
                     if (isMethodDeclaration(node) && this.hasStepDecorator(node)) {
                         this.processNode(node, file, source);
                     }
-                })
+                });
             }
-        })
+        });
     }
 
     public reloadSteps(content: string, filePath: string): void {
         registry.removeSteps(filePath);
-        this.loadStepsFromText(filePath, content)
+        this.loadStepsFromText(filePath, content);
     }
 
     public removeSteps(filePath: string): void {
@@ -50,7 +50,7 @@ export class StaticLoader extends CodeHelper {
             const text = Util.readFile(file);
 
             this.loadStepsFromText(file, text);
-        })
+        });
     }
 
     private processNode(node: MethodDeclaration, file: string, source: SourceFile) {

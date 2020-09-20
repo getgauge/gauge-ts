@@ -1,8 +1,8 @@
-import { gauge } from "../gen/messages";
+import { ExecutionInfo, SpecExecutionEndingRequest, SpecInfo } from "../gen/messages_pb";
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
-import { HookExecutionProcessor } from "./HookExecutionProcessor";
+import { HookExectionRequest, HookExecutionProcessor } from "./HookExecutionProcessor";
 export class SpecExecutionEndingProcessor extends HookExecutionProcessor {
 
     protected hookType: HookType = HookType.AfterSpec;
@@ -11,15 +11,17 @@ export class SpecExecutionEndingProcessor extends HookExecutionProcessor {
         super();
     }
 
-    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
-        return (message.specExecutionEndingRequest as gauge.messages.SpecExecutionEndingRequest)
-            .currentExecutionInfo as gauge.messages.ExecutionInfo;
+    protected getExecutionInfo(hookExecreq: HookExectionRequest): ExecutionInfo {
+        const req = hookExecreq as SpecExecutionEndingRequest;
+
+        return req.getCurrentexecutioninfo() as ExecutionInfo;
     }
 
-    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
-        const request = message.specExecutionEndingRequest as gauge.messages.SpecExecutionEndingRequest;
+    protected getApplicableHooks(hookExecReq: HookExectionRequest): Array<HookMethod> {
+        const execInfo = this.getExecutionInfo(hookExecReq);
+        const specInfo = execInfo.getCurrentspec() as SpecInfo;
 
-        return this.getApplicableHooksInternal(request);
+        return hookRegistry.get(this.hookType, specInfo.getTagsList());
     }
 
 }

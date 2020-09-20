@@ -1,82 +1,95 @@
-import { gauge } from '../../src/gen/messages';
+import { StepValidateRequest, StepValidateResponse } from '../../src/gen/messages_pb';
+import { ProtoStepValue } from '../../src/gen/spec_pb';
 import registry from '../../src/models/StepRegistry';
 import { ValidationProcessor } from '../../src/processors/ValidationProcessor';
 
 describe('ValidationProcessor', () => {
-    let processor: ValidationProcessor
+    let processor: ValidationProcessor;
 
     beforeEach(() => {
         jest.clearAllMocks();
         processor = new ValidationProcessor();
-    })
+    });
     describe('.process', () => {
-        it('should process StepValidateRequest request', async () => {
+        it('should process StepValidateRequest request', () => {
             registry.isImplemented = jest.fn().mockReturnValue(true);
-            const req = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.StepValidateRequest,
-                stepValidateRequest: new gauge.messages.StepValidateRequest({
-                    stepValue: new gauge.messages.ProtoStepValue({
-                        parameterizedStepValue: "foo",
-                        parameters: [],
-                        stepValue: "foo"
-                    }),
-                    stepText: "foo",
-                    numberOfParameters: 0
-                })
-            })
+            const stepValue = new ProtoStepValue();
 
-            const res = await processor.process(req);
+            stepValue.setParameterizedstepvalue("foo");
+            stepValue.setParametersList([]);
+            stepValue.setStepvalue("foo");
 
-            expect((res.stepValidateResponse as gauge.messages.StepValidateResponse).isValid).toBe(true);
-        })
+            const req = new StepValidateRequest();
 
-        it('should process StepValidateRequest request when step is not implemented', async () => {
+            req.setSteptext("foo");
+            req.setNumberofparameters(0);
+            req.setStepvalue(stepValue);
+
+            const res = processor.process(req);
+
+            expect(res.getIsvalid()).toBe(true);
+        });
+
+        it('should process StepValidateRequest request when step is not implemented', () => {
             registry.isImplemented = jest.fn().mockReturnValue(false);
-            const req = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.StepValidateRequest,
-                stepValidateRequest: new gauge.messages.StepValidateRequest({
-                    stepValue: new gauge.messages.ProtoStepValue({
-                        parameterizedStepValue: "hello {}",
-                        parameters: ["world"],
-                        stepValue: "hello <world>"
-                    }),
-                    stepText: "hello <world>",
-                    numberOfParameters: 1
-                })
-            })
 
-            const resMess = await processor.process(req);
-            const res = (resMess.stepValidateResponse as gauge.messages.StepValidateResponse)
+            const stepValue = new ProtoStepValue();
 
-            expect(res.isValid).toBe(false);
-            expect(res.errorType).toBe(gauge.messages.StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND);
-        })
+            stepValue.setParameterizedstepvalue("hello");
+            stepValue.setStepvalue("hello");
 
-        it('should process StepValidateRequest request when step is implemented more than once', async () => {
+            const req = new StepValidateRequest();
+
+            req.setSteptext("hello");
+            req.setStepvalue(stepValue);
+
+            const res = processor.process(req);
+
+            expect(res.getIsvalid()).toBe(false);
+            expect(res.getErrortype()).toBe(StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND);
+        });
+
+        it('should process StepValidateRequest request and give suggestion when step is not implemented', () => {
+            registry.isImplemented = jest.fn().mockReturnValue(false);
+
+            const stepValue = new ProtoStepValue();
+
+            stepValue.setParameterizedstepvalue("say {} to {}");
+            stepValue.setParametersList(["hello", "world"]);
+            stepValue.setStepvalue("say <hello> to <world>");
+
+            const req = new StepValidateRequest();
+
+            req.setSteptext("say <hello> to <world>");
+            req.setNumberofparameters(2);
+            req.setStepvalue(stepValue);
+
+            const res = processor.process(req);
+
+            expect(res.getIsvalid()).toBe(false);
+            expect(res.getErrortype()).toBe(StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND);
+        });
+
+        it('should process StepValidateRequest request when step is implemented more than once', () => {
             registry.isImplemented = jest.fn().mockReturnValue(true);
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
-            const req = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.StepValidateRequest,
-                stepValidateRequest: new gauge.messages.StepValidateRequest({
-                    stepValue: new gauge.messages.ProtoStepValue({
-                        parameterizedStepValue: "hello {}",
-                        parameters: ["world"],
-                        stepValue: "hello <world>"
-                    }),
-                    stepText: "hello <world>",
-                    numberOfParameters: 1
-                })
-            })
+            const stepValue = new ProtoStepValue();
 
-            const resMess = await processor.process(req);
-            const res = (resMess.stepValidateResponse as gauge.messages.StepValidateResponse)
+            stepValue.setParameterizedstepvalue("hello {}");
+            stepValue.setParametersList(["world"]);
+            stepValue.setStepvalue("hello <world>");
 
-            expect(res.isValid).toBe(false);
-            expect(res.errorType).toBe(gauge.messages.StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION);
-        })
-    })
+            const req = new StepValidateRequest();
 
-})
+            req.setSteptext("hello <world>");
+            req.setNumberofparameters(1);
+            req.setStepvalue(stepValue);
+
+            const res = processor.process(req);
+
+            expect(res.getIsvalid()).toBe(false);
+            expect(res.getErrortype()).toBe(StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION);
+        });
+    });
+
+});

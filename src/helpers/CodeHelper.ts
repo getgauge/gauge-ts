@@ -22,7 +22,7 @@ export abstract class CodeHelper {
 
     protected getStepTexts(method: MethodDeclaration): Array<string> {
         const dec = (method.decorators as unknown) as Array<Decorator>;
-        const stepDecExp = (dec.filter(this.isStepDecorator)[0]
+        const stepDecExp = (dec.filter(CodeHelper.isStepDecorator)[0]
             .expression as unknown) as ExpressionType;
         const arg = stepDecExp.arguments[0];
 
@@ -35,19 +35,19 @@ export abstract class CodeHelper {
         return [arg.text];
     }
 
-    protected isStepDecorator(d: Decorator): boolean {
+    protected static isStepDecorator(d: Decorator): boolean {
         const decExp = (d.expression as unknown) as ExpressionType;
 
         return decExp.expression.escapedText === "Step";
     }
 
     protected hasStepDecorator(method: MethodDeclaration): boolean {
-        return !!method.decorators && method.decorators.some(this.isStepDecorator);
+        return !!method.decorators && method.decorators.some(CodeHelper.isStepDecorator);
     }
 
     protected hasStepText(method: MethodDeclaration, stepText: string): boolean {
         const dec = (method.decorators as unknown) as Array<Decorator>;
-        const stepDecExp = (dec.filter(this.isStepDecorator)[0]
+    const stepDecExp = (dec.filter(CodeHelper.isStepDecorator)[0]
             .expression as unknown) as ExpressionType;
         const arg = stepDecExp.arguments[0];
 

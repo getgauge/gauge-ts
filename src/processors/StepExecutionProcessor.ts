@@ -1,73 +1,71 @@
-import {gauge} from "../gen/messages";
+import { ExecuteStepRequest, ExecutionStatusResponse } from '../gen/messages_pb';
+import { ProtoExecutionResult, ProtoTable } from '../gen/spec_pb';
 import registry from '../models/StepRegistry';
-import {Screenshot} from "../screenshot/Screenshot";
-import {MessageStore} from "../stores/MessageStore";
-import {ScreenshotStore} from "../stores/ScreenshotStore";
-import {ExecutionProcessor} from "./ExecutionProcessor";
-import {CommonFunction} from '../utils/Util';
+import { Screenshot } from "../screenshot/Screenshot";
+import { MessageStore } from "../stores/MessageStore";
+import { ScreenshotStore } from "../stores/ScreenshotStore";
+import { ExecutionProcessor } from "./ExecutionProcessor";
+import { CommonFunction } from '../utils/Util';
 
 export class StepExecutionProcessor extends ExecutionProcessor {
 
-    public async process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        const req = message.executeStepRequest as gauge.messages.ExecuteStepRequest;
-
-        if (!registry.isImplemented(req.parsedStepText))
-            {return Promise.resolve(this.executionError("Step Implementation not found", message));}
+    public async process(req: ExecuteStepRequest): Promise<ExecutionStatusResponse> {
+        if (!registry.isImplemented(req.getParsedsteptext())) { return Promise.resolve(this.executionError("Step Implementation not found")); }
         const result = await this.execute(req);
 
-        return this.wrapInMessage(result, message);
+        return this.createExecutionResponse(result);
     }
 
-    private async execute(req: gauge.messages.ExecuteStepRequest): Promise<gauge.messages.ProtoExecutionResult> {
+    private async execute(req: ExecuteStepRequest): Promise<ProtoExecutionResult> {
         const start = Date.now();
-        const result = new gauge.messages.ProtoExecutionResult();
+        const result = new ProtoExecutionResult();
 
-        result.failed = false;
-        const mi = registry.get(req.parsedStepText)
-        const params = req.parameters.map((item) => {
-            return item.value ? item.value : item.table
+        result.setFailed(false);
+        const mi = registry.get(req.getParsedsteptext());
+        const params = req.getParametersList().map((item) => {
+            return item.getValue() ? item.getValue() : (item.getTable() as ProtoTable).toObject();
         });
         const method = mi.getMethod() as CommonFunction;
 
         try {
             if (method.length !== params.length) {
-                throw new Error(`Argument length mismatch for \`${req.actualStepText}\`.` +
-                    ` Actual Count: [${method.length}], Expected Count: [${params.length}]`)
+                throw new Error(`Argument length mismatch for \`${req.getActualsteptext()}\`.` +
+                    ` Actual Count: [${method.length}], Expected Count: [${params.length}]`);
             }
             await this.executeMethod(mi.getInstance() as Record<string, unknown>, method, params);
-        } catch (error) {
-            result.failed = true;
+        } catch (err) {
+            const error = err as Error;
+
+            result.setFailed(true);
             const cofErrors = registry.getContinueOnFailureFunctions(method);
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             if (cofErrors && cofErrors.includes(error.constructor.name)) {
-                result.recoverableError = true;
+                result.setRecoverableerror(true);
             }
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
-            result.errorMessage = error.message;
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
-            result.stackTrace = error.stack;
+            result.setErrormessage(error.message);
+            result.setStacktrace(error.stack ?? '');
             if (process.env.screenshot_on_failure !== "false") {
-                result.failureScreenshotFile = await Screenshot.capture();
+                const s = await Screenshot.capture();
+
+                result.setFailurescreenshotfile(s);
             }
         }
-
-        result.executionTime = Date.now() - start;
-        result.message = MessageStore.pendingMessages();
-        result.screenshotFiles = ScreenshotStore.pendingScreenshots();
+        result.setExecutiontime(Date.now() - start);
+        result.setMessageList(MessageStore.pendingMessages());
+        result.setScreenshotfilesList(ScreenshotStore.pendingScreenshots());
 
         return result;
     }
 
-    private executionError(message: string, req: gauge.messages.IMessage): gauge.messages.IMessage {
-        const result = new gauge.messages.ProtoExecutionResult();
+    private executionError(message: string): ExecutionStatusResponse {
+        const result = new ProtoExecutionResult();
 
-        result.failed = true;
-        result.recoverableError = false;
-        result.executionTime = 0;
-        result.errorMessage = message;
+        result.setFailed(true);
+        result.setRecoverableerror(false);
+        result.setExecutiontime(0);
+        result.setErrormessage(message);
 
-        return this.wrapInMessage(result, req);
+        return this.createExecutionResponse(result);
     }
 
 }

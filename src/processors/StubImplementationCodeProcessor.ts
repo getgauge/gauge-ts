@@ -1,5 +1,5 @@
-import {EOL} from "os";
-import {basename} from "path";
+import { EOL } from "os";
+import { basename } from "path";
 import {
     createSourceFile,
     Extension,
@@ -9,32 +9,36 @@ import {
     Node,
     ScriptTarget
 } from "typescript";
-import {gauge} from "../gen/messages";
-import {Util} from "../utils/Util";
-import {IMessageProcessor} from "./IMessageProcessor";
+import { FileDiff, StubImplementationCodeRequest, TextDiff } from "../gen/messages_pb";
+import { Span } from "../gen/spec_pb";
+import { Util } from "../utils/Util";
 
-export class StubImplementationCodeProcessor implements IMessageProcessor {
+export class StubImplementationCodeProcessor {
 
-    public process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        const req = message.stubImplementationCodeRequest as gauge.messages.StubImplementationCodeRequest
-        const filePath = req.implementationFilePath;
-        const content = req.codes.reduce((acc, cur) => {
-            return acc + EOL + cur
-        });
+    public process(req: StubImplementationCodeRequest): FileDiff {
+        const filePath = req.getImplementationfilepath();
+        const content = req.getCodesList().reduce((acc, cur) => { return acc + EOL + cur; });
+        const fileDiff = new FileDiff();
+
+        fileDiff.setFilepath(filePath);
+        const textDiffs = new Array<TextDiff>();
 
         if (!Util.exists(filePath)) {
             const filePath = Util.getNewTSFileName(Util.getImplDirs()[0]);
             const className = basename(filePath).replace(Extension.Ts, '');
 
-            return StubImplementationCodeProcessor.wrapInMessage(message, filePath, StubImplementationCodeProcessor.diffForImplementationInNewClass(content, className))
+            textDiffs.push(this.diffForImplementationInNewClass(content, className));
+        } else {
+            textDiffs.push(this.diffForImplementationInExistingClass(filePath, content));
         }
+        fileDiff.setTextdiffsList(textDiffs);
 
-        return StubImplementationCodeProcessor.wrapInMessage(message, filePath, this.diffForImplementationInExistingClass(filePath, content));
+        return fileDiff;
     }
 
-    private diffForImplementationInExistingClass(filePath: string, content: string): gauge.messages.TextDiff[] {
+    private diffForImplementationInExistingClass(filePath: string, content: string): TextDiff {
         const fileContent = Util.readFile(filePath).toString().replace("\r\n", "\n");
-        const source = createSourceFile(filePath, fileContent, ScriptTarget.Latest)
+        const source = createSourceFile(filePath, fileContent, ScriptTarget.Latest);
         let lastMethod: Node | null = null;
 
         forEachChild(source, (childNode: Node) => {
@@ -43,55 +47,46 @@ export class StubImplementationCodeProcessor implements IMessageProcessor {
                     if (isMethodDeclaration(node)) {
                         lastMethod = node;
                     }
-                })
+                });
             }
-        })
-        const pos = source.getLineAndCharacterOfPosition((lastMethod as unknown as Node).end)
-        const span = new gauge.messages.Span({start: pos.line + 1, end: pos.line + 1, startChar: 0, endChar: 0});
-        const textDiff = new gauge.messages.TextDiff({
-            span: span, content: content.split(EOL).map((c) => {
-                return '\t' + c
-            }).join(EOL) + EOL
         });
+        const pos = source.getLineAndCharacterOfPosition((lastMethod as unknown as Node).end);
+        const span = new Span();
 
-        return [textDiff];
+        span.setStart(pos.line + 1);
+        span.setEnd(pos.line + 1);
+        span.setStartchar(0);
+        span.setEndchar(0);
+        const textDiff = new TextDiff();
+
+        textDiff.setSpan(span);
+        textDiff.setContent(content.split(EOL).map((c) => { return '\t' + c; }).join(EOL) + EOL);
+
+        return textDiff;
     }
 
-    private static wrapInMessage(message: gauge.messages.IMessage, filePath: string, diffs: gauge.messages.TextDiff[]): Promise<gauge.messages.IMessage> {
-        return Promise.resolve(
-            new gauge.messages.Message({
-                messageId: message.messageId,
-                messageType: gauge.messages.Message.MessageType.FileDiff,
-                fileDiff: new gauge.messages.FileDiff({
-                    filePath: filePath,
-                    textDiffs: diffs
-                })
-            })
-        );
+    private diffForImplementationInNewClass(content: string, className: string): TextDiff {
+        const span = new Span();
+
+        span.setStart(0);
+        span.setEnd(0);
+        span.setStartchar(0);
+        span.setEndchar(0);
+        const textDiff = new TextDiff();
+
+        textDiff.setSpan(span);
+        textDiff.setContent(this.getContentForNewClass(content, className));
+
+        return textDiff;
     }
 
-    private static diffForImplementationInNewClass(content: string, className: string): gauge.messages.TextDiff[] {
-        const span = new gauge.messages.Span({
-            start: 0,
-            end: 0,
-            startChar: 0,
-            endChar: 0
-        });
-        const textDiff = new gauge.messages.TextDiff({
-            span: span,
-            content: StubImplementationCodeProcessor.getContentForNewClass(content, className)
-        });
-
-        return [textDiff]
-    }
-
-    private static getContentForNewClass(content: string, className: string): string {
+    private getContentForNewClass(content: string, className: string): string {
         return `import { Step } from "gauge-ts";` + EOL +
             `export default class ${className} {` + EOL +
             `${content.split(EOL).map((c) => {
-                return '\t' + c
+                return '\t' + c;
             }).join(EOL)}` + EOL +
-            `}`
+            `}`;
     }
 
 }

@@ -16,7 +16,7 @@ export class HookRegistry {
             [HookType.AfterSpec, new Array<HookMethod>()],
             [HookType.AfterScenario, new Array<HookMethod>()],
             [HookType.AfterStep, new Array<HookMethod>()]
-        ])
+        ]);
     }
 
     public addHook(type: HookType, method: HookMethod): void {
@@ -31,7 +31,7 @@ export class HookRegistry {
         }
 
         if (!tags.length) {
-            return hooks.filter((hook) => { return hook.getTags().length === 0 });
+            return hooks.filter((hook) => { return hook.getTags().length === 0; });
         }
 
         return hooks.filter((hook) => {
@@ -39,7 +39,7 @@ export class HookRegistry {
             const operator = hook.getTagAggregationOperator();
 
             if (!hookTags.length) {
-                return true
+                return true;
             }
             const matched = HookRegistry.hasIntersection(tags, hookTags);
 
@@ -49,7 +49,7 @@ export class HookRegistry {
                 case Operator.Or:
                     return matched > 0;
             }
-        })
+        });
     }
 
     public setInstanceForMethodsIn(file: string, instance: Record<string, unknown>): void {
@@ -61,11 +61,11 @@ export class HookRegistry {
     }
 
     public clear(): void {
-        this._hooks.forEach((v, k) => { this._hooks.set(k, new Array<HookMethod>()) });
+        this._hooks.forEach((v, k) => { this._hooks.set(k, new Array<HookMethod>()); });
     }
 
     private static hasIntersection(tags: string[], hookTags: string[]): number {
-        return tags.filter((t) => { return hookTags.includes(t); }).length
+        return tags.filter((t) => { return hookTags.includes(t); }).length;
     }
 
 }

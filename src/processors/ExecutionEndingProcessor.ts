@@ -1,8 +1,8 @@
-import { gauge } from "../gen/messages";
+import { ExecutionEndingRequest, ExecutionInfo } from "../gen/messages_pb";
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
-import { HookExecutionProcessor } from "./HookExecutionProcessor";
+import { HookExectionRequest, HookExecutionProcessor } from "./HookExecutionProcessor";
 
 export class ExecutionEndingProcessor extends HookExecutionProcessor {
 
@@ -12,13 +12,14 @@ export class ExecutionEndingProcessor extends HookExecutionProcessor {
         super();
     }
 
-    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
-        return hookRegistry.get(this.hookType, [])
+    protected getApplicableHooks(): Array<HookMethod> {
+        return hookRegistry.get(this.hookType, []);
     }
 
-    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
-        return (message.executionEndingRequest as gauge.messages.ExecutionEndingRequest)
-            .currentExecutionInfo as gauge.messages.ExecutionInfo;
+    protected getExecutionInfo(message: HookExectionRequest): ExecutionInfo {
+        const req = message as ExecutionEndingRequest;
+
+        return req.getCurrentexecutioninfo() as ExecutionInfo;
     }
 
 }

@@ -18,6 +18,10 @@ export class DataStore {
         this.store.clear();
     }
 
+    get length(): number {
+        return this.store.size;
+    }
+
     public entries(): IterableIterator<[unknown, unknown]> {
         return this.store.entries();
     }

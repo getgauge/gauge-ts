@@ -1,4 +1,4 @@
-import { gauge } from '../../src/gen/messages';
+import { ExecuteStepRequest, ExecutionInfo, ScenarioInfo, SpecInfo, StepExecutionStartingRequest, StepInfo } from '../../src/gen/messages_pb';
 import { HookMethod } from '../../src/models/HookMethod';
 import hookRegistry from '../../src/models/HookRegistry';
 import { HookType } from '../../src/models/HookType';
@@ -7,43 +7,102 @@ jest.mock('inspector');
 
 describe('StepExecutionStartingProcessor', () => {
 
-    let processor: StepExecutionStartingProcessor
+    let processor: StepExecutionStartingProcessor;
 
     beforeEach(() => {
         jest.clearAllMocks();
         hookRegistry.clear();
         process.env.screenshot_on_failure = "";
         processor = new StepExecutionStartingProcessor();
-    })
+    });
 
     describe('.process', () => {
-        it('should process StepExecutionStartingRequest and run BeforeSuite hooks', async () => {
+
+        it('should process StepExecutionStartingRequest and run BeforeStep hooks no step in context', async () => {
             // eslint-disable-next-line @typescript-eslint/no-empty-function
-            hookRegistry.addHook(HookType.BeforeStep, new HookMethod(async () => {}, "Hooks.ts"))
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.StepExecutionStarting,
-                stepExecutionStartingRequest: new gauge.messages.StepExecutionStartingRequest({
-                    currentExecutionInfo: new gauge.messages.ExecutionInfo({
-                        currentSpec: new gauge.messages.SpecInfo({
-                            name: "Foo",
-                            fileName:"foo.ts",
-                            tags:[]
-                        }),
-                        currentScenario: new gauge.messages.ScenarioInfo({
-                            name:"scenario",
-                            tags: []
-                        }),
-                        currentStep: new gauge.messages.StepInfo()
-                    })
-                })
-            })
+            hookRegistry.addHook(HookType.BeforeStep, new HookMethod(async () => { }, "Hooks.ts"));
+            const currentSpec = new SpecInfo();
 
-            const resMessage = await processor.process(message);
-            const res = resMessage.executionStatusResponse as gauge.messages.ExecutionStatusResponse
+            currentSpec.setName("Foo");
+            currentSpec.setFilename("foo.ts");
+            currentSpec.setTagsList([]);
+            const currentScen = new ScenarioInfo();
 
-            expect((res.executionResult as gauge.messages.ProtoExecutionResult).failed).toBe(false);
-        })
-    })
+            currentScen.setName("scenario");
+            currentScen.setTagsList([]);
 
-})
+            const info = new ExecutionInfo();
+
+            info.setCurrentspec(currentSpec);
+            info.setCurrentscenario(currentScen);
+            info.setCurrentstep();
+            const req = new StepExecutionStartingRequest();
+
+            req.setCurrentexecutioninfo(info);
+
+            const res = await processor.process(req);
+
+            expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+        });
+
+        it('should process StepExecutionStartingRequest and run BeforeStep hooks with step in context', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            hookRegistry.addHook(HookType.BeforeStep, new HookMethod(async () => { }, "Hooks.ts"));
+            const currentSpec = new SpecInfo();
+
+            currentSpec.setName("Foo");
+            currentSpec.setFilename("foo.ts");
+            currentSpec.setTagsList([]);
+            const currentScen = new ScenarioInfo();
+
+            currentScen.setName("scenario");
+            currentScen.setTagsList([]);
+
+            const currentStep = new StepInfo();
+
+            currentStep.setStep(new ExecuteStepRequest());
+            const info = new ExecutionInfo();
+
+            info.setCurrentspec(currentSpec);
+            info.setCurrentscenario(currentScen);
+            info.setCurrentstep(currentStep);
+            const req = new StepExecutionStartingRequest();
+
+            req.setCurrentexecutioninfo(info);
+
+            const res = await processor.process(req);
+
+            expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+        });
+
+        it('should process StepExecutionStartingRequest and run BeforeStep hooks with step without request in context', async () => {
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            hookRegistry.addHook(HookType.BeforeStep, new HookMethod(async () => { }, "Hooks.ts"));
+            const currentSpec = new SpecInfo();
+
+            currentSpec.setName("Foo");
+            currentSpec.setFilename("foo.ts");
+            currentSpec.setTagsList([]);
+            const currentScen = new ScenarioInfo();
+
+            currentScen.setName("scenario");
+            currentScen.setTagsList([]);
+
+            const currentStep = new StepInfo();
+
+            const info = new ExecutionInfo();
+
+            info.setCurrentspec(currentSpec);
+            info.setCurrentscenario(currentScen);
+            info.setCurrentstep(currentStep);
+            const req = new StepExecutionStartingRequest();
+
+            req.setCurrentexecutioninfo(info);
+
+            const res = await processor.process(req);
+
+            expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+        });
+    });
+
+});

@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
 import { basename } from "path";
-import {CommonAsyncFunction, CommonFunction, Util} from "../utils/Util";
+import { CommonAsyncFunction, CommonFunction, Util } from "../utils/Util";
 
 export class Screenshot {
 
@@ -10,22 +10,25 @@ export class Screenshot {
     public static async capture(): Promise<string> {
         try {
             if (this.customScreenshotWriter != null) {
-                if (Util.isAsync(this.customScreenshotWriter)) {
-                    return await this.customScreenshotWriter();
+                const out = this.customScreenshotWriter();
+
+                if (out.constructor.name === Promise.name) {
+                    return await out;
                 } else {
-                    return Promise.resolve(this.customScreenshotWriter());
+                    return out;
                 }
             } else if (this.customScreenGrabber != null) {
                 let data: Uint8Array;
+                const out = this.customScreenGrabber();
 
-                if (Util.isAsync(this.customScreenshotWriter)) {
-                    data = await this.customScreenGrabber();
+                if (out.constructor.name === Promise.name) {
+                    data = await out;
                 } else {
-                    data = this.customScreenGrabber() as Uint8Array;
+                    data = out as Uint8Array;
                 }
                 const file = Util.getUniqueScreenshotFileName();
 
-                writeFileSync(file, data)
+                writeFileSync(file, data);
 
                 return basename(file);
             }
@@ -33,7 +36,7 @@ export class Screenshot {
                 return this.captureScreenshot();
             }
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
 
         return Promise.resolve("");
@@ -48,7 +51,7 @@ export class Screenshot {
             return basename(filename);
         } catch (error) {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            throw new Error(`\nFailed to take screenshot using gauge_screenshot.\n${error}`)
+            throw new Error(`\nFailed to take screenshot using gauge_screenshot.\n${error}`);
         }
     }
 

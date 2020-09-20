@@ -1,24 +1,28 @@
-import {gauge} from "../gen/messages";
-import {HookMethod} from "../models/HookMethod";
-import {HookType} from "../models/HookType";
-import {HookExecutionProcessor} from "./HookExecutionProcessor";
+import { ExecutionInfo, SpecExecutionStartingRequest, SpecInfo } from "../gen/messages_pb";
+import { HookMethod } from "../models/HookMethod";
+import hookRegistry from "../models/HookRegistry";
+import { HookType } from "../models/HookType";
+import { HookExectionRequest, HookExecutionProcessor } from "./HookExecutionProcessor";
 
 export class SpecExecutionStartingProcessor extends HookExecutionProcessor {
 
     protected hookType: HookType = HookType.BeforeSpec;
+
     constructor() {
         super();
     }
 
-    protected getExecutionInfo(message: gauge.messages.IMessage): gauge.messages.ExecutionInfo {
-        return (message.specExecutionStartingRequest as gauge.messages.SpecExecutionStartingRequest)
-            .currentExecutionInfo as gauge.messages.ExecutionInfo;
+    protected getExecutionInfo(hookExecreq: HookExectionRequest): ExecutionInfo {
+        const req = hookExecreq as SpecExecutionStartingRequest;
+
+        return req.getCurrentexecutioninfo() as ExecutionInfo;
     }
 
-    protected getApplicableHooks(message: gauge.messages.IMessage): Array<HookMethod> {
-        const request = message.specExecutionStartingRequest as gauge.messages.SpecExecutionStartingRequest;
+    protected getApplicableHooks(hookExecReq: HookExectionRequest): Array<HookMethod> {
+        const execInfo = this.getExecutionInfo(hookExecReq);
+        const specInfo = execInfo.getCurrentspec() as SpecInfo;
 
-        return this.getApplicableHooksInternal(request);
+        return hookRegistry.get(this.hookType, specInfo.getTagsList());
     }
 
 }

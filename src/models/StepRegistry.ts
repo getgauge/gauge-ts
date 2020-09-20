@@ -35,7 +35,7 @@ export class StepRegistry {
     }
 
     public addContinueOnFailure(func: CommonFunction, exceptions?: Array<string>): void {
-        this._continueOnFailureFunctions.set(func, exceptions || [AssertionError.name])
+        this._continueOnFailureFunctions.set(func, exceptions || [AssertionError.name]);
     }
 
     public getContinueOnFailureFunctions(func: CommonFunction): Array<string> {
@@ -55,7 +55,7 @@ export class StepRegistry {
                     positions.push({
                         stepValue: step,
                         span: entry.getRange() as Range
-                    })
+                    });
                 }
             });
         });
@@ -66,8 +66,8 @@ export class StepRegistry {
     public getStepTexts(): Array<string> {
         let steps: Array<string> = [];
 
-        this._registry.forEach((v: StepRegistryEntry[], k) => {
-            steps = steps.concat(v[0].getStepText())
+        this._registry.forEach((v: StepRegistryEntry[]) => {
+            steps = steps.concat(v[0].getStepText());
         });
 
         return steps;
@@ -97,7 +97,7 @@ export class StepRegistry {
     }
 
     public setInstanceForMethodsIn(file: string, instance: Record<string, unknown>): void {
-        this._registry.forEach((entries, _) => {
+        this._registry.forEach((entries) => {
             entries.forEach((entry) => {
                 if (entry.getFilePath() === file) {
                     entry.setInstance(instance);

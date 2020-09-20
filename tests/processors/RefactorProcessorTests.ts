@@ -1,9 +1,10 @@
 import { EOL } from "os";
-import { gauge } from "../../src/gen/messages";
 import registry from "../../src/models/StepRegistry";
 import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { RefactorProcessor } from "../../src/processors/RefactorProcessor";
 import { Util } from "../../src/utils/Util";
+import { ProtoStepValue } from "../../src/gen/spec_pb";
+import { RefactorRequest, ParameterPosition } from "../../src/gen/messages_pb";
 
 describe.only('RefactorProcessor', () => {
 
@@ -30,231 +31,243 @@ describe.only('RefactorProcessor', () => {
         `        console.log("Hello World");` + EOL +
         `    }` + EOL +
         `}`;
-    let processor: RefactorProcessor
+    let processor: RefactorProcessor;
 
     beforeEach(() => {
         jest.clearAllMocks();
         processor = new RefactorProcessor();
-    })
+    });
     describe('.process', () => {
-        it('should process RefactorRequest when step has mutiple impl and return response with error', async () => {
+        it('should process RefactorRequest when step has mutiple impl and return response with error', () => {
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.RefactorRequest,
-                refactorRequest: new gauge.messages.RefactorRequest({
-                    newStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "foo",
-                        parameterizedStepValue: "foo"
-                    }),
-                    oldStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "bar",
-                        parameterizedStepValue: "bar"
-                    }),
-                    saveChanges: false,
-                })
-            });
 
-            const resMess = await processor.process(message);
-            const res = resMess.refactorResponse as gauge.messages.RefactorResponse;
+            const newStepValue = new ProtoStepValue();
 
-            expect(res.success).toBe(false);
-            expect(res.error).toBe('Multiple Implementation found for bar');
-        })
+            newStepValue.setStepvalue("foo");
+            newStepValue.setParameterizedstepvalue("foo");
+            const oldStepValue = new ProtoStepValue();
 
-        it('should process RefactorRequest for a step and return response', async () => {
+            oldStepValue.setStepvalue("bar");
+            oldStepValue.setParameterizedstepvalue("bar");
+            const request = new RefactorRequest();
+
+            request.setNewstepvalue(newStepValue);
+            request.setOldstepvalue(oldStepValue);
+            request.setSavechanges(false);
+
+            const res = processor.process(request);
+
+            expect(res.getSuccess()).toBe(false);
+            expect(res.getError()).toBe('Multiple Implementation found for bar');
+        });
+
+        it('should process RefactorRequest for a step and return response', () => {
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry("foo", "foo", "StepImpl.ts"));
             Util.readFile = jest.fn().mockReturnValue(text1);
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.RefactorRequest,
-                refactorRequest: new gauge.messages.RefactorRequest({
-                    oldStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "foo",
-                        parameterizedStepValue: "foo",
-                    }),
-                    newStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "bar",
-                        parameterizedStepValue: "bar",
-                    }),
-                    saveChanges: false,
-                })
-            });
 
-            const resMess = await processor.process(message);
-            const res = resMess.refactorResponse as gauge.messages.RefactorResponse;
+            const oldStepValue = new ProtoStepValue();
 
-            expect(res.success).toBe(true);
-            expect(res.error).toBe('');
-            expect(res.filesChanged).toStrictEqual(['StepImpl.ts']);
-            expect(res.fileChanges.length).toBe(2);
-            const changes = res.fileChanges.map((c) => { return c as gauge.messages.FileChanges });
+            oldStepValue.setStepvalue("foo");
+            oldStepValue.setParameterizedstepvalue("foo");
+            const newStepValue = new ProtoStepValue();
 
-            expect(changes[0].fileName).toBe('StepImpl.ts');
-            const diff = changes[0].diffs[0] as gauge.messages.TextDiff;
+            newStepValue.setStepvalue("bar");
+            newStepValue.setParameterizedstepvalue("bar");
+            const request = new RefactorRequest();
 
-            expect(diff.content).toBe(`"bar"`);
-            const span = diff.span as gauge.messages.Span;
+            request.setNewstepvalue(newStepValue);
+            request.setOldstepvalue(oldStepValue);
+            request.setSavechanges(false);
 
-            expect(span.start).toBe(3);
-            expect(span.startChar).toBe(10);
-            expect(span.end).toBe(3);
-            expect(span.endChar).toBe(17);
-        })
+            const res = processor.process(request);
 
-        it('should process RefactorRequest for a step with params and return response', async () => {
+            expect(res.getSuccess()).toBe(true);
+            expect(res.getError()).toBe('');
+            expect(res.getFileschangedList()).toStrictEqual(['StepImpl.ts']);
+            expect(res.getFilechangesList().length).toBe(2);
+            const changes = res.getFilechangesList();
+
+            expect(changes[0].getFilename()).toBe('StepImpl.ts');
+            const diff = changes[0].getDiffsList()[0];
+
+            expect(diff.getContent()).toBe('"bar"');
+            const span = diff.getSpan();
+
+            expect(span?.getStart()).toBe(3);
+            expect(span?.getStartchar()).toBe(10);
+            expect(span?.getEnd()).toBe(3);
+            expect(span?.getEndchar()).toBe(17);
+        });
+
+        it('should process RefactorRequest for a step with params and return response', () => {
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry("The word <word> has <number> vowels.",
                 "The word {} has {} vowels.", "StepImpl.ts"));
             Util.readFile = jest.fn().mockReturnValue(text2);
             Util.writeFile = jest.fn();
 
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.RefactorRequest,
-                refactorRequest: new gauge.messages.RefactorRequest({
-                    oldStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "The word {} has {} vowels.",
-                        parameterizedStepValue: "The word <word> has <number> vowels.",
-                        parameters: ["word", "number"]
-                    }),
-                    newStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "This English word {} has {} vowels.",
-                        parameterizedStepValue: "This English word <word_en> has <numbers> vowels.",
-                        parameters: ["word_en", "numbers"]
-                    }),
-                    paramPositions: [
-                        new gauge.messages.ParameterPosition({ oldPosition: -1, newPosition: 0 }),
-                        new gauge.messages.ParameterPosition({ oldPosition: -1, newPosition: 1 })
-                    ],
-                    saveChanges: true,
-                })
-            });
+            const oldStepValue = new ProtoStepValue();
 
-            const resMess = await processor.process(message);
-            const res = resMess.refactorResponse as gauge.messages.RefactorResponse;
+            oldStepValue.setStepvalue("The word {} has {} vowels.");
+            oldStepValue.setParameterizedstepvalue("The word <word> has <number> vowels.");
+            oldStepValue.setParametersList(["word", "number"]);
+            const newStepValue = new ProtoStepValue();
 
-            expect(res.success).toBe(true);
-            expect(res.error).toBe('');
-            expect(res.filesChanged).toStrictEqual(['StepImpl.ts']);
-            expect(res.fileChanges.length).toBe(2);
-            const changes = res.fileChanges.map((c) => { return c as gauge.messages.FileChanges });
+            newStepValue.setStepvalue("This English word {} has {} vowels.");
+            newStepValue.setParameterizedstepvalue("This English word <word_en> has <numbers> vowels.");
+            newStepValue.setParametersList(["word_en", "numbers"]);
 
-            expect(changes[0].fileName).toBe('StepImpl.ts');
-            const diff1 = changes[0].diffs[0] as gauge.messages.TextDiff;
-            const diff2 = changes[1].diffs[0] as gauge.messages.TextDiff;
+            const pp1 = new ParameterPosition();
 
-            expect(diff1.content).toBe('"This English word <word_en> has <numbers> vowels."');
-            const span1 = diff1.span as gauge.messages.Span;
+            pp1.setOldposition(-1);
+            pp1.setNewposition(0);
+            const pp2 = new ParameterPosition();
 
-            expect(span1.start).toBe(3);
-            expect(span1.startChar).toBe(10);
-            expect(span1.end).toBe(3);
-            expect(span1.endChar).toBe(48);
+            pp2.setOldposition(-1);
+            pp2.setNewposition(1);
 
-            expect(diff2.content).toBe("arg0: any, arg1: any");
-            const span2 = diff2.span as gauge.messages.Span;
+            const request = new RefactorRequest();
 
-            expect(span2.start).toBe(4);
-            expect(span2.startChar).toBe(21);
-            expect(span2.end).toBe(4);
-            expect(span2.endChar).toBe(43);
-        })
+            request.setNewstepvalue(newStepValue);
+            request.setOldstepvalue(oldStepValue);
+            request.setParampositionsList([pp1, pp2]);
 
-        it('should process RefactorRequest for a step with params and return response', async () => {
+            const res = processor.process(request);
+
+            expect(res.getSuccess()).toBe(true);
+            expect(res.getError()).toBe('');
+            expect(res.getFilechangesList().length).toBe(2);
+
+            const changes = res.getFilechangesList();
+
+            expect(changes[0].getFilename()).toBe('StepImpl.ts');
+
+            const diff1 = changes[0].getDiffsList()[0];
+
+            expect(diff1.getContent()).toBe('"This English word <word_en> has <numbers> vowels."');
+
+            const span1 = diff1.getSpan();
+
+            expect(span1?.getStart()).toBe(3);
+            expect(span1?.getStartchar()).toBe(10);
+            expect(span1?.getEnd()).toBe(3);
+            expect(span1?.getEndchar()).toBe(48);
+
+            const diff2 = changes[1].getDiffsList()[0];
+
+            expect(diff2.getContent()).toBe("arg0: any, arg1: any");
+
+            const span2 = diff2.getSpan();
+
+            expect(span2?.getStart()).toBe(4);
+            expect(span2?.getStartchar()).toBe(21);
+            expect(span2?.getEnd()).toBe(4);
+            expect(span2?.getEndchar()).toBe(43);
+        });
+
+        it('should process RefactorRequest for a step with params and return response', () => {
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry("The word <word> has",
                 "The word {} has", "StepImpl.ts"));
             Util.readFile = jest.fn().mockReturnValue(text3);
             Util.writeFile = jest.fn();
 
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.RefactorRequest,
-                refactorRequest: new gauge.messages.RefactorRequest({
-                    oldStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "The word {} has",
-                        parameterizedStepValue: "The word <word>",
-                        parameters: ["word"]
-                    }),
-                    newStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "This English word {} has {} vowels.",
-                        parameterizedStepValue: "This English word <word> has <number> vowels.",
-                        parameters: ["word", "number"]
-                    }),
-                    paramPositions: [
-                        new gauge.messages.ParameterPosition({ oldPosition: 0, newPosition: 0 }),
-                        new gauge.messages.ParameterPosition({ oldPosition: -1, newPosition: 1 })
-                    ],
-                    saveChanges: true,
-                })
-            });
+            const oldStepValue = new ProtoStepValue();
 
-            const resMess = await processor.process(message);
-            const res = resMess.refactorResponse as gauge.messages.RefactorResponse;
+            oldStepValue.setStepvalue("The word {} has");
+            oldStepValue.setParameterizedstepvalue("The word <word>");
+            oldStepValue.setParametersList(["word"]);
+            const newStepValue = new ProtoStepValue();
 
-            expect(res.success).toBe(true);
-            expect(res.error).toBe('');
-            expect(res.filesChanged).toStrictEqual(['StepImpl.ts']);
-            expect(res.fileChanges.length).toBe(2);
-            const changes = res.fileChanges.map((c) => { return c as gauge.messages.FileChanges });
+            newStepValue.setStepvalue("This English word {} has {} vowels.");
+            newStepValue.setParameterizedstepvalue("This English word <word> has <number> vowels.");
+            newStepValue.setParametersList(["word", "number"]);
 
-            expect(changes[0].fileName).toBe('StepImpl.ts');
-            const diff1 = changes[0].diffs[0] as gauge.messages.TextDiff;
-            const diff2 = changes[1].diffs[0] as gauge.messages.TextDiff;
+            const pp1 = new ParameterPosition();
 
-            expect(diff1.content).toBe('"This English word <word> has <number> vowels."');
-            const span1 = diff1.span as gauge.messages.Span;
+            pp1.setOldposition(0);
+            pp1.setNewposition(0);
+            const pp2 = new ParameterPosition();
 
-            expect(span1.start).toBe(3);
-            expect(span1.startChar).toBe(10);
-            expect(span1.end).toBe(3);
-            expect(span1.endChar).toBe(31);
+            pp2.setOldposition(-1);
+            pp2.setNewposition(1);
 
-            expect(diff2.content).toBe("word: any, arg1: any");
-            const span2 = diff2.span as gauge.messages.Span;
+            const request = new RefactorRequest();
 
-            expect(span2.start).toBe(4);
-            expect(span2.startChar).toBe(21);
-            expect(span2.end).toBe(4);
-            expect(span2.endChar).toBe(30);
-        })
+            request.setNewstepvalue(newStepValue);
+            request.setOldstepvalue(oldStepValue);
+            request.setParampositionsList([pp1, pp2]);
 
-        it('should process RefactorRequest for a step and return response is fails', async () => {
+            const res = processor.process(request);
+
+            expect(res.getSuccess()).toBe(true);
+            expect(res.getError()).toBe('');
+            expect(res.getFilechangesList().length).toBe(2);
+
+            const changes = res.getFilechangesList();
+
+            expect(changes[0].getFilename()).toBe('StepImpl.ts');
+
+            const diff1 = changes[0].getDiffsList()[0];
+            const diff2 = changes[1].getDiffsList()[0];
+
+            expect(diff1.getContent()).toBe('"This English word <word> has <number> vowels."');
+
+            const span1 = diff1.getSpan();
+
+            expect(span1?.getStart()).toBe(3);
+            expect(span1?.getStartchar()).toBe(10);
+            expect(span1?.getEnd()).toBe(3);
+            expect(span1?.getEndchar()).toBe(31);
+
+            expect(diff2.getContent()).toBe("word: any, arg1: any");
+
+            const span2 = diff2.getSpan();
+
+            expect(span2?.getStart()).toBe(4);
+            expect(span2?.getStartchar()).toBe(21);
+            expect(span2?.getEnd()).toBe(4);
+            expect(span2?.getEndchar()).toBe(30);
+        });
+
+        it('should process RefactorRequest for a step and return response is fails', () => {
             registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
             const error = new Error('fail to refactor');
 
             error.stack = "stacktrace";
-            registry.get = jest.fn().mockImplementation(() => { throw error })
+            registry.get = jest.fn().mockImplementation(() => { throw error; });
 
-            const message = new gauge.messages.Message({
-                messageId: 0,
-                messageType: gauge.messages.Message.MessageType.RefactorRequest,
-                refactorRequest: new gauge.messages.RefactorRequest({
-                    oldStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "The word {} has",
-                        parameterizedStepValue: "The word <word>",
-                        parameters: ["word"]
-                    }),
-                    newStepValue: new gauge.messages.ProtoStepValue({
-                        stepValue: "This English word {} has {} vowels.",
-                        parameterizedStepValue: "This English word <word> has <number> vowels.",
-                        parameters: ["word", "number"]
-                    }),
-                    paramPositions: [
-                        new gauge.messages.ParameterPosition({ oldPosition: 0, newPosition: 0 }),
-                        new gauge.messages.ParameterPosition({ oldPosition: -1, newPosition: 1 })
-                    ],
-                    saveChanges: true,
-                })
-            });
+            const oldStepValue = new ProtoStepValue();
 
-            const resMess = await processor.process(message);
-            const res = resMess.refactorResponse as gauge.messages.RefactorResponse;
+            oldStepValue.setStepvalue("The word {} has");
+            oldStepValue.setParameterizedstepvalue("The word <word>");
+            oldStepValue.setParametersList(["word"]);
+            const newStepValue = new ProtoStepValue();
 
-            expect(res.success).toBe(false);
-            expect(res.error).toBe('fail to refactor' + EOL + "stacktrace");
-        })
-    })
-})
+            newStepValue.setStepvalue("This English word {} has {} vowels.");
+            newStepValue.setParameterizedstepvalue("This English word <word> has <number> vowels.");
+            newStepValue.setParametersList(["word", "number"]);
+
+            const pp1 = new ParameterPosition();
+
+            pp1.setOldposition(0);
+            pp1.setNewposition(0);
+            const pp2 = new ParameterPosition();
+
+            pp2.setOldposition(-1);
+            pp2.setNewposition(1);
+
+            const request = new RefactorRequest();
+
+            request.setNewstepvalue(newStepValue);
+            request.setOldstepvalue(oldStepValue);
+            request.setParampositionsList([pp1, pp2]);
+
+            const res = processor.process(request);
+
+            expect(res.getSuccess()).toBe(false);
+            expect(res.getError()).toBe('fail to refactor' + EOL + "stacktrace");
+        });
+    });
+});

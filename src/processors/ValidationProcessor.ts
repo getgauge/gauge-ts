@@ -1,63 +1,49 @@
-import {randomBytes} from 'crypto';
-import {EOL} from "os";
-import {gauge} from "../gen/messages";
+import { randomBytes } from 'crypto';
+import { EOL } from "os";
+import { StepValidateRequest, StepValidateResponse } from '../gen/messages_pb';
+import { ProtoStepValue } from '../gen/spec_pb';
 import registry from "../models/StepRegistry";
-import {IMessageProcessor} from "./IMessageProcessor";
 
-export class ValidationProcessor implements IMessageProcessor {
+export class ValidationProcessor {
 
-    public process(message: gauge.messages.IMessage): Promise<gauge.messages.IMessage> {
-        const req = message.stepValidateRequest as gauge.messages.StepValidateRequest;
-        const step = (req.stepValue as gauge.messages.ProtoStepValue);
-        const stepValue = step.parameterizedStepValue;
-        let isValid = true;
-        let errorMessage = "";
-        let errorType;
+    public process(req: StepValidateRequest): StepValidateResponse {
+        const step = req.getStepvalue() as ProtoStepValue;
+        const stepValue = step.getParameterizedstepvalue();
 
-        if (!registry.isImplemented(req.stepText)) {
-            isValid = false;
-            errorMessage = "No step implementation found for " + stepValue
-            errorType = gauge.messages.StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND;
-        } else if (registry.hasMultipleImplementations(req.stepText)) {
-            isValid = false;
-            errorMessage = "Multiple step implementation found for " + stepValue
-            errorType = gauge.messages.StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION;
+        const res = new StepValidateResponse();
+
+        res.setIsvalid(true);
+        res.setErrormessage("");
+        if (!registry.isImplemented(req.getSteptext())) {
+            res.setIsvalid(false);
+            res.setErrormessage("No step implementation found for " + stepValue);
+            res.setErrortype(StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND);
+            res.setSuggestion(this.getSuggestion(step));
+        } else if (registry.hasMultipleImplementations(req.getSteptext())) {
+            res.setIsvalid(false);
+            res.setErrormessage("Multiple step implementation found for " + stepValue);
+            res.setErrortype(StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION);
         }
 
-        return Promise.resolve(
-            new gauge.messages.Message({
-                messageId: message.messageId,
-                messageType: gauge.messages.Message.MessageType.StepValidateResponse,
-                stepValidateResponse: new gauge.messages.StepValidateResponse({
-                    isValid: isValid,
-                    errorMessage: errorMessage,
-                    errorType: errorType,
-                    suggestion: this.getSuggestion(isValid, step)
-                })
-            })
-        );
+        return res;
+
     }
 
-    private getSuggestion(isValid: boolean, step: gauge.messages.ProtoStepValue): string {
-        if (isValid) {
-            return "";
-        }
+    private getSuggestion(step: ProtoStepValue): string {
         let argCount = 0;
-        const stepText = step.stepValue.replace(/{}/g, function () {
-            return `<arg${argCount++}>`;
-        });
+        const stepText = step.getParameterizedstepvalue().replace(/{}/g, function () { return `<arg${argCount++}>`; });
 
         return `@Step("${stepText}")` + EOL +
-            `public async ${ValidationProcessor.getMethodName(stepText)}(${ValidationProcessor.getParamsList(step.parameters)}) {` + EOL +
+            `public async ${this.getMethodName()}(${this.getParamsList(step.getParametersList())}) {` + EOL +
             `\tthrow new Error("Method not implemented.");` + EOL +
             '}';
     }
 
-    private static getMethodName(stepText: string) {
-        return `implementation${randomBytes(10).toString('hex')}`
+    private getMethodName() {
+        return `implementation${randomBytes(10).toString('hex')}`;
     }
 
-    private static getParamsList(params: string[]): string {
+    private getParamsList(params: string[]): string {
         if (!params || !params.length) {
             return '';
         }
