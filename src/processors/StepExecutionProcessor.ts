@@ -1,11 +1,12 @@
 import { ExecuteStepRequest, ExecutionStatusResponse } from '../gen/messages_pb';
-import { ProtoExecutionResult, ProtoTable } from '../gen/spec_pb';
+import { Parameter, ProtoExecutionResult, ProtoTable } from '../gen/spec_pb';
 import registry from '../models/StepRegistry';
 import { Screenshot } from "../screenshot/Screenshot";
 import { MessageStore } from "../stores/MessageStore";
 import { ScreenshotStore } from "../stores/ScreenshotStore";
 import { ExecutionProcessor } from "./ExecutionProcessor";
 import { CommonFunction } from '../utils/Util';
+import { Table } from '../public/Table';
 
 export class StepExecutionProcessor extends ExecutionProcessor {
 
@@ -23,8 +24,9 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         result.setFailed(false);
         const mi = registry.get(req.getParsedsteptext());
         const params = req.getParametersList().map((item) => {
-            return item.getValue() ? item.getValue() : (item.getTable() as ProtoTable).toObject();
+            return this.isTable(item) ? Table.from(item.getTable() as ProtoTable) : item.getValue();
         });
+
         const method = mi.getMethod() as CommonFunction;
 
         try {
@@ -55,6 +57,11 @@ export class StepExecutionProcessor extends ExecutionProcessor {
         result.setScreenshotfilesList(ScreenshotStore.pendingScreenshots());
 
         return result;
+    }
+
+    private isTable(item: Parameter): boolean {
+        return item.getParametertype() === Parameter.ParameterType.TABLE ||
+            item.getParametertype() === Parameter.ParameterType.SPECIAL_TABLE;
     }
 
     private executionError(message: string): ExecutionStatusResponse {

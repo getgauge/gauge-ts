@@ -457,7 +457,7 @@ describe('RunnerServiceImpl', () => {
     });
 
     describe('.killProcess', () => {
-        it('should give a step info', () => {
+        it('should give a step info', (done) => {
             const s = new Server();
 
             handler = new RunnerServiceImpl(s, new StaticLoader());
@@ -467,7 +467,10 @@ describe('RunnerServiceImpl', () => {
 
             handler.kill(createMock<SUC<KPReq, Empty>>({ request: req }), (err: error) => {
                 expect(err).toBe(null);
-                expect(mockShutdown).toHaveBeenCalled();
+                setTimeout(() => {
+                    expect(mockShutdown).toHaveBeenCalled();
+                    done();
+                }, 110);
             });
         });
     });

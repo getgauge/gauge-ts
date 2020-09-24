@@ -282,9 +282,11 @@ export class RunnerServiceImpl implements IRunnerServer {
     }
 
     public kill(_call: SUC<KillProcessRequest, Empty>, callback: sUD<Empty>): void {
-        this._server && this._server.forceShutdown();
         callback(null, new Empty());
-        process.exit(0);
+        setTimeout(() => {
+            this._server && this._server.forceShutdown();
+            process.exit(0);
+        }, 100);
     }
 
     private createRpcError(error: Error): RpcError {

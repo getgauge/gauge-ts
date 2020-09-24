@@ -14,6 +14,6 @@ module.exports = {
     "src/utils/*"
   ],
   setupFiles: [
-    "<rootDir>config.ts"
+    "<rootDir>config.ts",
   ]
 };

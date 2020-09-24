@@ -1,4 +1,4 @@
-name: Node CI
+name: test
 
 on: [push, pull_request]
 
@@ -51,12 +51,14 @@ jobs:
     needs: build-artifacts
     strategy:
       matrix:
-        node-version: [12.x, 14.x]
+        node-version: [12.x, 13.x, 14.x]
         os: [macOS-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
       - uses: BugDiver/setup-gauge@master
+        with:
+          gauge-version: master
 
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1

@@ -35,7 +35,7 @@ interface IRunnerService extends grpc.ServiceDefinition<grpc.UntypedServiceImple
 }
 
 interface IRunnerService_IValidateStep extends grpc.MethodDefinition<messages_pb.StepValidateRequest, messages_pb.StepValidateResponse> {
-    path: string; // "/gauge.messages.Runner/ValidateStep"
+    path: "/gauge.messages.Runner/ValidateStep";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepValidateRequest>;
@@ -44,7 +44,7 @@ interface IRunnerService_IValidateStep extends grpc.MethodDefinition<messages_pb
     responseDeserialize: grpc.deserialize<messages_pb.StepValidateResponse>;
 }
 interface IRunnerService_IInitializeSuiteDataStore extends grpc.MethodDefinition<messages_pb.SuiteDataStoreInitRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/InitializeSuiteDataStore"
+    path: "/gauge.messages.Runner/InitializeSuiteDataStore";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SuiteDataStoreInitRequest>;
@@ -53,7 +53,7 @@ interface IRunnerService_IInitializeSuiteDataStore extends grpc.MethodDefinition
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IStartExecution extends grpc.MethodDefinition<messages_pb.ExecutionStartingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/StartExecution"
+    path: "/gauge.messages.Runner/StartExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ExecutionStartingRequest>;
@@ -62,7 +62,7 @@ interface IRunnerService_IStartExecution extends grpc.MethodDefinition<messages_
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IInitializeSpecDataStore extends grpc.MethodDefinition<messages_pb.SpecDataStoreInitRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/InitializeSpecDataStore"
+    path: "/gauge.messages.Runner/InitializeSpecDataStore";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecDataStoreInitRequest>;
@@ -71,7 +71,7 @@ interface IRunnerService_IInitializeSpecDataStore extends grpc.MethodDefinition<
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IStartSpecExecution extends grpc.MethodDefinition<messages_pb.SpecExecutionStartingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/StartSpecExecution"
+    path: "/gauge.messages.Runner/StartSpecExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecExecutionStartingRequest>;
@@ -80,7 +80,7 @@ interface IRunnerService_IStartSpecExecution extends grpc.MethodDefinition<messa
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IInitializeScenarioDataStore extends grpc.MethodDefinition<messages_pb.ScenarioDataStoreInitRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/InitializeScenarioDataStore"
+    path: "/gauge.messages.Runner/InitializeScenarioDataStore";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ScenarioDataStoreInitRequest>;
@@ -89,7 +89,7 @@ interface IRunnerService_IInitializeScenarioDataStore extends grpc.MethodDefinit
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IStartScenarioExecution extends grpc.MethodDefinition<messages_pb.ScenarioExecutionStartingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/StartScenarioExecution"
+    path: "/gauge.messages.Runner/StartScenarioExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ScenarioExecutionStartingRequest>;
@@ -98,7 +98,7 @@ interface IRunnerService_IStartScenarioExecution extends grpc.MethodDefinition<m
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IStartStepExecution extends grpc.MethodDefinition<messages_pb.StepExecutionStartingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/StartStepExecution"
+    path: "/gauge.messages.Runner/StartStepExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepExecutionStartingRequest>;
@@ -107,7 +107,7 @@ interface IRunnerService_IStartStepExecution extends grpc.MethodDefinition<messa
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IExecuteStep extends grpc.MethodDefinition<messages_pb.ExecuteStepRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/ExecuteStep"
+    path: "/gauge.messages.Runner/ExecuteStep";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ExecuteStepRequest>;
@@ -116,7 +116,7 @@ interface IRunnerService_IExecuteStep extends grpc.MethodDefinition<messages_pb.
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IFinishStepExecution extends grpc.MethodDefinition<messages_pb.StepExecutionEndingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/FinishStepExecution"
+    path: "/gauge.messages.Runner/FinishStepExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepExecutionEndingRequest>;
@@ -125,7 +125,7 @@ interface IRunnerService_IFinishStepExecution extends grpc.MethodDefinition<mess
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IFinishScenarioExecution extends grpc.MethodDefinition<messages_pb.ScenarioExecutionEndingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/FinishScenarioExecution"
+    path: "/gauge.messages.Runner/FinishScenarioExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ScenarioExecutionEndingRequest>;
@@ -134,7 +134,7 @@ interface IRunnerService_IFinishScenarioExecution extends grpc.MethodDefinition<
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IFinishSpecExecution extends grpc.MethodDefinition<messages_pb.SpecExecutionEndingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/FinishSpecExecution"
+    path: "/gauge.messages.Runner/FinishSpecExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecExecutionEndingRequest>;
@@ -143,7 +143,7 @@ interface IRunnerService_IFinishSpecExecution extends grpc.MethodDefinition<mess
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_IFinishExecution extends grpc.MethodDefinition<messages_pb.ExecutionEndingRequest, messages_pb.ExecutionStatusResponse> {
-    path: string; // "/gauge.messages.Runner/FinishExecution"
+    path: "/gauge.messages.Runner/FinishExecution";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ExecutionEndingRequest>;
@@ -152,7 +152,7 @@ interface IRunnerService_IFinishExecution extends grpc.MethodDefinition<messages
     responseDeserialize: grpc.deserialize<messages_pb.ExecutionStatusResponse>;
 }
 interface IRunnerService_ICacheFile extends grpc.MethodDefinition<messages_pb.CacheFileRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Runner/CacheFile"
+    path: "/gauge.messages.Runner/CacheFile";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.CacheFileRequest>;
@@ -161,7 +161,7 @@ interface IRunnerService_ICacheFile extends grpc.MethodDefinition<messages_pb.Ca
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IRunnerService_IGetStepName extends grpc.MethodDefinition<messages_pb.StepNameRequest, messages_pb.StepNameResponse> {
-    path: string; // "/gauge.messages.Runner/GetStepName"
+    path: "/gauge.messages.Runner/GetStepName";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepNameRequest>;
@@ -170,7 +170,7 @@ interface IRunnerService_IGetStepName extends grpc.MethodDefinition<messages_pb.
     responseDeserialize: grpc.deserialize<messages_pb.StepNameResponse>;
 }
 interface IRunnerService_IGetGlobPatterns extends grpc.MethodDefinition<messages_pb.Empty, messages_pb.ImplementationFileGlobPatternResponse> {
-    path: string; // "/gauge.messages.Runner/GetGlobPatterns"
+    path: "/gauge.messages.Runner/GetGlobPatterns";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.Empty>;
@@ -179,7 +179,7 @@ interface IRunnerService_IGetGlobPatterns extends grpc.MethodDefinition<messages
     responseDeserialize: grpc.deserialize<messages_pb.ImplementationFileGlobPatternResponse>;
 }
 interface IRunnerService_IGetStepNames extends grpc.MethodDefinition<messages_pb.StepNamesRequest, messages_pb.StepNamesResponse> {
-    path: string; // "/gauge.messages.Runner/GetStepNames"
+    path: "/gauge.messages.Runner/GetStepNames";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepNamesRequest>;
@@ -188,7 +188,7 @@ interface IRunnerService_IGetStepNames extends grpc.MethodDefinition<messages_pb
     responseDeserialize: grpc.deserialize<messages_pb.StepNamesResponse>;
 }
 interface IRunnerService_IGetStepPositions extends grpc.MethodDefinition<messages_pb.StepPositionsRequest, messages_pb.StepPositionsResponse> {
-    path: string; // "/gauge.messages.Runner/GetStepPositions"
+    path: "/gauge.messages.Runner/GetStepPositions";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepPositionsRequest>;
@@ -197,7 +197,7 @@ interface IRunnerService_IGetStepPositions extends grpc.MethodDefinition<message
     responseDeserialize: grpc.deserialize<messages_pb.StepPositionsResponse>;
 }
 interface IRunnerService_IGetImplementationFiles extends grpc.MethodDefinition<messages_pb.Empty, messages_pb.ImplementationFileListResponse> {
-    path: string; // "/gauge.messages.Runner/GetImplementationFiles"
+    path: "/gauge.messages.Runner/GetImplementationFiles";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.Empty>;
@@ -206,7 +206,7 @@ interface IRunnerService_IGetImplementationFiles extends grpc.MethodDefinition<m
     responseDeserialize: grpc.deserialize<messages_pb.ImplementationFileListResponse>;
 }
 interface IRunnerService_IImplementStub extends grpc.MethodDefinition<messages_pb.StubImplementationCodeRequest, messages_pb.FileDiff> {
-    path: string; // "/gauge.messages.Runner/ImplementStub"
+    path: "/gauge.messages.Runner/ImplementStub";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StubImplementationCodeRequest>;
@@ -215,7 +215,7 @@ interface IRunnerService_IImplementStub extends grpc.MethodDefinition<messages_p
     responseDeserialize: grpc.deserialize<messages_pb.FileDiff>;
 }
 interface IRunnerService_IRefactor extends grpc.MethodDefinition<messages_pb.RefactorRequest, messages_pb.RefactorResponse> {
-    path: string; // "/gauge.messages.Runner/Refactor"
+    path: "/gauge.messages.Runner/Refactor";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.RefactorRequest>;
@@ -224,7 +224,7 @@ interface IRunnerService_IRefactor extends grpc.MethodDefinition<messages_pb.Ref
     responseDeserialize: grpc.deserialize<messages_pb.RefactorResponse>;
 }
 interface IRunnerService_IKill extends grpc.MethodDefinition<messages_pb.KillProcessRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Runner/Kill"
+    path: "/gauge.messages.Runner/Kill";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.KillProcessRequest>;
@@ -413,7 +413,7 @@ interface IReporterService extends grpc.ServiceDefinition<grpc.UntypedServiceImp
 }
 
 interface IReporterService_INotifyExecutionStarting extends grpc.MethodDefinition<messages_pb.ExecutionStartingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyExecutionStarting"
+    path: "/gauge.messages.Reporter/NotifyExecutionStarting";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ExecutionStartingRequest>;
@@ -422,7 +422,7 @@ interface IReporterService_INotifyExecutionStarting extends grpc.MethodDefinitio
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifySpecExecutionStarting extends grpc.MethodDefinition<messages_pb.SpecExecutionStartingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifySpecExecutionStarting"
+    path: "/gauge.messages.Reporter/NotifySpecExecutionStarting";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecExecutionStartingRequest>;
@@ -431,7 +431,7 @@ interface IReporterService_INotifySpecExecutionStarting extends grpc.MethodDefin
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifyScenarioExecutionStarting extends grpc.MethodDefinition<messages_pb.ScenarioExecutionStartingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyScenarioExecutionStarting"
+    path: "/gauge.messages.Reporter/NotifyScenarioExecutionStarting";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ScenarioExecutionStartingRequest>;
@@ -440,7 +440,7 @@ interface IReporterService_INotifyScenarioExecutionStarting extends grpc.MethodD
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifyStepExecutionStarting extends grpc.MethodDefinition<messages_pb.StepExecutionStartingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyStepExecutionStarting"
+    path: "/gauge.messages.Reporter/NotifyStepExecutionStarting";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepExecutionStartingRequest>;
@@ -449,7 +449,7 @@ interface IReporterService_INotifyStepExecutionStarting extends grpc.MethodDefin
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifyStepExecutionEnding extends grpc.MethodDefinition<messages_pb.StepExecutionEndingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyStepExecutionEnding"
+    path: "/gauge.messages.Reporter/NotifyStepExecutionEnding";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.StepExecutionEndingRequest>;
@@ -458,7 +458,7 @@ interface IReporterService_INotifyStepExecutionEnding extends grpc.MethodDefinit
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifyScenarioExecutionEnding extends grpc.MethodDefinition<messages_pb.ScenarioExecutionEndingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyScenarioExecutionEnding"
+    path: "/gauge.messages.Reporter/NotifyScenarioExecutionEnding";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ScenarioExecutionEndingRequest>;
@@ -467,7 +467,7 @@ interface IReporterService_INotifyScenarioExecutionEnding extends grpc.MethodDef
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifySpecExecutionEnding extends grpc.MethodDefinition<messages_pb.SpecExecutionEndingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifySpecExecutionEnding"
+    path: "/gauge.messages.Reporter/NotifySpecExecutionEnding";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecExecutionEndingRequest>;
@@ -476,7 +476,7 @@ interface IReporterService_INotifySpecExecutionEnding extends grpc.MethodDefinit
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifyExecutionEnding extends grpc.MethodDefinition<messages_pb.ExecutionEndingRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifyExecutionEnding"
+    path: "/gauge.messages.Reporter/NotifyExecutionEnding";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.ExecutionEndingRequest>;
@@ -485,7 +485,7 @@ interface IReporterService_INotifyExecutionEnding extends grpc.MethodDefinition<
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_INotifySuiteResult extends grpc.MethodDefinition<messages_pb.SuiteExecutionResult, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/NotifySuiteResult"
+    path: "/gauge.messages.Reporter/NotifySuiteResult";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SuiteExecutionResult>;
@@ -494,7 +494,7 @@ interface IReporterService_INotifySuiteResult extends grpc.MethodDefinition<mess
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IReporterService_IKill extends grpc.MethodDefinition<messages_pb.KillProcessRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Reporter/Kill"
+    path: "/gauge.messages.Reporter/Kill";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.KillProcessRequest>;
@@ -591,7 +591,7 @@ interface IDocumenterService extends grpc.ServiceDefinition<grpc.UntypedServiceI
 }
 
 interface IDocumenterService_IGenerateDocs extends grpc.MethodDefinition<messages_pb.SpecDetails, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Documenter/GenerateDocs"
+    path: "/gauge.messages.Documenter/GenerateDocs";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.SpecDetails>;
@@ -600,7 +600,7 @@ interface IDocumenterService_IGenerateDocs extends grpc.MethodDefinition<message
     responseDeserialize: grpc.deserialize<messages_pb.Empty>;
 }
 interface IDocumenterService_IKill extends grpc.MethodDefinition<messages_pb.KillProcessRequest, messages_pb.Empty> {
-    path: string; // "/gauge.messages.Documenter/Kill"
+    path: "/gauge.messages.Documenter/Kill";
     requestStream: false;
     responseStream: false;
     requestSerialize: grpc.serialize<messages_pb.KillProcessRequest>;

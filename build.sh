@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 function checkCommand() {
     command -v $1 >/dev/null 2>&1 || { echo >&2 "$1 is not installed, aborting."; exit 1; }

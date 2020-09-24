@@ -1,5 +1,4 @@
 import { existsSync, unlinkSync } from 'fs';
-import { tmpdir } from 'os';
 import { Screenshot } from '../../src/screenshot/Screenshot';
 import { Util } from '../../src/utils/Util';
 
@@ -8,11 +7,6 @@ describe('Screenshot', () => {
     let screenshotFile: string;
 
     describe('.capture', () => {
-
-        beforeAll(() => {
-            process.env.gauge_screenshots_dir = tmpdir();
-        });
-
         afterEach(() => {
             if (existsSync(screenshotFile)) {
                 unlinkSync(screenshotFile);

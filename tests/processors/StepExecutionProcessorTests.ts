@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { equal } from 'assert';
+import { strictEqual } from 'assert';
 import { ExecuteStepRequest } from '../../src/gen/messages_pb';
-import { Parameter, ProtoTable } from '../../src/gen/spec_pb';
+import { Parameter, ProtoTable, ProtoTableRow } from '../../src/gen/spec_pb';
 import registry from '../../src/models/StepRegistry';
 import { StepRegistryEntry } from '../../src/models/StepRegistryEntry';
 import { StepExecutionProcessor } from '../../src/processors/StepExecutionProcessor';
@@ -66,8 +66,17 @@ describe('StepExecutionProcessor', () => {
             p1.setParametertype(Parameter.ParameterType.STATIC);
             const p2 = new Parameter();
 
+            const table = new ProtoTable();
+            const row1 = new ProtoTableRow();
+
+            row1.setCellsList(["header"]);
+            const row2 = new ProtoTableRow();
+
+            row2.setCellsList(["value"]);
+            table.setHeaders(row1);
+            table.setRowsList([row2]);
             p2.setName("table");
-            p2.setTable(new ProtoTable());
+            p2.setTable(table);
             p2.setParametertype(Parameter.ParameterType.TABLE);
 
             const req = new ExecuteStepRequest();
@@ -89,7 +98,7 @@ describe('StepExecutionProcessor', () => {
             process.env.screenshot_on_failure = 'false';
 
             registry.isImplemented = jest.fn().mockReturnValue(true);
-            const method = () => { equal(1, 2); };
+            const method = () => { strictEqual(1, 2); };
 
             registry.get = jest.fn().mockReturnValue(new StepRegistryEntry('hello', 'hello', 'StepImpl.ts', method));
             registry.getContinueOnFailureFunctions = jest.fn().mockReturnValue(['AssertionError']);
@@ -104,7 +113,7 @@ describe('StepExecutionProcessor', () => {
             const result = resMess.getExecutionresult();
 
             expect(result?.getFailed()).toBe(true);
-            expect(result?.getErrormessage()).toBe('1 == 2');
+            expect(result?.getErrormessage()).toContain('1 !== 2');
             expect(result?.getRecoverableerror()).toBe(true);
             expect(capture).toBeCalledTimes(0);
         });
