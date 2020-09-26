@@ -8,7 +8,6 @@ describe('Table', () => {
 
             expect(() => { Table.from(protoTable); }).toThrowError('Invalid table passed');
         });
-
         it('should throw error for given prototable', () => {
             const protoTable = new ProtoTable();
             const headers = new ProtoTableRow();
@@ -82,6 +81,7 @@ describe('Table', () => {
 
             table.addRow(["gauge"]);
             expect(table.getTableRows()[0].getCellValues()).toStrictEqual(["gauge"]);
+            expect(table.getTableRows()[0].getCell("tag")).toStrictEqual('');
             expect(table.getTableRows()[0].size).toStrictEqual(1);
         });
     });
