@@ -12,4 +12,4 @@ curl \
     -H "Accept: application/vnd.github.ant-man-preview+json" \
     -H "Content-Type: application/json" \
     https://api.github.com/repos/bugdiver/gauge-ts/deployments \
-    --data '{"ref": "master", "required_contexts": [], "environment": "production"}'
+    --data '{"ref": "main", "required_contexts": [], "environment": "production"}'

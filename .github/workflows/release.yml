@@ -71,13 +71,3 @@ jobs:
         with:
           state: 'failure'
           token: '${{ secrets.GITHUB_TOKEN }}'
-
-      - name: Bump up version
-        env:
-          GITHUB_TOKEN: '${{ secrets.PERSONAL_GITHUB_TOKEN }}'
-        run: |
-          git clean -dfx
-          git checkout master git checkout . && git pull --rebase
-          version=$(python update_version.py)
-          git commit -am "Bumping up -> $version"
-          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/$GITHUB_REPOSITORY.git" master
