@@ -281,7 +281,7 @@ This data store keeps values added to it during the life cycle of the specificat
 import {DataStoreFactory, DataStore} from 'gauge-ts';
 
 // Adding value
-let scenarioScore: DataStore = DataStoreFactory.getScenarioDataStore();
+let specStore: DataStore = DataStoreFactory.getSpecDataStore();
 scenarioScore.put("element-id", "455678");
 
 // Fetching value
@@ -299,11 +299,11 @@ This data store keeps values added to it in the life cycle of the scenario execu
 import {DataStoreFactory, DataStore} from 'gauge-ts';
 
 // Adding value
-let scenarioStore: DataStore = DataStoreFactory.getSpecDataStore();
+let scenarioStore: DataStore = DataStoreFactory.getScenarioDataStore();
 scenarioStore.put("element-id", "455678");
 
 // Fetching value
-let scenarioStore: DataStore = DataStoreFactory.getSpecDataStore();
+let scenarioStore: DataStore = DataStoreFactory.getScenarioDataStore();
 String elementId = scenarioStore.get("element-id") as string;
 
 ```
