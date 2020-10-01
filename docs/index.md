@@ -285,7 +285,7 @@ let specStore: DataStore = DataStoreFactory.getSpecDataStore();
 scenarioScore.put("element-id", "455678");
 
 // Fetching value
-let specStore: DataStore = DataStoreFactory.getScenarioDataStore();
+let specStore: DataStore = DataStoreFactory.getSpecDataStore();
 String elementId = scenarioScore.get("element-id") as string;
 
 ```
