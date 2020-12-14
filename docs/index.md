@@ -327,22 +327,24 @@ export default class ScreenGrabber {
 
 ```
 
-DEPRECATION NOTICE: `CustomScreenshotGrabber` has been deprecated since gauge-ts v0.0.5, please use `CustomScreenshotGrabber` as mentioned below
+DEPRECATION NOTICE: `CustomScreenshotGrabber` has been deprecated since gauge-ts v0.0.5, please use `CustomScreenshotWriter` as mentioned below
 
 ```javascript
-import { CustomScreenWriter } from "gauge-ts";
-import { join, basename } from "path";
-import { writeFileSync } from "fs";
-import { v4 } from 'uuid';
+import { CustomScreenshotWriter } from 'gauge-ts';
+import { join, basename } from 'path';
+
+const { screenshot } = require('taiko');
 
 export default class ScreenshotWriter {
-    @CustomScreenshotWriter()
-    public async foo(): string {
-        let bytes = new Uint8Array(); // use your driver to fetch the screenshot bytes
-        let fileName = join(process.env["gauge_screenshots_dir"], `${v4}.png`)
-        writeFileSync(fileName, bytes);
-        return basename(fileName);
-    }
+  @CustomScreenshotWriter()
+  public async foo(): Promise<string> {
+    const screenshotFilePath = join(
+      process.env['gauge_screenshots_dir'],
+      `screenshot-${process.hrtime.bigint()}.png`,
+    );
+    await screenshot({ path: screenshotFilePath });
+    return basename(screenshotFilePath);
+  }
 }
 ```
 
