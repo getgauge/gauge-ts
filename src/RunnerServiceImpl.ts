@@ -109,7 +109,7 @@ export class RunnerServiceImpl implements IRunnerServer {
         try {
             callback(null, this._stepValidateRequestProcessor.process(call.request as StepValidateRequest));
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
 
     }
@@ -125,7 +125,7 @@ export class RunnerServiceImpl implements IRunnerServer {
                     callback(this.createRpcError(err), null);
                 });
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -140,7 +140,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             DataStoreFactory.getSpecDataStore().clear();
             callback(null, this.getEmptExecutionResponse());
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
 
     }
@@ -157,7 +157,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             DataStoreFactory.getScenarioDataStore().clear();
             callback(null, this.getEmptExecutionResponse());
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -209,7 +209,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             this._cacheFileRequestProcessor.process(call.request as CacheFileRequest);
             callback(null, new Empty());
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -217,7 +217,7 @@ export class RunnerServiceImpl implements IRunnerServer {
         try {
             callback(null, this._stepNameRequestProcessor.process(call.request as StepNameRequest));
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -231,7 +231,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             res.setGlobpatternsList(patterns);
             callback(null, res);
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -242,7 +242,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             res.setStepsList(registry.getStepTexts());
             callback(null, res);
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -250,7 +250,7 @@ export class RunnerServiceImpl implements IRunnerServer {
         try {
             callback(null, this._stepPositionsRequestProcessor.process(call.request as StepPositionsRequest));
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -261,7 +261,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             res.setImplementationfilepathsList(Util.getListOfFiles());
             callback(null, res);
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -269,7 +269,7 @@ export class RunnerServiceImpl implements IRunnerServer {
         try {
             callback(null, this._stubImplementationCodeRequestProcessor.process(call.request as StubImplementationCodeRequest));
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
@@ -277,7 +277,7 @@ export class RunnerServiceImpl implements IRunnerServer {
         try {
             callback(null, this._refactorRequestProcessor.process(call.request as RefactorRequest));
         } catch (error) {
-            callback(this.createRpcError(error), null);
+            callback(this.createRpcError(error as Error), null);
         }
     }
 
