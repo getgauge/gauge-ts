@@ -83,7 +83,7 @@ export class RefactorProcessor extends CodeHelper {
             response.setFileschangedList([filePath]);
             response.setFilechangesList([change1, change2]);
             response.setSuccess(true);
-        } catch (error: unknown) {
+        } catch (error) {
             const err = error as Error;
 
             response.setError(`${err.message}${EOL}${err.stack ?? ''}`);

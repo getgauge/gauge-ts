@@ -23,7 +23,7 @@ export class ImplLoader {
 
           ImplLoader.updateRegistry(file, instance);
         }
-      } catch (error: unknown) {
+      } catch (error) {
         const err = error as Error;
 
         err.message = `${err.message}. Step implementations classes needs to be exported as default without any constructor`;

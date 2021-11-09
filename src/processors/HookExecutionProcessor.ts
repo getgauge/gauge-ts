@@ -61,7 +61,7 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
                     hook.getMethod(), [context]
                 );
             }
-        } catch (error: unknown) {
+        } catch (error) {
             const err = error as Error;
 
             result.setFailed(true);
