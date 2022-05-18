@@ -1,21 +1,32 @@
 import { DataStore } from "./DataStore";
+import {GlobalDataStore} from "./GlobalDataStore";
+
+declare const global: GlobalDataStore;
 
 export class DataStoreFactory {
 
-    private static readonly _suiteDataStore: DataStore = new DataStore();
-    private static readonly _specDataStore: DataStore = new DataStore();
-    private static readonly _scenarioDataStore: DataStore = new DataStore();
-
     public static getSuiteDataStore(): DataStore {
-        return this._suiteDataStore;
+        if (!global.gaugeSuiteDataStore) {
+            global.gaugeSuiteDataStore = new DataStore();
+        }
+
+        return global.gaugeSuiteDataStore;
     }
 
     public static getSpecDataStore(): DataStore {
-        return this._specDataStore;
+        if (!global.gaugeSpecDataStore) {
+            global.gaugeSpecDataStore = new DataStore();
+        }
+
+        return global.gaugeSpecDataStore;
     }
 
     public static getScenarioDataStore(): DataStore {
-        return this._scenarioDataStore;
+        if (!global.gaugeScenarioDataStore) {
+            global.gaugeScenarioDataStore = new DataStore();
+        }
+
+        return global.gaugeScenarioDataStore;
     }
 
 }
