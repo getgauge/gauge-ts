@@ -33,23 +33,25 @@ jobs:
       - name: Deploy on github
         run: |
           cd artifacts
+          version=$(ls gauge-ts* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-ts-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           if [ -z "$version" ]; then
-            version=$(ls gauge-ts* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-ts-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
+              echo "Gauge version is not set"
+              exit 1
           fi
-          echo "::set-env name=VERSION::$version"
+
           echo -e "gauge-ts v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" BugDiver gauge-ts)
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
+
           hub release create -F ./desc.txt "v$version"
-          rm -rf desc.txt
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
               hub release edit -m "" -a $i "v$version"
-              if [ $? -ne 0 ];then
-                  exit 1
-              fi
           done
+
+          cat desc.txt
+          rm -rf desc.txt
 
       - name: Deploy npm
         env:
