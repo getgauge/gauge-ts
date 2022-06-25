@@ -45,6 +45,8 @@ jobs:
           echo "Creating new draft for release v$version"
 
           hub release create -F ./desc.txt "v$version"
+          sleep 10
+
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
               hub release edit -m "" -a $i "v$version"
