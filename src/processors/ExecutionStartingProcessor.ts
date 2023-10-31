@@ -9,7 +9,7 @@ const ATTACH_DEBUGGER_EVENT = "Runner Ready for Debugging";
 
 export class ExecutionStartingProcessor extends HookExecutionProcessor {
 
-    protected hookType: HookType = HookType.BeforeSuite
+    protected hookType: HookType = HookType.BeforeSuite;
 
     constructor() {
         super();
