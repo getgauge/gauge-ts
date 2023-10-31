@@ -33,6 +33,5 @@ module.exports = {
         'curly': 'error',
         "semi": 'error',
         "@typescript-eslint/no-unsafe-argument": "warn",
-        "@typescript-eslint/no-unsafe-enum-comparison": "warn"
     },
 };
