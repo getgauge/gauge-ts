@@ -122,7 +122,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             loader.loadImplementations()
                 .then(() => callback(null, this.getEmptExecutionResponse()))
                 .catch((err) => {
-                    callback(this.createRpcError(err), null);
+                    callback(this.createRpcError(err as Error), null);
                 });
         } catch (error) {
             callback(this.createRpcError(error as Error), null);

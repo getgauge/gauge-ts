@@ -118,10 +118,11 @@ export class RefactorProcessor extends CodeHelper {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private createSpan(source: SourceFile, node: any): Span {
+        
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const start = source.getLineAndCharacterOfPosition(node.pos);
+        const start = source.getLineAndCharacterOfPosition(node.pos as number);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const end = source.getLineAndCharacterOfPosition(node.end);
+        const end = source.getLineAndCharacterOfPosition(node.end as number);
         const span = new Span();
 
         span.setStart(start.line + 1);

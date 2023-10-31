@@ -32,6 +32,5 @@ module.exports = {
         'no-multi-spaces': 'error',
         'curly': 'error',
         "semi": 'error',
-        "@typescript-eslint/no-unsafe-argument": "warn",
     },
 };
