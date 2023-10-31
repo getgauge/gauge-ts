@@ -3,7 +3,7 @@ module.exports = {
   testEnvironment: 'node',
   globals: {
     "ts-jest": {
-      "compiler": "ttypescript"
+      "compiler": "ts-patch/compiler"
     }
   },
   testRegex: '/tests/.*(Test)?\\.(ts)$',

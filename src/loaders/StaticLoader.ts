@@ -1,6 +1,6 @@
 import {
     createSourceFile,
-    Decorator,
+    getDecorators,
     forEachChild,
     isClassDeclaration,
     isMethodDeclaration,
@@ -71,7 +71,11 @@ export class StaticLoader extends CodeHelper {
     }
 
     private static getRange(node: MethodDeclaration, source: SourceFile): Range {
-        const dec = (node.decorators as unknown) as Array<Decorator>;
+        const dec = getDecorators(node);
+
+        if (!dec) {
+          throw new Error("no decorator found");
+        }
         const start = source.getLineAndCharacterOfPosition(dec[0].expression.pos);
         const end = source.getLineAndCharacterOfPosition(node.end);
 

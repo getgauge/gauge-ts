@@ -2,7 +2,6 @@ import {AssertionError} from "assert";
 import {Range} from './Range';
 import {StepRegistryEntry} from "./StepRegistryEntry";
 import {CommonFunction} from '../utils/Util';
-import {GlobalStepRegistry} from "./GlobalRegistry";
 
 export class StepRegistry {
 
@@ -113,8 +112,6 @@ export class StepRegistry {
     }
 
 }
-
-declare const global: GlobalStepRegistry;
 
 if (!global.gaugeStepRegistry) {
     global.gaugeStepRegistry = new StepRegistry();

@@ -1,7 +1,6 @@
 import { Operator } from "..";
 import { HookMethod } from "./HookMethod";
 import { HookType } from "./HookType";
-import {GlobalStepRegistry} from "./GlobalRegistry";
 
 export class HookRegistry {
 
@@ -70,7 +69,6 @@ export class HookRegistry {
     }
 
 }
-declare const global: GlobalStepRegistry;
 
 if (!global.gaugeHookRegistry) {
     global.gaugeHookRegistry = new HookRegistry();
