@@ -50,16 +50,11 @@ jobs:
           echo "Start uploading assets..."
           for i in `ls $artifacts`; do
               hub release edit -m "" -a $i "v$version"
+              sleep 5
           done
 
           cat desc.txt
           rm -rf desc.txt
-
-      - name: Deploy npm
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          npm publish --access=public
 
       - name: 'deployment success'
         if: success()
