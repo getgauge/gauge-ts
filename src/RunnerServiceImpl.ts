@@ -107,7 +107,7 @@ export class RunnerServiceImpl implements IRunnerServer {
 
     public validateStep(call: SUC<StepValidateRequest, StepValidateResponse>, callback: sUD<StepValidateResponse>): void {
         try {
-            callback(null, this._stepValidateRequestProcessor.process(call.request as StepValidateRequest));
+            callback(null, this._stepValidateRequestProcessor.process(call.request ));
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
         }
@@ -122,7 +122,7 @@ export class RunnerServiceImpl implements IRunnerServer {
             loader.loadImplementations()
                 .then(() => callback(null, this.getEmptExecutionResponse()))
                 .catch((err) => {
-                    callback(this.createRpcError(err), null);
+                    callback(this.createRpcError(err as Error), null);
                 });
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
@@ -130,7 +130,7 @@ export class RunnerServiceImpl implements IRunnerServer {
     }
 
     public startExecution(call: SUC<ExecutionStartingRequest, ESR>, callback: sUD<ESR>): void {
-        this._executionStartingProcessor.process(call.request as ExecutionStartingRequest)
+        this._executionStartingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
@@ -146,7 +146,7 @@ export class RunnerServiceImpl implements IRunnerServer {
     }
 
     public startSpecExecution(call: SUC<SPESR, ESR>, callback: sUD<ESR>): void {
-        this._specExecutionStartingProcessor.process(call.request as SPESR)
+        this._specExecutionStartingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
 
@@ -162,51 +162,51 @@ export class RunnerServiceImpl implements IRunnerServer {
     }
 
     public startScenarioExecution(call: SUC<SCESR, ESR>, callback: sUD<ESR>): void {
-        this._scenarioExecutionStartingProcessor.process(call.request as SCESR)
+        this._scenarioExecutionStartingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
 
     }
 
     public startStepExecution(call: SUC<STESR, ESR>, callback: sUD<ESR>): void {
-        this._stepExecutionStartingProcessor.process(call.request as STESR)
+        this._stepExecutionStartingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public executeStep(call: SUC<ExecuteStepRequest, ESR>, callback: sUD<ESR>): void {
-        this._executeStepProcessor.process(call.request as ExecuteStepRequest)
+        this._executeStepProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public finishStepExecution(call: SUC<STEER, ESR>, callback: sUD<ESR>): void {
-        this._stepExecutionEndingProcessor.process(call.request as STEER)
+        this._stepExecutionEndingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public finishScenarioExecution(call: SUC<SCEER, ESR>, callback: sUD<ESR>): void {
-        this._scenarioExecutionEndingProcessor.process(call.request as SCEER)
+        this._scenarioExecutionEndingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public finishSpecExecution(call: SUC<SPEER, ESR>, callback: sUD<ESR>): void {
-        this._specExecutionEndingProcessor.process(call.request as SPEER)
+        this._specExecutionEndingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public finishExecution(call: SUC<ExecutionEndingRequest, ESR>, callback: sUD<ESR>): void {
-        this._executionEndingProcessor.process(call.request as ExecutionEndingRequest)
+        this._executionEndingProcessor.process(call.request )
             .then((res) => callback(null, res))
             .catch((error: Error) => callback(this.createRpcError(error), null));
     }
 
     public cacheFile(call: SUC<CacheFileRequest, Empty>, callback: sUD<Empty>): void {
         try {
-            this._cacheFileRequestProcessor.process(call.request as CacheFileRequest);
+            this._cacheFileRequestProcessor.process(call.request );
             callback(null, new Empty());
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
@@ -215,7 +215,7 @@ export class RunnerServiceImpl implements IRunnerServer {
 
     public getStepName(call: SUC<StepNameRequest, StepNameResponse>, callback: sUD<StepNameResponse>): void {
         try {
-            callback(null, this._stepNameRequestProcessor.process(call.request as StepNameRequest));
+            callback(null, this._stepNameRequestProcessor.process(call.request ));
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
         }
@@ -248,7 +248,7 @@ export class RunnerServiceImpl implements IRunnerServer {
 
     public getStepPositions(call: SUC<StepPositionsRequest, StepPositionsResponse>, callback: sUD<StepPositionsResponse>): void {
         try {
-            callback(null, this._stepPositionsRequestProcessor.process(call.request as StepPositionsRequest));
+            callback(null, this._stepPositionsRequestProcessor.process(call.request ));
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
         }
@@ -267,7 +267,7 @@ export class RunnerServiceImpl implements IRunnerServer {
 
     public implementStub(call: SUC<StubImplementationCodeRequest, FileDiff>, callback: sUD<FileDiff>): void {
         try {
-            callback(null, this._stubImplementationCodeRequestProcessor.process(call.request as StubImplementationCodeRequest));
+            callback(null, this._stubImplementationCodeRequestProcessor.process(call.request ));
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
         }
@@ -275,7 +275,7 @@ export class RunnerServiceImpl implements IRunnerServer {
 
     public refactor(call: SUC<RefactorRequest, RefactorResponse>, callback: sUD<RefactorResponse>): void {
         try {
-            callback(null, this._refactorRequestProcessor.process(call.request as RefactorRequest));
+            callback(null, this._refactorRequestProcessor.process(call.request ));
         } catch (error) {
             callback(this.createRpcError(error as Error), null);
         }

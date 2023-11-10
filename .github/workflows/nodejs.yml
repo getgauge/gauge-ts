@@ -1,19 +1,23 @@
 name: test
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 jobs:
   test:
     strategy:
       matrix:
-        node-version: [12.x,13.x, 14.x, 16.x, 17.x, 18.x, 19.x, 20.x, 21.x]
+        node-version: [ 20.x, 21.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -29,7 +33,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
 
       - name: Create artifact
@@ -39,7 +43,7 @@ jobs:
           mv ./gauge-ts-*.tgz ./artifacts
 
       - name: Upload artifacts for local
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: gauge-ts
           path: ./artifacts
@@ -48,7 +52,7 @@ jobs:
     needs: build-artifacts
     strategy:
       matrix:
-        node-version: [12.x,13.x, 14.x, 16.x, 17.x, 18.x, 19.x, 20.x, 21.x]
+        node-version: [20.x, 21.x]
         os: [macOS-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
@@ -58,11 +62,11 @@ jobs:
           gauge-version: master
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v3
         with:
           name: gauge-ts
           path: ./artifacts
@@ -76,7 +80,7 @@ jobs:
         run: |
           mkdir sample
           cd sample
-          gauge init ts
+          gauge init https://github.com/bockstaller/template-ts/releases/latest/download/ts.zip
           npm install ../artifacts/gauge-ts-*.tgz
         shell: bash
 

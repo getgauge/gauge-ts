@@ -1,5 +1,5 @@
 import { EOL } from "os";
-import { createParameter, createSourceFile, Decorator, EmitHint, forEachChild, isClassDeclaration, isMethodDeclaration, MethodDeclaration, Node, NodeArray, ParameterDeclaration, ScriptKind, ScriptTarget, SourceFile } from "typescript";
+import { createSourceFile, EmitHint, factory, forEachChild, getDecorators, isClassDeclaration, isMethodDeclaration, MethodDeclaration, Node, NodeArray, ParameterDeclaration, ScriptKind, ScriptTarget, SourceFile } from "typescript";
 import { CodeHelper } from "../helpers/CodeHelper";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
@@ -64,7 +64,7 @@ export class RefactorProcessor extends CodeHelper {
                                 if (p.getOldposition() < 0) {
                                     const pName = this.getParamName(paramPositions.indexOf(p), oldParams, source);
 
-                                    newParams.splice(p.getNewposition(), 0, createParameter(undefined, undefined, undefined, `${pName}: any`));
+                                    newParams.splice(p.getNewposition(), 0, factory.createParameterDeclaration(undefined, undefined, `${pName}: any`));
                                 } else {
                                     newParams.splice(p.getNewposition(), 0, oldParams[p.getOldposition()]);
                                 }
@@ -103,7 +103,12 @@ export class RefactorProcessor extends CodeHelper {
     }
 
     private getStepTextRange(source: SourceFile, node: MethodDeclaration): Span {
-        const dec = (node.decorators as unknown) as Array<Decorator>;
+        const dec = getDecorators(node);
+
+        if (!dec) {
+          throw new Error("no decorators found");
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
         const stepDecExp = dec.filter(CodeHelper.isStepDecorator)[0].expression as any;
 
@@ -113,10 +118,11 @@ export class RefactorProcessor extends CodeHelper {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     private createSpan(source: SourceFile, node: any): Span {
+        
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const start = source.getLineAndCharacterOfPosition(node.pos);
+        const start = source.getLineAndCharacterOfPosition(node.pos as number);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        const end = source.getLineAndCharacterOfPosition(node.end);
+        const end = source.getLineAndCharacterOfPosition(node.end as number);
         const span = new Span();
 
         span.setStart(start.line + 1);

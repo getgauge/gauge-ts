@@ -51,7 +51,7 @@ export class Util {
   }
 
   public static isTSFile(file: string): boolean {
-    return extname(file) === Extension.Ts;
+    return extname(file) === Extension.Ts.toString();
   }
 
   public static collectFilesIn(dir: string): string[] {

@@ -2,7 +2,7 @@
     "description": "typescript support for gauge",
     "gaugeVersionSupport": {
         "maximum": "",
-        "minimum": "1.0.7"
+        "minimum": "1.5.6"
     },
     "id": "ts",
     "init": {
@@ -34,6 +34,6 @@
             "--start"
         ]
     },
-    "version": "0.1.1",
+    "version": "0.2.0",
     "gRPCSupport": true
 }

@@ -37,7 +37,7 @@ import {
     StepInfo, StepExecutionStartingRequest, StepExecutionEndingRequest, ExecuteStepRequest, ScenarioExecutionEndingRequest, SpecExecutionEndingRequest, ExecutionEndingRequest
 } from '../src/gen/messages_pb';
 import { ServerUnaryCall as SUC, Server, StatusObject } from '@grpc/grpc-js';
-import { ServerErrorResponse } from '@grpc/grpc-js/build/src/server-call';
+import { ServerErrorResponse, sendUnaryData } from '@grpc/grpc-js/build/src/server-call';
 import { ProtoStepValue } from '../src/gen/spec_pb';
 import { Position } from '../src/models/Position';
 import { Range } from '../src/models/Range';
@@ -73,12 +73,12 @@ describe('RunnerServiceImpl', () => {
 
             const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
 
-            handler.initializeSuiteDataStore(call, (err: error, res: ESR | null) => {
+            handler.initializeSuiteDataStore(call, ((err: error, res: ESR) => {
                 expect(err).toBe(null);
                 expect(res?.getExecutionresult()?.getFailed()).toBeFalsy();
                 expect(DataStoreFactory.getSuiteDataStore().length).toBe(0);
                 done();
-            });
+            })as sendUnaryData<ESR>);
         });
     });
 
@@ -287,18 +287,18 @@ describe('RunnerServiceImpl', () => {
         });
     });
 
-    describe('.getGlobPstters', () => {
+    describe('.getGlobPatterns', () => {
         it('should give all patterns', () => {
             Util.getImplDirs = jest.fn().mockReturnValue(['src', 'tests']);
             const call = createMock<SUC<Empty, IFGPRes>>();
 
             call.request = new Empty();
-            handler.getGlobPatterns(call, (err: error, res: IFGPRes | null) => {
+            handler.getGlobPatterns(call, ((err: error, res: IFGPRes) => {
                 expect(err).toBe(null);
                 const patterns = res?.getGlobpatternsList();
 
                 expect(patterns).toStrictEqual(['src/**/*.ts', 'tests/**/*.ts']);
-            });
+            })as sendUnaryData<IFGPRes>);
         });
     });
 
@@ -324,10 +324,10 @@ describe('RunnerServiceImpl', () => {
             registry.getStepTexts = jest.fn().mockReturnValue(['foo']);
             const call = createMock<SUC<SNsReq, SNsRes>>();
 
-            handler.getStepNames(call, (err: error, res: SNsRes | null) => {
+            handler.getStepNames(call, ((err: error, res: SNsRes) => {
                 expect(err).toBe(null);
                 expect(res?.getStepsList()).toStrictEqual(['foo']);
-            });
+            })as sendUnaryData<SNsRes>);
         });
     });
 
@@ -342,7 +342,7 @@ describe('RunnerServiceImpl', () => {
             }]);
             const call = createMock<SUC<SPReq, SPRes>>({ request: req });
 
-            handler.getStepPositions(call, (err: error, res: SPRes | null) => {
+            handler.getStepPositions(call, ((err: error, res: SPRes) => {
                 expect(err).toBe(null);
                 const positions = res?.getSteppositionsList() ?? [];
 
@@ -354,7 +354,7 @@ describe('RunnerServiceImpl', () => {
                 expect(span?.getStartchar()).toBe(5);
                 expect(span?.getEnd()).toBe(8);
                 expect(span?.getEndchar()).toBe(5);
-            });
+            })as sendUnaryData<SPRes>);
         });
     });
 
@@ -363,10 +363,10 @@ describe('RunnerServiceImpl', () => {
             Util.getListOfFiles = jest.fn().mockReturnValue(['StepImpl.ts']);
             const call = createMock<SUC<Empty, IFLRes>>();
 
-            handler.getImplementationFiles(call, (err: error, res: IFLRes | null) => {
+            handler.getImplementationFiles(call, ((err: error, res: IFLRes) => {
                 expect(err).toBe(null);
                 expect(res?.getImplementationfilepathsList()).toStrictEqual(['StepImpl.ts']);
-            });
+            })as sendUnaryData<IFLRes>);
         });
     });
 
@@ -384,13 +384,13 @@ describe('RunnerServiceImpl', () => {
             req.setCodesList([code]);
             const call = createMock<SUC<SICReq, FileDiff>>({ request: req });
 
-            handler.implementStub(call, (err: error, res: FileDiff | null) => {
+            handler.implementStub(call, ((err: error, res: FileDiff) => {
                 expect(err).toBe(null);
                 expect(res?.getFilepath()).toStrictEqual('StepImpl.ts');
                 const expected = code.split(EOL).map((p) => { return `\t${p}`; }).join(EOL) + EOL;
 
                 expect(res?.getTextdiffsList()[0].getContent()).toBe(expected);
-            });
+            })as sendUnaryData<FileDiff>);
         });
     });
 
@@ -409,10 +409,10 @@ describe('RunnerServiceImpl', () => {
 
             const call = createMock<SUC<SVReq, SVRes>>({ request: req });
 
-            handler.validateStep(call, (err: error, res: SVRes | null) => {
+            handler.validateStep(call, ((err: error, res: SVRes) => {
                 expect(err).toBe(null);
                 expect(res?.getIsvalid()).toBe(true);
-            });
+            })as sendUnaryData<SVRes>);
         });
     });
 
@@ -433,10 +433,10 @@ describe('RunnerServiceImpl', () => {
             req.setNewstepvalue(newStepValue);
             const call = createMock<SUC<RReq, RRes>>({ request: req });
 
-            handler.refactor(call, (err: error, res: RRes | null) => {
+            handler.refactor(call, ((err: error, res: RRes) => {
                 expect(err).toBe(null);
                 expect(res?.getSuccess()).toBe(true);
-            });
+            })as sendUnaryData<RRes>);
         });
     });
 
@@ -448,11 +448,11 @@ describe('RunnerServiceImpl', () => {
             req.setStepvalue("foo");
             const call = createMock<SUC<SNReq, SNRes>>({ request: req });
 
-            handler.getStepName(call, (err: error, res: SNRes | null) => {
+            handler.getStepName(call, ((err: error, res: SNRes) => {
                 expect(err).toBe(null);
                 expect(res?.getFilename()).toBe('StepImpl.ts');
                 expect(res?.getIssteppresent()).toBe(true);
-            });
+            })as sendUnaryData<SNRes>);
         });
     });
 

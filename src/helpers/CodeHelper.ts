@@ -1,4 +1,4 @@
-import {createPrinter, Decorator, MethodDeclaration, Printer, TextRange} from "typescript";
+import {createPrinter, Decorator, MethodDeclaration, Printer, TextRange, getDecorators} from "typescript";
 
 export type ExpressionElementType = {
     text: string;
@@ -21,18 +21,23 @@ export abstract class CodeHelper {
     protected printer: Printer = createPrinter();
 
     protected getStepTexts(method: MethodDeclaration): Array<string> {
-        const dec = (method.decorators as unknown) as Array<Decorator>;
-        const stepDecExp = (dec.filter(CodeHelper.isStepDecorator)[0]
-            .expression as unknown) as ExpressionType;
-        const arg = stepDecExp.arguments[0];
+        const dec = getDecorators(method);
 
-        if (!arg.text && arg.elements) {
+        if (dec) {
+          const stepDecExp = dec.filter(CodeHelper.isStepDecorator)[0]
+            .expression as unknown as ExpressionType;
+          const arg = stepDecExp.arguments[0];
+
+          if (!arg.text && arg.elements) {
             return arg.elements.map((e) => {
-                return e.text;
+              return e.text;
             });
+          }
+
+          return [arg.text];
         }
 
-        return [arg.text];
+        return [];
     }
 
     protected static isStepDecorator(d: Decorator): boolean {
@@ -42,22 +47,33 @@ export abstract class CodeHelper {
     }
 
     protected hasStepDecorator(method: MethodDeclaration): boolean {
-        return !!method.decorators && method.decorators.some(CodeHelper.isStepDecorator);
+        const decorators = getDecorators(method);
+
+        if (decorators) {
+        return !!decorators && decorators.some(CodeHelper.isStepDecorator);
+        }
+
+        return false;
     }
 
     protected hasStepText(method: MethodDeclaration, stepText: string): boolean {
-        const dec = (method.decorators as unknown) as Array<Decorator>;
-    const stepDecExp = (dec.filter(CodeHelper.isStepDecorator)[0]
-            .expression as unknown) as ExpressionType;
-        const arg = stepDecExp.arguments[0];
+    const dec = getDecorators(method);
 
-        if (!arg.text && arg.elements) {
-            return arg.elements.some((e) => {
-                return e.text === stepText;
-            });
+    if (dec) {
+        const stepDecExp = (dec.filter(CodeHelper.isStepDecorator)[0]
+                .expression as unknown) as ExpressionType;
+            const arg = stepDecExp.arguments[0];
+
+            if (!arg.text && arg.elements) {
+                return arg.elements.some((e) => {
+                    return e.text === stepText;
+                });
+            }
+
+            return arg.text === stepText;
         }
 
-        return arg.text === stepText;
+        return false;
     }
 
 }

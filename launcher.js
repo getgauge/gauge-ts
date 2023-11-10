@@ -3,8 +3,8 @@
 var tsVersion = require("./ts.json").version;
 
 var version = process.versions.node.split(".");
-if (parseInt(version[0]) < 10) {
-  throw new Error("gauge-ts requires Node.js version 10+. Current version: " + process.versions.node);
+if (parseInt(version[0]) < 20) {
+  throw new Error("gauge-ts requires Node.js version 20+. Current version: " + process.versions.node);
 }
 
 let stepImpl = `
@@ -56,7 +56,7 @@ STEP_IMPL_DIR = tests
 let packageJson = `
 {
   "name": "gauge-ts-template",
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "dependencies": {
     "gauge-ts": "${tsVersion}"
@@ -72,7 +72,6 @@ let tsconfig = `
   "compilerOptions": {
       /* Basic Options */
       "target": "es6",
-      /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', or 'ESNEXT'. */
       "module": "commonjs",
       /* Specify module code generation: 'none', commonjs', 'amd', 'system', 'umd', 'es2015', or 'ESNext'. */
       "lib": ["es2016"],                             /* Specify library files to be included in the compilation:  */
