@@ -15,9 +15,9 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
@@ -33,7 +33,7 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - run: npm install
 
       - name: Create artifact
@@ -43,7 +43,7 @@ jobs:
           mv ./gauge-ts-*.tgz ./artifacts
 
       - name: Upload artifacts for local
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v3
         with:
           name: gauge-ts
           path: ./artifacts
@@ -62,11 +62,11 @@ jobs:
           gauge-version: master
 
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
 
-      - uses: actions/download-artifact@v1
+      - uses: actions/download-artifact@v3
         with:
           name: gauge-ts
           path: ./artifacts
