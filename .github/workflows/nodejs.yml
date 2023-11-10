@@ -80,7 +80,7 @@ jobs:
         run: |
           mkdir sample
           cd sample
-          gauge init ts
+          gauge init https://github.com/bockstaller/template-ts/releases/latest/download/ts.zip
           npm install ../artifacts/gauge-ts-*.tgz
         shell: bash
 
