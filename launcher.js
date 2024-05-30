@@ -1,13 +1,15 @@
 #! /usr/bin/env node
 
-var tsVersion = require("./ts.json").version;
+const tsVersion = require("./ts.json").version;
 
-var version = process.versions.node.split(".");
-if (parseInt(version[0]) < 10) {
-  throw new Error("gauge-ts requires Node.js version 10+. Current version: " + process.versions.node);
+const version = process.versions.node.split(".");
+if (Number.parseInt(version[0]) < 10) {
+  throw new Error(
+    `gauge-ts requires Node.js version 10+. Current version: ${process.versions.node}`,
+  );
 }
 
-let stepImpl = `
+const stepImpl = `
 import { Step, Table } from "gauge-ts";
 import { strictEqual } from "assert";
 
@@ -42,18 +44,17 @@ export default class StepImplementation {
     }
 
 }
-`
+`;
 
-let defaultProperties = `
+const defaultProperties = `
 #ts.properties
 #settings related to gauge-ts.
 
 # Comma separated list of dirs. path should be relative to project root.
 STEP_IMPL_DIR = tests
-`
+`;
 
-
-let packageJson = `
+const packageJson = `
 {
   "name": "gauge-ts-template",
   "version": "0.0.1",
@@ -65,9 +66,9 @@ let packageJson = `
     "@types/node": "latest"
   }
 }
-`
+`;
 
-let tsconfig = `
+const tsconfig = `
 {
   "compilerOptions": {
       /* Basic Options */
@@ -86,50 +87,52 @@ let tsconfig = `
       "node_modules",
   ]
 }
-`
+`;
 
-
-let fs = require("fs");
-let path = require("path");
-let cp = require("child_process");
-let os = require('os');
+const fs = require("node:fs");
+const path = require("node:path");
+const cp = require("node:child_process");
+const os = require("node:os");
 
 const { GAUGE_PROJECT_ROOT } = process.env;
 
-let testsDir = path.join(GAUGE_PROJECT_ROOT, 'tests');
-let envDir = path.join(GAUGE_PROJECT_ROOT, 'env');
-let packageJsonFile = path.join(GAUGE_PROJECT_ROOT, 'package.json');
-let tsconfigFile = path.join(GAUGE_PROJECT_ROOT, 'tsconfig.json');
+const testsDir = path.join(GAUGE_PROJECT_ROOT, "tests");
+const envDir = path.join(GAUGE_PROJECT_ROOT, "env");
+const packageJsonFile = path.join(GAUGE_PROJECT_ROOT, "package.json");
+const tsconfigFile = path.join(GAUGE_PROJECT_ROOT, "tsconfig.json");
 
 function getCommand(command) {
-  let validExecExt = [""];
-  if (os.platform() === 'win32') validExecExt.push(".bat", ".exe", ".cmd");
+  const validExecExt = [""];
+  if (os.platform() === "win32") validExecExt.push(".bat", ".exe", ".cmd");
   for (const ext of validExecExt) {
-      let executable = `${command}${ext}`;
-      if (!cp.spawnSync(executable).error) return executable;
+    const executable = `${command}${ext}`;
+    if (!cp.spawnSync(executable).error) return executable;
   }
 }
 
 if (process.argv[2] === "--init") {
   console.log("Initializing Gauge TypeScript project");
-  fs.mkdir(testsDir, 484, function (err) {
+  fs.mkdir(testsDir, 484, (err) => {
     if (err && err.code !== "EEXIST") {
       console.error(err);
     } else {
-      fs.writeFileSync(path.join(testsDir, 'StepImplementation.ts'), stepImpl);
+      fs.writeFileSync(path.join(testsDir, "StepImplementation.ts"), stepImpl);
     }
   });
 
-  fs.mkdir(envDir, 484, function (err) {
+  fs.mkdir(envDir, 484, (err) => {
     if (err && err.code !== "EEXIST") {
       console.error(err);
     } else {
-      let defaultDir = path.join(envDir, 'default');
-      fs.mkdir(defaultDir, 484, function (err) {
+      const defaultDir = path.join(envDir, "default");
+      fs.mkdir(defaultDir, 484, (err) => {
         if (err && err.code !== "EEXIST") {
           console.error(err);
         } else {
-          fs.writeFileSync(path.join(defaultDir, 'ts.properties'), defaultProperties);
+          fs.writeFileSync(
+            path.join(defaultDir, "ts.properties"),
+            defaultProperties,
+          );
         }
       });
     }
@@ -139,25 +142,23 @@ if (process.argv[2] === "--init") {
   fs.writeFileSync(tsconfigFile, tsconfig);
 
   console.log("Run `npm install` to get project dependencies.");
-}
-
-else if (process.argv[2] === "--start") {
-  var script = 'import { GaugeRuntime }  from "gauge-ts/dist/GaugeRuntime";'
-    + `let runner = new GaugeRuntime();`
-    + `runner.start();`
-  var opts = [
-    '-O', `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`,
-    ...hasModule('tsconfig-paths') ? ['-r', 'tsconfig-paths/register'] : [],
-    '-e', script
+} else if (process.argv[2] === "--start") {
+  const script = `import { GaugeRuntime }  from 'gauge-ts/dist/GaugeRuntime'; let runner = new GaugeRuntime(); runner.start();`;
+  const opts = [
+    "ts-node",
+    "-O",
+    `{"experimentalDecorators": true,"emitDecoratorMetadata": true}`,
+    ...(hasModule("tsconfig-paths") ? ["-r", "tsconfig-paths/register"] : []),
+    "-e",
+    script,
   ];
-  let tsNode = path.join(GAUGE_PROJECT_ROOT, 'node_modules', '.bin', 'ts-node');
-  var runner = cp.spawn(getCommand(tsNode), opts, {
+  const runner = cp.spawn(getCommand("npx"), opts, {
     env: process.env,
     silent: false,
     stdio: "inherit",
-    cwd: GAUGE_PROJECT_ROOT
+    cwd: GAUGE_PROJECT_ROOT,
   });
-  runner.on("error", function (err) {
+  runner.on("error", (err) => {
     console.trace(err.stack);
   });
 }
@@ -166,7 +167,7 @@ function hasModule(name) {
   try {
     require.resolve(name, { paths: [GAUGE_PROJECT_ROOT] });
     return true;
-  } catch(e) {
+  } catch (e) {
     return false;
   }
 }

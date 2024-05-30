@@ -1,11 +1,10 @@
 module.exports = {
-  transform: { '^.+\\.ts?$': 'ts-jest' },
-  testEnvironment: 'node',
-  globals: {
-    "ts-jest": {
-      "compiler": "ttypescript"
-    }
+  transform: {
+    '^.+\\.ts?$': ['ts-jest', {
+      compiler: "typescript"
+    }]
   },
+  testEnvironment: 'node',
   testRegex: '/tests/.*(Test)?\\.(ts)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   coveragePathIgnorePatterns: [
