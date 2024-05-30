@@ -5,6 +5,7 @@ module.exports = {
     }]
   },
   testEnvironment: 'node',
+  reporters: ["jest-silent-reporter"],
   testRegex: '/tests/.*(Test)?\\.(ts)$',
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
   coveragePathIgnorePatterns: [

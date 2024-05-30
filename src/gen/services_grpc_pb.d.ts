@@ -5,7 +5,6 @@
 /* eslint-disable */
 
 import * as grpc from "@grpc/grpc-js";
-import {handleClientStreamingCall} from "@grpc/grpc-js/build/src/server-call";
 import * as services_pb from "./services_pb";
 import * as messages_pb from "./messages_pb";
 
@@ -235,7 +234,7 @@ interface IRunnerService_IKill extends grpc.MethodDefinition<messages_pb.KillPro
 
 export const RunnerService: IRunnerService;
 
-export interface IRunnerServer {
+export interface IRunnerServer extends grpc.UntypedServiceImplementation {
     validateStep: grpc.handleUnaryCall<messages_pb.StepValidateRequest, messages_pb.StepValidateResponse>;
     initializeSuiteDataStore: grpc.handleUnaryCall<messages_pb.SuiteDataStoreInitRequest, messages_pb.ExecutionStatusResponse>;
     startExecution: grpc.handleUnaryCall<messages_pb.ExecutionStartingRequest, messages_pb.ExecutionStatusResponse>;
@@ -505,7 +504,7 @@ interface IReporterService_IKill extends grpc.MethodDefinition<messages_pb.KillP
 
 export const ReporterService: IReporterService;
 
-export interface IReporterServer {
+export interface IReporterServer extends grpc.UntypedServiceImplementation {
     notifyExecutionStarting: grpc.handleUnaryCall<messages_pb.ExecutionStartingRequest, messages_pb.Empty>;
     notifySpecExecutionStarting: grpc.handleUnaryCall<messages_pb.SpecExecutionStartingRequest, messages_pb.Empty>;
     notifyScenarioExecutionStarting: grpc.handleUnaryCall<messages_pb.ScenarioExecutionStartingRequest, messages_pb.Empty>;
@@ -611,7 +610,7 @@ interface IDocumenterService_IKill extends grpc.MethodDefinition<messages_pb.Kil
 
 export const DocumenterService: IDocumenterService;
 
-export interface IDocumenterServer {
+export interface IDocumenterServer extends grpc.UntypedServiceImplementation {
     generateDocs: grpc.handleUnaryCall<messages_pb.SpecDetails, messages_pb.Empty>;
     kill: grpc.handleUnaryCall<messages_pb.KillProcessRequest, messages_pb.Empty>;
 }

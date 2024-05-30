@@ -1,0 +1,10 @@
+{
+  "files": {
+    "include": [
+      "./src/**/*.ts"
+    ]
+  },
+  "formatter": {
+    "indentStyle": "space"
+  }
+}

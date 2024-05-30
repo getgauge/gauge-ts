@@ -31,7 +31,6 @@ export class ExecutionStatusResponse extends jspb.Message {
     getExecutionresult(): spec_pb.ProtoExecutionResult | undefined;
     setExecutionresult(value?: spec_pb.ProtoExecutionResult): ExecutionStatusResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutionStatusResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ExecutionStatusResponse): ExecutionStatusResponse.AsObject;
@@ -55,15 +54,12 @@ export class ExecutionStartingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): ExecutionStartingRequest;
 
-
     hasSuiteresult(): boolean;
     clearSuiteresult(): void;
     getSuiteresult(): spec_pb.ProtoSuiteResult | undefined;
     setSuiteresult(value?: spec_pb.ProtoSuiteResult): ExecutionStartingRequest;
-
     getStream(): number;
     setStream(value: number): ExecutionStartingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutionStartingRequest.AsObject;
@@ -90,15 +86,12 @@ export class ExecutionEndingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): ExecutionEndingRequest;
 
-
     hasSuiteresult(): boolean;
     clearSuiteresult(): void;
     getSuiteresult(): spec_pb.ProtoSuiteResult | undefined;
     setSuiteresult(value?: spec_pb.ProtoSuiteResult): ExecutionEndingRequest;
-
     getStream(): number;
     setStream(value: number): ExecutionEndingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutionEndingRequest.AsObject;
@@ -125,15 +118,12 @@ export class SpecExecutionStartingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): SpecExecutionStartingRequest;
 
-
     hasSpecresult(): boolean;
     clearSpecresult(): void;
     getSpecresult(): spec_pb.ProtoSpecResult | undefined;
     setSpecresult(value?: spec_pb.ProtoSpecResult): SpecExecutionStartingRequest;
-
     getStream(): number;
     setStream(value: number): SpecExecutionStartingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SpecExecutionStartingRequest.AsObject;
@@ -160,15 +150,12 @@ export class SpecExecutionEndingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): SpecExecutionEndingRequest;
 
-
     hasSpecresult(): boolean;
     clearSpecresult(): void;
     getSpecresult(): spec_pb.ProtoSpecResult | undefined;
     setSpecresult(value?: spec_pb.ProtoSpecResult): SpecExecutionEndingRequest;
-
     getStream(): number;
     setStream(value: number): SpecExecutionEndingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SpecExecutionEndingRequest.AsObject;
@@ -195,15 +182,12 @@ export class ScenarioExecutionStartingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): ScenarioExecutionStartingRequest;
 
-
     hasScenarioresult(): boolean;
     clearScenarioresult(): void;
     getScenarioresult(): spec_pb.ProtoScenarioResult | undefined;
     setScenarioresult(value?: spec_pb.ProtoScenarioResult): ScenarioExecutionStartingRequest;
-
     getStream(): number;
     setStream(value: number): ScenarioExecutionStartingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ScenarioExecutionStartingRequest.AsObject;
@@ -230,15 +214,12 @@ export class ScenarioExecutionEndingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): ScenarioExecutionEndingRequest;
 
-
     hasScenarioresult(): boolean;
     clearScenarioresult(): void;
     getScenarioresult(): spec_pb.ProtoScenarioResult | undefined;
     setScenarioresult(value?: spec_pb.ProtoScenarioResult): ScenarioExecutionEndingRequest;
-
     getStream(): number;
     setStream(value: number): ScenarioExecutionEndingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ScenarioExecutionEndingRequest.AsObject;
@@ -265,15 +246,12 @@ export class StepExecutionStartingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): StepExecutionStartingRequest;
 
-
     hasStepresult(): boolean;
     clearStepresult(): void;
     getStepresult(): spec_pb.ProtoStepResult | undefined;
     setStepresult(value?: spec_pb.ProtoStepResult): StepExecutionStartingRequest;
-
     getStream(): number;
     setStream(value: number): StepExecutionStartingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepExecutionStartingRequest.AsObject;
@@ -300,15 +278,12 @@ export class StepExecutionEndingRequest extends jspb.Message {
     getCurrentexecutioninfo(): ExecutionInfo | undefined;
     setCurrentexecutioninfo(value?: ExecutionInfo): StepExecutionEndingRequest;
 
-
     hasStepresult(): boolean;
     clearStepresult(): void;
     getStepresult(): spec_pb.ProtoStepResult | undefined;
     setStepresult(value?: spec_pb.ProtoStepResult): StepExecutionEndingRequest;
-
     getStream(): number;
     setStream(value: number): StepExecutionEndingRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepExecutionEndingRequest.AsObject;
@@ -331,12 +306,10 @@ export namespace StepExecutionEndingRequest {
 export class ExecutionArg extends jspb.Message { 
     getFlagname(): string;
     setFlagname(value: string): ExecutionArg;
-
     clearFlagvalueList(): void;
     getFlagvalueList(): Array<string>;
     setFlagvalueList(value: Array<string>): ExecutionArg;
     addFlagvalue(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutionArg.AsObject;
@@ -362,35 +335,27 @@ export class ExecutionInfo extends jspb.Message {
     getCurrentspec(): SpecInfo | undefined;
     setCurrentspec(value?: SpecInfo): ExecutionInfo;
 
-
     hasCurrentscenario(): boolean;
     clearCurrentscenario(): void;
     getCurrentscenario(): ScenarioInfo | undefined;
     setCurrentscenario(value?: ScenarioInfo): ExecutionInfo;
 
-
     hasCurrentstep(): boolean;
     clearCurrentstep(): void;
     getCurrentstep(): StepInfo | undefined;
     setCurrentstep(value?: StepInfo): ExecutionInfo;
-
     getStacktrace(): string;
     setStacktrace(value: string): ExecutionInfo;
-
     getProjectname(): string;
     setProjectname(value: string): ExecutionInfo;
-
     clearExecutionargsList(): void;
     getExecutionargsList(): Array<ExecutionArg>;
     setExecutionargsList(value: Array<ExecutionArg>): ExecutionInfo;
     addExecutionargs(value?: ExecutionArg, index?: number): ExecutionArg;
-
     getNumberofexecutionstreams(): number;
     setNumberofexecutionstreams(value: number): ExecutionInfo;
-
     getRunnerid(): number;
     setRunnerid(value: number): ExecutionInfo;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecutionInfo.AsObject;
@@ -418,18 +383,14 @@ export namespace ExecutionInfo {
 export class SpecInfo extends jspb.Message { 
     getName(): string;
     setName(value: string): SpecInfo;
-
     getFilename(): string;
     setFilename(value: string): SpecInfo;
-
     getIsfailed(): boolean;
     setIsfailed(value: boolean): SpecInfo;
-
     clearTagsList(): void;
     getTagsList(): Array<string>;
     setTagsList(value: Array<string>): SpecInfo;
     addTags(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SpecInfo.AsObject;
@@ -453,15 +414,12 @@ export namespace SpecInfo {
 export class ScenarioInfo extends jspb.Message { 
     getName(): string;
     setName(value: string): ScenarioInfo;
-
     getIsfailed(): boolean;
     setIsfailed(value: boolean): ScenarioInfo;
-
     clearTagsList(): void;
     getTagsList(): Array<string>;
     setTagsList(value: Array<string>): ScenarioInfo;
     addTags(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ScenarioInfo.AsObject;
@@ -487,16 +445,12 @@ export class StepInfo extends jspb.Message {
     clearStep(): void;
     getStep(): ExecuteStepRequest | undefined;
     setStep(value?: ExecuteStepRequest): StepInfo;
-
     getIsfailed(): boolean;
     setIsfailed(value: boolean): StepInfo;
-
     getStacktrace(): string;
     setStacktrace(value: string): StepInfo;
-
     getErrormessage(): string;
     setErrormessage(value: string): StepInfo;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepInfo.AsObject;
@@ -520,21 +474,16 @@ export namespace StepInfo {
 export class ExecuteStepRequest extends jspb.Message { 
     getActualsteptext(): string;
     setActualsteptext(value: string): ExecuteStepRequest;
-
     getParsedsteptext(): string;
     setParsedsteptext(value: string): ExecuteStepRequest;
-
     getScenariofailing(): boolean;
     setScenariofailing(value: boolean): ExecuteStepRequest;
-
     clearParametersList(): void;
     getParametersList(): Array<spec_pb.Parameter>;
     setParametersList(value: Array<spec_pb.Parameter>): ExecuteStepRequest;
     addParameters(value?: spec_pb.Parameter, index?: number): spec_pb.Parameter;
-
     getStream(): number;
     setStream(value: number): ExecuteStepRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ExecuteStepRequest.AsObject;
@@ -559,16 +508,13 @@ export namespace ExecuteStepRequest {
 export class StepValidateRequest extends jspb.Message { 
     getSteptext(): string;
     setSteptext(value: string): StepValidateRequest;
-
     getNumberofparameters(): number;
     setNumberofparameters(value: number): StepValidateRequest;
-
 
     hasStepvalue(): boolean;
     clearStepvalue(): void;
     getStepvalue(): spec_pb.ProtoStepValue | undefined;
     setStepvalue(value?: spec_pb.ProtoStepValue): StepValidateRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepValidateRequest.AsObject;
@@ -591,16 +537,12 @@ export namespace StepValidateRequest {
 export class StepValidateResponse extends jspb.Message { 
     getIsvalid(): boolean;
     setIsvalid(value: boolean): StepValidateResponse;
-
     getErrormessage(): string;
     setErrormessage(value: string): StepValidateResponse;
-
     getErrortype(): StepValidateResponse.ErrorType;
     setErrortype(value: StepValidateResponse.ErrorType): StepValidateResponse;
-
     getSuggestion(): string;
     setSuggestion(value: string): StepValidateResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepValidateResponse.AsObject;
@@ -634,7 +576,6 @@ export class SuiteExecutionResult extends jspb.Message {
     getSuiteresult(): spec_pb.ProtoSuiteResult | undefined;
     setSuiteresult(value?: spec_pb.ProtoSuiteResult): SuiteExecutionResult;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SuiteExecutionResult.AsObject;
     static toObject(includeInstance: boolean, msg: SuiteExecutionResult): SuiteExecutionResult.AsObject;
@@ -657,7 +598,6 @@ export class SuiteExecutionResultItem extends jspb.Message {
     clearResultitem(): void;
     getResultitem(): spec_pb.ProtoItem | undefined;
     setResultitem(value?: spec_pb.ProtoItem): SuiteExecutionResultItem;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SuiteExecutionResultItem.AsObject;
@@ -698,7 +638,6 @@ export class StepNamesResponse extends jspb.Message {
     setStepsList(value: Array<string>): StepNamesResponse;
     addSteps(value: string, index?: number): string;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepNamesResponse.AsObject;
     static toObject(includeInstance: boolean, msg: StepNamesResponse): StepNamesResponse.AsObject;
@@ -718,7 +657,6 @@ export namespace StepNamesResponse {
 export class ScenarioDataStoreInitRequest extends jspb.Message { 
     getStream(): number;
     setStream(value: number): ScenarioDataStoreInitRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ScenarioDataStoreInitRequest.AsObject;
@@ -740,7 +678,6 @@ export class SpecDataStoreInitRequest extends jspb.Message {
     getStream(): number;
     setStream(value: number): SpecDataStoreInitRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SpecDataStoreInitRequest.AsObject;
     static toObject(includeInstance: boolean, msg: SpecDataStoreInitRequest): SpecDataStoreInitRequest.AsObject;
@@ -761,7 +698,6 @@ export class SuiteDataStoreInitRequest extends jspb.Message {
     getStream(): number;
     setStream(value: number): SuiteDataStoreInitRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SuiteDataStoreInitRequest.AsObject;
     static toObject(includeInstance: boolean, msg: SuiteDataStoreInitRequest): SuiteDataStoreInitRequest.AsObject;
@@ -781,10 +717,8 @@ export namespace SuiteDataStoreInitRequest {
 export class ParameterPosition extends jspb.Message { 
     getOldposition(): number;
     setOldposition(value: number): ParameterPosition;
-
     getNewposition(): number;
     setNewposition(value: number): ParameterPosition;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ParameterPosition.AsObject;
@@ -810,20 +744,16 @@ export class RefactorRequest extends jspb.Message {
     getOldstepvalue(): spec_pb.ProtoStepValue | undefined;
     setOldstepvalue(value?: spec_pb.ProtoStepValue): RefactorRequest;
 
-
     hasNewstepvalue(): boolean;
     clearNewstepvalue(): void;
     getNewstepvalue(): spec_pb.ProtoStepValue | undefined;
     setNewstepvalue(value?: spec_pb.ProtoStepValue): RefactorRequest;
-
     clearParampositionsList(): void;
     getParampositionsList(): Array<ParameterPosition>;
     setParampositionsList(value: Array<ParameterPosition>): RefactorRequest;
     addParampositions(value?: ParameterPosition, index?: number): ParameterPosition;
-
     getSavechanges(): boolean;
     setSavechanges(value: boolean): RefactorRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RefactorRequest.AsObject;
@@ -847,15 +777,12 @@ export namespace RefactorRequest {
 export class FileChanges extends jspb.Message { 
     getFilename(): string;
     setFilename(value: string): FileChanges;
-
     getFilecontent(): string;
     setFilecontent(value: string): FileChanges;
-
     clearDiffsList(): void;
     getDiffsList(): Array<TextDiff>;
     setDiffsList(value: Array<TextDiff>): FileChanges;
     addDiffs(value?: TextDiff, index?: number): TextDiff;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): FileChanges.AsObject;
@@ -878,20 +805,16 @@ export namespace FileChanges {
 export class RefactorResponse extends jspb.Message { 
     getSuccess(): boolean;
     setSuccess(value: boolean): RefactorResponse;
-
     getError(): string;
     setError(value: string): RefactorResponse;
-
     clearFileschangedList(): void;
     getFileschangedList(): Array<string>;
     setFileschangedList(value: Array<string>): RefactorResponse;
     addFileschanged(value: string, index?: number): string;
-
     clearFilechangesList(): void;
     getFilechangesList(): Array<FileChanges>;
     setFilechangesList(value: Array<FileChanges>): RefactorResponse;
     addFilechanges(value?: FileChanges, index?: number): FileChanges;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): RefactorResponse.AsObject;
@@ -916,7 +839,6 @@ export class StepNameRequest extends jspb.Message {
     getStepvalue(): string;
     setStepvalue(value: string): StepNameRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepNameRequest.AsObject;
     static toObject(includeInstance: boolean, msg: StepNameRequest): StepNameRequest.AsObject;
@@ -936,27 +858,21 @@ export namespace StepNameRequest {
 export class StepNameResponse extends jspb.Message { 
     getIssteppresent(): boolean;
     setIssteppresent(value: boolean): StepNameResponse;
-
     clearStepnameList(): void;
     getStepnameList(): Array<string>;
     setStepnameList(value: Array<string>): StepNameResponse;
     addStepname(value: string, index?: number): string;
-
     getHasalias(): boolean;
     setHasalias(value: boolean): StepNameResponse;
-
     getFilename(): string;
     setFilename(value: string): StepNameResponse;
-
 
     hasSpan(): boolean;
     clearSpan(): void;
     getSpan(): spec_pb.Span | undefined;
     setSpan(value?: spec_pb.Span): StepNameResponse;
-
     getIsexternal(): boolean;
     setIsexternal(value: boolean): StepNameResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepNameResponse.AsObject;
@@ -983,7 +899,6 @@ export class UnsupportedMessageResponse extends jspb.Message {
     getMessage(): string;
     setMessage(value: string): UnsupportedMessageResponse;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): UnsupportedMessageResponse.AsObject;
     static toObject(includeInstance: boolean, msg: UnsupportedMessageResponse): UnsupportedMessageResponse.AsObject;
@@ -1003,16 +918,12 @@ export namespace UnsupportedMessageResponse {
 export class CacheFileRequest extends jspb.Message { 
     getContent(): string;
     setContent(value: string): CacheFileRequest;
-
     getFilepath(): string;
     setFilepath(value: string): CacheFileRequest;
-
     getIsclosed(): boolean;
     setIsclosed(value: boolean): CacheFileRequest;
-
     getStatus(): CacheFileRequest.FileStatus;
     setStatus(value: CacheFileRequest.FileStatus): CacheFileRequest;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CacheFileRequest.AsObject;
@@ -1046,7 +957,6 @@ export class StepPositionsRequest extends jspb.Message {
     getFilepath(): string;
     setFilepath(value: string): StepPositionsRequest;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepPositionsRequest.AsObject;
     static toObject(includeInstance: boolean, msg: StepPositionsRequest): StepPositionsRequest.AsObject;
@@ -1068,10 +978,8 @@ export class StepPositionsResponse extends jspb.Message {
     getSteppositionsList(): Array<StepPositionsResponse.StepPosition>;
     setSteppositionsList(value: Array<StepPositionsResponse.StepPosition>): StepPositionsResponse;
     addSteppositions(value?: StepPositionsResponse.StepPosition, index?: number): StepPositionsResponse.StepPosition;
-
     getError(): string;
     setError(value: string): StepPositionsResponse;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StepPositionsResponse.AsObject;
@@ -1094,12 +1002,10 @@ export namespace StepPositionsResponse {
         getStepvalue(): string;
         setStepvalue(value: string): StepPosition;
 
-
         hasSpan(): boolean;
         clearSpan(): void;
         getSpan(): spec_pb.Span | undefined;
         setSpan(value?: spec_pb.Span): StepPosition;
-
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): StepPosition.AsObject;
@@ -1143,7 +1049,6 @@ export class ImplementationFileGlobPatternResponse extends jspb.Message {
     setGlobpatternsList(value: Array<string>): ImplementationFileGlobPatternResponse;
     addGlobpatterns(value: string, index?: number): string;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ImplementationFileGlobPatternResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ImplementationFileGlobPatternResponse): ImplementationFileGlobPatternResponse.AsObject;
@@ -1183,7 +1088,6 @@ export class ImplementationFileListResponse extends jspb.Message {
     setImplementationfilepathsList(value: Array<string>): ImplementationFileListResponse;
     addImplementationfilepaths(value: string, index?: number): string;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): ImplementationFileListResponse.AsObject;
     static toObject(includeInstance: boolean, msg: ImplementationFileListResponse): ImplementationFileListResponse.AsObject;
@@ -1203,12 +1107,10 @@ export namespace ImplementationFileListResponse {
 export class StubImplementationCodeRequest extends jspb.Message { 
     getImplementationfilepath(): string;
     setImplementationfilepath(value: string): StubImplementationCodeRequest;
-
     clearCodesList(): void;
     getCodesList(): Array<string>;
     setCodesList(value: Array<string>): StubImplementationCodeRequest;
     addCodes(value: string, index?: number): string;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): StubImplementationCodeRequest.AsObject;
@@ -1233,10 +1135,8 @@ export class TextDiff extends jspb.Message {
     clearSpan(): void;
     getSpan(): spec_pb.Span | undefined;
     setSpan(value?: spec_pb.Span): TextDiff;
-
     getContent(): string;
     setContent(value: string): TextDiff;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): TextDiff.AsObject;
@@ -1258,12 +1158,10 @@ export namespace TextDiff {
 export class FileDiff extends jspb.Message { 
     getFilepath(): string;
     setFilepath(value: string): FileDiff;
-
     clearTextdiffsList(): void;
     getTextdiffsList(): Array<TextDiff>;
     setTextdiffsList(value: Array<TextDiff>): FileDiff;
     addTextdiffs(value?: TextDiff, index?: number): TextDiff;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): FileDiff.AsObject;
@@ -1285,7 +1183,6 @@ export namespace FileDiff {
 export class KeepAlive extends jspb.Message { 
     getPluginid(): string;
     setPluginid(value: string): KeepAlive;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): KeepAlive.AsObject;
@@ -1309,7 +1206,6 @@ export class SpecDetails extends jspb.Message {
     setDetailsList(value: Array<SpecDetails.SpecDetail>): SpecDetails;
     addDetails(value?: SpecDetails.SpecDetail, index?: number): SpecDetails.SpecDetail;
 
-
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): SpecDetails.AsObject;
     static toObject(includeInstance: boolean, msg: SpecDetails): SpecDetails.AsObject;
@@ -1332,12 +1228,10 @@ export namespace SpecDetails {
         clearSpec(): void;
         getSpec(): spec_pb.ProtoSpec | undefined;
         setSpec(value?: spec_pb.ProtoSpec): SpecDetail;
-
         clearParseerrorsList(): void;
         getParseerrorsList(): Array<spec_pb.Error>;
         setParseerrorsList(value: Array<spec_pb.Error>): SpecDetail;
         addParseerrors(value?: spec_pb.Error, index?: number): spec_pb.Error;
-
 
         serializeBinary(): Uint8Array;
         toObject(includeInstance?: boolean): SpecDetail.AsObject;
@@ -1378,220 +1272,183 @@ export namespace Empty {
 export class Message extends jspb.Message { 
     getMessagetype(): Message.MessageType;
     setMessagetype(value: Message.MessageType): Message;
-
     getMessageid(): number;
     setMessageid(value: number): Message;
-
 
     hasExecutionstartingrequest(): boolean;
     clearExecutionstartingrequest(): void;
     getExecutionstartingrequest(): ExecutionStartingRequest | undefined;
     setExecutionstartingrequest(value?: ExecutionStartingRequest): Message;
 
-
     hasSpecexecutionstartingrequest(): boolean;
     clearSpecexecutionstartingrequest(): void;
     getSpecexecutionstartingrequest(): SpecExecutionStartingRequest | undefined;
     setSpecexecutionstartingrequest(value?: SpecExecutionStartingRequest): Message;
-
 
     hasSpecexecutionendingrequest(): boolean;
     clearSpecexecutionendingrequest(): void;
     getSpecexecutionendingrequest(): SpecExecutionEndingRequest | undefined;
     setSpecexecutionendingrequest(value?: SpecExecutionEndingRequest): Message;
 
-
     hasScenarioexecutionstartingrequest(): boolean;
     clearScenarioexecutionstartingrequest(): void;
     getScenarioexecutionstartingrequest(): ScenarioExecutionStartingRequest | undefined;
     setScenarioexecutionstartingrequest(value?: ScenarioExecutionStartingRequest): Message;
-
 
     hasScenarioexecutionendingrequest(): boolean;
     clearScenarioexecutionendingrequest(): void;
     getScenarioexecutionendingrequest(): ScenarioExecutionEndingRequest | undefined;
     setScenarioexecutionendingrequest(value?: ScenarioExecutionEndingRequest): Message;
 
-
     hasStepexecutionstartingrequest(): boolean;
     clearStepexecutionstartingrequest(): void;
     getStepexecutionstartingrequest(): StepExecutionStartingRequest | undefined;
     setStepexecutionstartingrequest(value?: StepExecutionStartingRequest): Message;
-
 
     hasStepexecutionendingrequest(): boolean;
     clearStepexecutionendingrequest(): void;
     getStepexecutionendingrequest(): StepExecutionEndingRequest | undefined;
     setStepexecutionendingrequest(value?: StepExecutionEndingRequest): Message;
 
-
     hasExecutesteprequest(): boolean;
     clearExecutesteprequest(): void;
     getExecutesteprequest(): ExecuteStepRequest | undefined;
     setExecutesteprequest(value?: ExecuteStepRequest): Message;
-
 
     hasExecutionendingrequest(): boolean;
     clearExecutionendingrequest(): void;
     getExecutionendingrequest(): ExecutionEndingRequest | undefined;
     setExecutionendingrequest(value?: ExecutionEndingRequest): Message;
 
-
     hasStepvalidaterequest(): boolean;
     clearStepvalidaterequest(): void;
     getStepvalidaterequest(): StepValidateRequest | undefined;
     setStepvalidaterequest(value?: StepValidateRequest): Message;
-
 
     hasStepvalidateresponse(): boolean;
     clearStepvalidateresponse(): void;
     getStepvalidateresponse(): StepValidateResponse | undefined;
     setStepvalidateresponse(value?: StepValidateResponse): Message;
 
-
     hasExecutionstatusresponse(): boolean;
     clearExecutionstatusresponse(): void;
     getExecutionstatusresponse(): ExecutionStatusResponse | undefined;
     setExecutionstatusresponse(value?: ExecutionStatusResponse): Message;
-
 
     hasStepnamesrequest(): boolean;
     clearStepnamesrequest(): void;
     getStepnamesrequest(): StepNamesRequest | undefined;
     setStepnamesrequest(value?: StepNamesRequest): Message;
 
-
     hasStepnamesresponse(): boolean;
     clearStepnamesresponse(): void;
     getStepnamesresponse(): StepNamesResponse | undefined;
     setStepnamesresponse(value?: StepNamesResponse): Message;
-
 
     hasSuiteexecutionresult(): boolean;
     clearSuiteexecutionresult(): void;
     getSuiteexecutionresult(): SuiteExecutionResult | undefined;
     setSuiteexecutionresult(value?: SuiteExecutionResult): Message;
 
-
     hasKillprocessrequest(): boolean;
     clearKillprocessrequest(): void;
     getKillprocessrequest(): KillProcessRequest | undefined;
     setKillprocessrequest(value?: KillProcessRequest): Message;
-
 
     hasScenariodatastoreinitrequest(): boolean;
     clearScenariodatastoreinitrequest(): void;
     getScenariodatastoreinitrequest(): ScenarioDataStoreInitRequest | undefined;
     setScenariodatastoreinitrequest(value?: ScenarioDataStoreInitRequest): Message;
 
-
     hasSpecdatastoreinitrequest(): boolean;
     clearSpecdatastoreinitrequest(): void;
     getSpecdatastoreinitrequest(): SpecDataStoreInitRequest | undefined;
     setSpecdatastoreinitrequest(value?: SpecDataStoreInitRequest): Message;
-
 
     hasSuitedatastoreinitrequest(): boolean;
     clearSuitedatastoreinitrequest(): void;
     getSuitedatastoreinitrequest(): SuiteDataStoreInitRequest | undefined;
     setSuitedatastoreinitrequest(value?: SuiteDataStoreInitRequest): Message;
 
-
     hasStepnamerequest(): boolean;
     clearStepnamerequest(): void;
     getStepnamerequest(): StepNameRequest | undefined;
     setStepnamerequest(value?: StepNameRequest): Message;
-
 
     hasStepnameresponse(): boolean;
     clearStepnameresponse(): void;
     getStepnameresponse(): StepNameResponse | undefined;
     setStepnameresponse(value?: StepNameResponse): Message;
 
-
     hasRefactorrequest(): boolean;
     clearRefactorrequest(): void;
     getRefactorrequest(): RefactorRequest | undefined;
     setRefactorrequest(value?: RefactorRequest): Message;
-
 
     hasRefactorresponse(): boolean;
     clearRefactorresponse(): void;
     getRefactorresponse(): RefactorResponse | undefined;
     setRefactorresponse(value?: RefactorResponse): Message;
 
-
     hasUnsupportedmessageresponse(): boolean;
     clearUnsupportedmessageresponse(): void;
     getUnsupportedmessageresponse(): UnsupportedMessageResponse | undefined;
     setUnsupportedmessageresponse(value?: UnsupportedMessageResponse): Message;
-
 
     hasCachefilerequest(): boolean;
     clearCachefilerequest(): void;
     getCachefilerequest(): CacheFileRequest | undefined;
     setCachefilerequest(value?: CacheFileRequest): Message;
 
-
     hasSteppositionsrequest(): boolean;
     clearSteppositionsrequest(): void;
     getSteppositionsrequest(): StepPositionsRequest | undefined;
     setSteppositionsrequest(value?: StepPositionsRequest): Message;
-
 
     hasSteppositionsresponse(): boolean;
     clearSteppositionsresponse(): void;
     getSteppositionsresponse(): StepPositionsResponse | undefined;
     setSteppositionsresponse(value?: StepPositionsResponse): Message;
 
-
     hasImplementationfilelistrequest(): boolean;
     clearImplementationfilelistrequest(): void;
     getImplementationfilelistrequest(): ImplementationFileListRequest | undefined;
     setImplementationfilelistrequest(value?: ImplementationFileListRequest): Message;
-
 
     hasImplementationfilelistresponse(): boolean;
     clearImplementationfilelistresponse(): void;
     getImplementationfilelistresponse(): ImplementationFileListResponse | undefined;
     setImplementationfilelistresponse(value?: ImplementationFileListResponse): Message;
 
-
     hasStubimplementationcoderequest(): boolean;
     clearStubimplementationcoderequest(): void;
     getStubimplementationcoderequest(): StubImplementationCodeRequest | undefined;
     setStubimplementationcoderequest(value?: StubImplementationCodeRequest): Message;
-
 
     hasFilediff(): boolean;
     clearFilediff(): void;
     getFilediff(): FileDiff | undefined;
     setFilediff(value?: FileDiff): Message;
 
-
     hasImplementationfileglobpatternrequest(): boolean;
     clearImplementationfileglobpatternrequest(): void;
     getImplementationfileglobpatternrequest(): ImplementationFileGlobPatternRequest | undefined;
     setImplementationfileglobpatternrequest(value?: ImplementationFileGlobPatternRequest): Message;
-
 
     hasImplementationfileglobpatternresponse(): boolean;
     clearImplementationfileglobpatternresponse(): void;
     getImplementationfileglobpatternresponse(): ImplementationFileGlobPatternResponse | undefined;
     setImplementationfileglobpatternresponse(value?: ImplementationFileGlobPatternResponse): Message;
 
-
     hasSuiteexecutionresultitem(): boolean;
     clearSuiteexecutionresultitem(): void;
     getSuiteexecutionresultitem(): SuiteExecutionResultItem | undefined;
     setSuiteexecutionresultitem(value?: SuiteExecutionResultItem): Message;
 
-
     hasKeepalive(): boolean;
     clearKeepalive(): void;
     getKeepalive(): KeepAlive | undefined;
     setKeepalive(value?: KeepAlive): Message;
-
 
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): Message.AsObject;

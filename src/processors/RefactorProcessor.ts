@@ -1,38 +1,56 @@
+/* eslint-disable semi */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unnecessary-type-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable padded-blocks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EOL } from "os";
+import type {
+  Decorator,
+  MethodDeclaration,
+  Node,
+  NodeArray,
+  ParameterDeclaration,
+  SourceFile,
+} from "typescript";
 import {
-  createParameter,
-  createSourceFile,
-  type Decorator,
   EmitHint,
+  ScriptKind,
+  ScriptTarget,
+  createSourceFile,
+  factory,
   forEachChild,
   isClassDeclaration,
   isMethodDeclaration,
-  type MethodDeclaration,
-  type Node,
-  type NodeArray,
-  type ParameterDeclaration,
-  ScriptKind,
-  ScriptTarget,
-  type SourceFile,
 } from "typescript";
 import {
   FileChanges,
   ParameterPosition,
-  type RefactorRequest,
   RefactorResponse,
   TextDiff,
 } from "../gen/messages_pb";
-import { type ProtoStepValue, Span } from "../gen/spec_pb";
+
+import type { RefactorRequest } from "../gen/messages_pb";
+import { Span } from "../gen/spec_pb";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import type { ProtoStepValue } from "../gen/spec_pb";
 import { CodeHelper } from "../helpers/CodeHelper";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
 
 export class RefactorProcessor extends CodeHelper {
-  public process(req: RefactorRequest): RefactorResponse {
-    const oldStep = req.getOldstepvalue() as ProtoStepValue;
-    const newStep = req.getNewstepvalue() as ProtoStepValue;
+  public process(req: RefactorRequest): RefactorResponse | undefined {
+    const oldStep = req.getOldstepvalue();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    const newStep = req.getNewstepvalue();
+
+    if (!oldStep || !newStep) {
+      // eslint-disable-next-line semi
+      return;
+    }
 
     if (registry.hasMultipleImplementations(oldStep.getStepvalue())) {
       const res = new RefactorResponse();
@@ -44,6 +62,7 @@ export class RefactorProcessor extends CodeHelper {
 
       return res;
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const positions = req.getParampositionsList().map((p) => {
       const pp = new ParameterPosition();
 
@@ -90,6 +109,8 @@ export class RefactorProcessor extends CodeHelper {
               const diff1 = new TextDiff();
               const span = this.getStepTextRange(source, node);
 
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/restrict-template-expressions
               diff1.setContent(`"${newStep.getParameterizedstepvalue()}"`);
               diff1.setSpan(span);
               change1.addDiffs(diff1);
@@ -109,8 +130,7 @@ export class RefactorProcessor extends CodeHelper {
                   newParams.splice(
                     p.getNewposition(),
                     0,
-                    createParameter(
-                      undefined,
+                    factory.createParameterDeclaration(
                       undefined,
                       undefined,
                       `${pName}: any`,
