@@ -1,9 +1,13 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable no-multiple-empty-lines */
 /* eslint-disable padded-blocks */
 /* eslint-disable lines-between-class-members */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { EOL } from "os";
-import { sep } from "path";
+import { EOL } from "node:os";
+import { sep } from "node:path";
 import type {
   ServerUnaryCall as SUC,
   Server,
@@ -51,10 +55,11 @@ import type {
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
-import type { StaticLoader } from "./loaders/StaticLoader";
+import { StaticLoader } from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
 import { CacheFileProcessor } from "./processors/CacheFileProcessor";
 import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ExecutionStartingProcessor } from "./processors/ExecutionStartingProcessor";
 import { RefactorProcessor } from "./processors/RefactorProcessor";
 import { ScenarioExecutionEndingProcessor } from "./processors/ScenarioExecutionEndingProcessor";
@@ -77,49 +82,12 @@ type RpcError = {
   stack: string;
 };
 
+const loader = new StaticLoader();
+
+loader.loadImplementations();
+
 export class RunnerServiceImpl implements IRunnerServer {
 
-  private readonly _server: Server;
-  private readonly _loader: StaticLoader;
-
-  private _stepValidateRequestProcessor: ValidationProcessor;
-  private _stepNameRequestProcessor: StepNameProcessor;
-  private _refactorRequestProcessor: RefactorProcessor;
-  private _cacheFileRequestProcessor: CacheFileProcessor;
-  private _stubImplementationCodeRequestProcessor: StubImplementationCodeProcessor;
-  private _stepPositionsRequestProcessor: StepPositionsProcessor;
-  private _executionStartingProcessor: ExecutionStartingProcessor;
-  private _executionEndingProcessor: ExecutionEndingProcessor;
-  private _specExecutionStartingProcessor: SpecExecutionStartingProcessor;
-  private _specExecutionEndingProcessor: SpecExecutionEndingProcessor;
-  private _scenarioExecutionStartingProcessor: ScenarioExecutionStartingProcessor;
-  private _scenarioExecutionEndingProcessor: ScenarioExecutionEndingProcessor;
-  private _stepExecutionStartingProcessor: StepExecutionStartingProcessor;
-  private _stepExecutionEndingProcessor: StepExecutionEndingProcessor;
-  private _executeStepProcessor: StepExecutionProcessor;
-
-  constructor(server: Server, loader: StaticLoader) {
-    this._server = server;
-    this._loader = loader;
-    this._stepValidateRequestProcessor = new ValidationProcessor();
-    this._stepNameRequestProcessor = new StepNameProcessor();
-    this._refactorRequestProcessor = new RefactorProcessor();
-    this._cacheFileRequestProcessor = new CacheFileProcessor(this._loader);
-    this._stubImplementationCodeRequestProcessor =
-      new StubImplementationCodeProcessor();
-    this._stepPositionsRequestProcessor = new StepPositionsProcessor();
-    this._executionStartingProcessor = new ExecutionStartingProcessor();
-    this._executionEndingProcessor = new ExecutionEndingProcessor();
-    this._specExecutionStartingProcessor = new SpecExecutionStartingProcessor();
-    this._specExecutionEndingProcessor = new SpecExecutionEndingProcessor();
-    this._scenarioExecutionStartingProcessor =
-      new ScenarioExecutionStartingProcessor();
-    this._scenarioExecutionEndingProcessor =
-      new ScenarioExecutionEndingProcessor();
-    this._stepExecutionStartingProcessor = new StepExecutionStartingProcessor();
-    this._stepExecutionEndingProcessor = new StepExecutionEndingProcessor();
-    this._executeStepProcessor = new StepExecutionProcessor();
-  }
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   [name: string]: import("@grpc/grpc-js/build/src/server-call").HandleCall<any, any>;
 
@@ -130,12 +98,12 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        this._stepValidateRequestProcessor.process(
+        new ValidationProcessor().process(
           call.request as StepValidateRequest,
         ),
       );
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -151,10 +119,10 @@ export class RunnerServiceImpl implements IRunnerServer {
         .loadImplementations()
         .then(() => callback(null, this.getEmptExecutionResponse()))
         .catch((err) => {
-          callback(this.createRpcError(err), null);
+          callback(createRpcError(err), null);
         });
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -162,10 +130,12 @@ export class RunnerServiceImpl implements IRunnerServer {
     call: SUC<ExecutionStartingRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    this._executionStartingProcessor
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    new ExecutionStartingProcessor()
       .process(call.request as ExecutionStartingRequest)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public initializeSpecDataStore(
@@ -176,15 +146,15 @@ export class RunnerServiceImpl implements IRunnerServer {
       DataStoreFactory.getSpecDataStore().clear();
       callback(null, this.getEmptExecutionResponse());
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
   public startSpecExecution(call: SUC<SPESR, ESR>, callback: sUD<ESR>): void {
-    this._specExecutionStartingProcessor
+    new SpecExecutionStartingProcessor()
       .process(call.request as SPESR)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public initializeScenarioDataStore(
@@ -195,7 +165,7 @@ export class RunnerServiceImpl implements IRunnerServer {
       DataStoreFactory.getScenarioDataStore().clear();
       callback(null, this.getEmptExecutionResponse());
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -203,61 +173,61 @@ export class RunnerServiceImpl implements IRunnerServer {
     call: SUC<SCESR, ESR>,
     callback: sUD<ESR>,
   ): void {
-    this._scenarioExecutionStartingProcessor
+    new ScenarioExecutionStartingProcessor()
       .process(call.request as SCESR)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public startStepExecution(call: SUC<STESR, ESR>, callback: sUD<ESR>): void {
-    this._stepExecutionStartingProcessor
+    new StepExecutionStartingProcessor()
       .process(call.request as STESR)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public executeStep(
     call: SUC<ExecuteStepRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    this._executeStepProcessor
+    new StepExecutionProcessor()
       .process(call.request as ExecuteStepRequest)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishStepExecution(call: SUC<STEER, ESR>, callback: sUD<ESR>): void {
-    this._stepExecutionEndingProcessor
+    new StepExecutionEndingProcessor()
       .process(call.request as STEER)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishScenarioExecution(
     call: SUC<SCEER, ESR>,
     callback: sUD<ESR>,
   ): void {
-    this._scenarioExecutionEndingProcessor
+    new ScenarioExecutionEndingProcessor()
       .process(call.request as SCEER)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishSpecExecution(call: SUC<SPEER, ESR>, callback: sUD<ESR>): void {
-    this._specExecutionEndingProcessor
+    new SpecExecutionEndingProcessor()
       .process(call.request as SPEER)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishExecution(
     call: SUC<ExecutionEndingRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    this._executionEndingProcessor
+    new ExecutionEndingProcessor()
       .process(call.request as ExecutionEndingRequest)
       .then((res) => callback(null, res))
-      .catch((error: Error) => callback(this.createRpcError(error), null));
+      .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public cacheFile(
@@ -265,10 +235,10 @@ export class RunnerServiceImpl implements IRunnerServer {
     callback: sUD<Empty>,
   ): void {
     try {
-      this._cacheFileRequestProcessor.process(call.request as CacheFileRequest);
+      new CacheFileProcessor(loader).process(call.request as CacheFileRequest);
       callback(null, new Empty());
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -279,10 +249,10 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        this._stepNameRequestProcessor.process(call.request as StepNameRequest),
+        new StepNameProcessor().process(call.request as StepNameRequest),
       );
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -296,7 +266,7 @@ export class RunnerServiceImpl implements IRunnerServer {
       res.setGlobpatternsList(patterns);
       callback(null, res);
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -310,7 +280,7 @@ export class RunnerServiceImpl implements IRunnerServer {
       res.setStepsList(registry.getStepTexts());
       callback(null, res);
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -321,12 +291,12 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        this._stepPositionsRequestProcessor.process(
+        new StepPositionsProcessor().process(
           call.request as StepPositionsRequest,
         ),
       );
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -340,7 +310,7 @@ export class RunnerServiceImpl implements IRunnerServer {
       res.setImplementationfilepathsList(Util.getListOfFiles());
       callback(null, res);
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -351,12 +321,12 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        this._stubImplementationCodeRequestProcessor.process(
+        new StubImplementationCodeProcessor().process(
           call.request as StubImplementationCodeRequest,
         ),
       );
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -367,10 +337,10 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        this._refactorRequestProcessor.process(call.request as RefactorRequest),
+        new RefactorProcessor().process(call.request as RefactorRequest),
       );
     } catch (error) {
-      callback(this.createRpcError(error as Error), null);
+      callback(createRpcError(error as Error), null);
     }
   }
 
@@ -380,18 +350,9 @@ export class RunnerServiceImpl implements IRunnerServer {
   ): void {
     callback(null, new Empty());
     setTimeout(() => {
-      this._server?.forceShutdown();
+      // this._server?.forceShutdown();
       process.exit(0);
     }, 100);
-  }
-
-  private createRpcError(error: Error): RpcError {
-    return {
-      code: Status.INTERNAL,
-      message: error.message,
-      stack: error.stack ?? "",
-      details: `${error.message}${EOL}${error.stack ?? ""}`,
-    };
   }
 
   private getEmptExecutionResponse(): ESR {
@@ -406,4 +367,14 @@ export class RunnerServiceImpl implements IRunnerServer {
   }
   // eslint-disable-next-line no-multiple-empty-lines
 
+}
+
+function createRpcError(error: Error): RpcError {
+  return {
+    code: Status.INTERNAL,
+    message: error.message,
+    stack: error.stack ?? "",
+    // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+    details: `${error.message}${EOL}${error.stack ?? ""}`,
+  };
 }

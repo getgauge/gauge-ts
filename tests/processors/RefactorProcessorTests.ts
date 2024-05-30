@@ -143,9 +143,9 @@ describe.only('RefactorProcessor', () => {
 
       const changes = res?.getFilechangesList();
 
-      expect(changes[0].getFilename()).toBe('StepImpl.ts');
+      expect(changes![0].getFilename()).toBe('StepImpl.ts');
 
-      const diff1 = changes[0].getDiffsList()[0];
+      const diff1 = changes![0].getDiffsList()[0];
 
       expect(diff1.getContent()).toBe('"This English word <word_en> has <numbers> vowels."');
 
@@ -156,7 +156,7 @@ describe.only('RefactorProcessor', () => {
       expect(span1?.getEnd()).toBe(3);
       expect(span1?.getEndchar()).toBe(48);
 
-      const diff2 = changes[1].getDiffsList()[0];
+      const diff2 = changes![1].getDiffsList()[0];
 
       expect(diff2.getContent()).toBe("arg0: any, arg1: any");
 
@@ -209,10 +209,10 @@ describe.only('RefactorProcessor', () => {
 
       const changes = res?.getFilechangesList();
 
-      expect(changes[0].getFilename()).toBe('StepImpl.ts');
+      expect(changes![0].getFilename()).toBe('StepImpl.ts');
 
-      const diff1 = changes[0].getDiffsList()[0];
-      const diff2 = changes[1].getDiffsList()[0];
+      const diff1 = changes![0].getDiffsList()[0];
+      const diff2 = changes![1].getDiffsList()[0];
 
       expect(diff1.getContent()).toBe('"This English word <word> has <number> vowels."');
 

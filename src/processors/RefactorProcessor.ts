@@ -8,13 +8,14 @@
 /* eslint-disable padded-blocks */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { EOL } from "os";
-import type {
-  Decorator,
-  MethodDeclaration,
-  Node,
-  NodeArray,
-  ParameterDeclaration,
-  SourceFile,
+import {
+  type Decorator,
+  type MethodDeclaration,
+  type Node,
+  type NodeArray,
+  type ParameterDeclaration,
+  type SourceFile,
+  getDecorators,
 } from "typescript";
 import {
   EmitHint,
@@ -190,11 +191,12 @@ export class RefactorProcessor extends CodeHelper {
   }
 
   private getStepTextRange(source: SourceFile, node: MethodDeclaration): Span {
-    const dec = node.decorators as unknown as Array<Decorator>;
+    const dec = getDecorators(node) as unknown as Array<Decorator>;
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
     const stepDecExp =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      dec.filter(CodeHelper.isStepDecorator)[0].expression as unknownnever;
+      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+      dec.filter(CodeHelper.isStepDecorator)[0].expression as any;
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     return this.createSpan(source, stepDecExp.arguments[0]);

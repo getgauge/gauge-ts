@@ -81,7 +81,7 @@ describe("RunnerServiceImpl", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     loader = new StaticLoader();
-    handler = new RunnerServiceImpl(createMock<Server>(), loader);
+    handler = new RunnerServiceImpl();
     registry.clear();
   });
 
@@ -521,8 +521,8 @@ describe("RunnerServiceImpl", () => {
     it("should give a step info", (done) => {
       const s = new Server();
 
-      handler = new RunnerServiceImpl(s, new StaticLoader());
-      mockProcessExit();
+      handler = new RunnerServiceImpl();
+      // mockProcessExit();
       const mockShutdown = jest.spyOn(s, "forceShutdown");
       const req = new KPReq();
 
