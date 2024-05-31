@@ -88,7 +88,7 @@ describe("RunnerServiceImpl", () => {
   describe(".initializeSuiteDataStore", () => {
     it("should initialise suite data store", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
@@ -111,7 +111,7 @@ describe("RunnerServiceImpl", () => {
         throw new Error();
       });
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
@@ -340,12 +340,15 @@ describe("RunnerServiceImpl", () => {
       const call = createMock<SUC<Empty, IFGPRes>>();
 
       call.request = new Empty();
-      handler.getGlobPatterns(call, (err: error, res: IFGPRes | null | undefined) => {
-        expect(err).toBe(null);
-        const patterns = res?.getGlobpatternsList();
+      handler.getGlobPatterns(
+        call,
+        (err: error, res: IFGPRes | null | undefined) => {
+          expect(err).toBe(null);
+          const patterns = res?.getGlobpatternsList();
 
-        expect(patterns).toStrictEqual(["src/**/*.ts", "tests/**/*.ts"]);
-      });
+          expect(patterns).toStrictEqual(["src/**/*.ts", "tests/**/*.ts"]);
+        },
+      );
     });
   });
 
@@ -371,10 +374,13 @@ describe("RunnerServiceImpl", () => {
       registry.getStepTexts = jest.fn().mockReturnValue(["foo"]);
       const call = createMock<SUC<SNsReq, SNsRes>>();
 
-      handler.getStepNames(call, (err: error, res: SNsRes | null | undefined) => {
-        expect(err).toBe(null);
-        expect(res?.getStepsList()).toStrictEqual(["foo"]);
-      });
+      handler.getStepNames(
+        call,
+        (err: error, res: SNsRes | null | undefined) => {
+          expect(err).toBe(null);
+          expect(res?.getStepsList()).toStrictEqual(["foo"]);
+        },
+      );
     });
   });
 
@@ -391,19 +397,22 @@ describe("RunnerServiceImpl", () => {
       ]);
       const call = createMock<SUC<SPReq, SPRes>>({ request: req });
 
-      handler.getStepPositions(call, (err: error, res: SPRes | null | undefined) => {
-        expect(err).toBe(null);
-        const positions = res?.getSteppositionsList() ?? [];
+      handler.getStepPositions(
+        call,
+        (err: error, res: SPRes | null | undefined) => {
+          expect(err).toBe(null);
+          const positions = res?.getSteppositionsList() ?? [];
 
-        expect(positions.length).toBe(1);
-        expect(positions[0].getStepvalue()).toBe("foo");
-        const span = positions[0].getSpan();
+          expect(positions.length).toBe(1);
+          expect(positions[0].getStepvalue()).toBe("foo");
+          const span = positions[0].getSpan();
 
-        expect(span?.getStart()).toBe(3);
-        expect(span?.getStartchar()).toBe(5);
-        expect(span?.getEnd()).toBe(8);
-        expect(span?.getEndchar()).toBe(5);
-      });
+          expect(span?.getStart()).toBe(3);
+          expect(span?.getStartchar()).toBe(5);
+          expect(span?.getEnd()).toBe(8);
+          expect(span?.getEndchar()).toBe(5);
+        },
+      );
     });
   });
 
@@ -412,12 +421,15 @@ describe("RunnerServiceImpl", () => {
       Util.getListOfFiles = jest.fn().mockReturnValue(["StepImpl.ts"]);
       const call = createMock<SUC<Empty, IFLRes>>();
 
-      handler.getImplementationFiles(call, (err: error, res: IFLRes | null | undefined) => {
-        expect(err).toBe(null);
-        expect(res?.getImplementationfilepathsList()).toStrictEqual([
-          "StepImpl.ts",
-        ]);
-      });
+      handler.getImplementationFiles(
+        call,
+        (err: error, res: IFLRes | null | undefined) => {
+          expect(err).toBe(null);
+          expect(res?.getImplementationfilepathsList()).toStrictEqual([
+            "StepImpl.ts",
+          ]);
+        },
+      );
     });
   });
 
@@ -439,19 +451,22 @@ describe("RunnerServiceImpl", () => {
       req.setCodesList([code]);
       const call = createMock<SUC<SICReq, FileDiff>>({ request: req });
 
-      handler.implementStub(call, (err: error, res: FileDiff | null | undefined) => {
-        expect(err).toBe(null);
-        expect(res?.getFilepath()).toStrictEqual("StepImpl.ts");
-        const expected =
-          code
-            .split(EOL)
-            .map((p) => {
-              return `\t${p}`;
-            })
-            .join(EOL) + EOL;
+      handler.implementStub(
+        call,
+        (err: error, res: FileDiff | null | undefined) => {
+          expect(err).toBe(null);
+          expect(res?.getFilepath()).toStrictEqual("StepImpl.ts");
+          const expected =
+            code
+              .split(EOL)
+              .map((p) => {
+                return `\t${p}`;
+              })
+              .join(EOL) + EOL;
 
-        expect(res?.getTextdiffsList()[0].getContent()).toBe(expected);
-      });
+          expect(res?.getTextdiffsList()[0].getContent()).toBe(expected);
+        },
+      );
     });
   });
 
@@ -470,10 +485,13 @@ describe("RunnerServiceImpl", () => {
 
       const call = createMock<SUC<SVReq, SVRes>>({ request: req });
 
-      handler.validateStep(call, (err: error, res: SVRes | null | undefined) => {
-        expect(err).toBe(null);
-        expect(res?.getIsvalid()).toBe(true);
-      });
+      handler.validateStep(
+        call,
+        (err: error, res: SVRes | null | undefined) => {
+          expect(err).toBe(null);
+          expect(res?.getIsvalid()).toBe(true);
+        },
+      );
     });
   });
 

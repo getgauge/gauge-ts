@@ -1,97 +1,136 @@
-import { EOL } from 'os';
-import { StubImplementationCodeRequest } from '../../src/gen/messages_pb';
-import hookRegistry from '../../src/models/HookRegistry';
-import { StubImplementationCodeProcessor } from '../../src/processors/StubImplementationCodeProcessor';
-import { Util } from '../../src/utils/Util';
+import { EOL } from "os";
+import { StubImplementationCodeRequest } from "../../src/gen/messages_pb";
+import hookRegistry from "../../src/models/HookRegistry";
+import { StubImplementationCodeProcessor } from "../../src/processors/StubImplementationCodeProcessor";
+import { Util } from "../../src/utils/Util";
 
-describe('StubImplementationCodeProcessor', () => {
+describe("StubImplementationCodeProcessor", () => {
+  const text1 =
+    `import { Step } from "gauge-ts";` +
+    EOL +
+    `export default class StepImpl {` +
+    EOL +
+    `    @Step("foo")` +
+    EOL +
+    `    public async foo() {` +
+    EOL +
+    `        console.log("Hello World");` +
+    EOL +
+    `    }` +
+    EOL +
+    `}`;
 
-    const text1 = `import { Step } from "gauge-ts";` + EOL +
-        `export default class StepImpl {` + EOL +
-        `    @Step("foo")` + EOL +
-        `    public async foo() {` + EOL +
-        `        console.log("Hello World");` + EOL +
-        `    }` + EOL +
+  let processor: StubImplementationCodeProcessor;
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    hookRegistry.clear();
+    process.env.screenshot_on_failure = "";
+    processor = new StubImplementationCodeProcessor();
+  });
+
+  describe(".process", () => {
+    it.only("should process StubImplementationCodeRequest and give the diff when file exists", () => {
+      Util.exists = jest.fn().mockReturnValue(true);
+      Util.readFile = jest.fn().mockReturnValue(text1);
+      const code =
+        `@Step("foo")` +
+        EOL +
+        `public async foo() {` +
+        EOL +
+        `    console.log("Hello World");` +
+        EOL +
         `}`;
 
-    let processor: StubImplementationCodeProcessor;
+      const req = new StubImplementationCodeRequest();
 
-    beforeEach(() => {
-        jest.clearAllMocks();
-        hookRegistry.clear();
-        process.env.screenshot_on_failure = "";
-        processor = new StubImplementationCodeProcessor();
+      req.setImplementationfilepath("foo.ts");
+      req.setCodesList([code]);
+
+      const res = processor.process(req);
+      const diffs = res?.getTextdiffsList();
+
+      expect(diffs.length).toBe(1);
+
+      const span = diffs[0].getSpan();
+
+      expect(span?.getStart()).toBe(6);
+      expect(span?.getStartchar()).toBe(0);
+      expect(span?.getEnd()).toBe(6);
+      expect(span?.getEndchar()).toBe(0);
+
+      const expected =
+        code
+          .split(EOL)
+          .map((s) => {
+            return "\t" + s;
+          })
+          .join(EOL) + EOL;
+
+      expect(diffs[0].getContent()).toBe(expected);
     });
 
-    describe('.process', () => {
-        it.only('should process StubImplementationCodeRequest and give the diff when file exists', () => {
-            Util.exists = jest.fn().mockReturnValue(true);
-            Util.readFile = jest.fn().mockReturnValue(text1);
-            const code = `@Step("foo")` + EOL +
-                `public async foo() {` + EOL +
-                `    console.log("Hello World");` + EOL +
-                `}`;
+    it.only("should process StubImplementationCodeRequest and give the diff when file does not exists", () => {
+      Util.exists = jest.fn().mockReturnValue(false);
+      Util.getNewTSFileName = jest.fn().mockReturnValue("StepImpl.ts");
+      Util.getImplDirs = jest.fn().mockReturnValue([]);
+      const code1 =
+        `@Step("foo")` +
+        EOL +
+        `public async foo() {` +
+        EOL +
+        `    console.log("Hello World");` +
+        EOL +
+        `}`;
 
-            const req = new StubImplementationCodeRequest();
+      const code2 =
+        `@Step("bar")` +
+        EOL +
+        `public async foo() {` +
+        EOL +
+        `    console.log("Hello World");` +
+        EOL +
+        `}`;
 
-            req.setImplementationfilepath("foo.ts");
-            req.setCodesList([code]);
+      const req = new StubImplementationCodeRequest();
 
-            const res = processor.process(req);
-            const diffs = res?.getTextdiffsList();
+      req.setImplementationfilepath("foo.ts");
+      req.setCodesList([code1, code2]);
 
-            expect(diffs.length).toBe(1);
+      const res = processor.process(req);
+      const diffs = res?.getTextdiffsList();
 
-            const span = diffs[0].getSpan();
+      expect(diffs.length).toBe(1);
 
-            expect(span?.getStart()).toBe(6);
-            expect(span?.getStartchar()).toBe(0);
-            expect(span?.getEnd()).toBe(6);
-            expect(span?.getEndchar()).toBe(0);
+      const span = diffs[0].getSpan();
 
-            const expected = code.split(EOL).map((s) => { return '\t' + s; }).join(EOL) + EOL;
+      expect(span?.getStart()).toBe(0);
+      expect(span?.getStartchar()).toBe(0);
+      expect(span?.getEnd()).toBe(0);
+      expect(span?.getEndchar()).toBe(0);
 
-            expect(diffs[0].getContent()).toBe(expected);
-        });
+      const expected =
+        `import { Step } from "gauge-ts";` +
+        EOL +
+        `export default class StepImpl {` +
+        EOL +
+        `${code1
+          .split(EOL)
+          .map((s) => {
+            return "\t" + s;
+          })
+          .join(EOL)}` +
+        EOL +
+        `${code2
+          .split(EOL)
+          .map((s) => {
+            return "\t" + s;
+          })
+          .join(EOL)}` +
+        EOL +
+        `}`;
 
-        it.only('should process StubImplementationCodeRequest and give the diff when file does not exists', () => {
-            Util.exists = jest.fn().mockReturnValue(false);
-            Util.getNewTSFileName = jest.fn().mockReturnValue('StepImpl.ts');
-            Util.getImplDirs = jest.fn().mockReturnValue([]);
-            const code1 = `@Step("foo")` + EOL +
-                `public async foo() {` + EOL +
-                `    console.log("Hello World");` + EOL +
-                `}`;
-
-            const code2 = `@Step("bar")` + EOL +
-                `public async foo() {` + EOL +
-                `    console.log("Hello World");` + EOL +
-                `}`;
-
-            const req = new StubImplementationCodeRequest();
-
-            req.setImplementationfilepath("foo.ts");
-            req.setCodesList([code1, code2]);
-
-            const res = processor.process(req);
-            const diffs = res?.getTextdiffsList();
-
-            expect(diffs.length).toBe(1);
-
-            const span = diffs[0].getSpan();
-
-            expect(span?.getStart()).toBe(0);
-            expect(span?.getStartchar()).toBe(0);
-            expect(span?.getEnd()).toBe(0);
-            expect(span?.getEndchar()).toBe(0);
-
-            const expected = `import { Step } from "gauge-ts";` + EOL +
-                `export default class StepImpl {` + EOL +
-                `${code1.split(EOL).map((s) => { return '\t' + s; }).join(EOL)}` + EOL +
-                `${code2.split(EOL).map((s) => { return '\t' + s; }).join(EOL)}` + EOL +
-                `}`;
-
-            expect(diffs[0].getContent()).toBe(expected);
-        });
+      expect(diffs[0].getContent()).toBe(expected);
     });
+  });
 });
