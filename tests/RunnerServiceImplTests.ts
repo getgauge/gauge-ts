@@ -1,7 +1,7 @@
 /* eslint-disable no-multi-spaces */
 /* eslint-disable comma-spacing */
 
-import { EOL } from "os";
+import { EOL } from "node:os";
 import {
   type ServerUnaryCall as SUC,
   Server,
@@ -61,19 +61,7 @@ type error = Partial<StatusObject> | ServerErrorResponse | null;
 
 describe("RunnerServiceImpl", () => {
   const text1 =
-    `import { Step } from "gauge-ts";` +
-    EOL +
-    `export default class StepImpl {` +
-    EOL +
-    `    @Step("foo")` +
-    EOL +
-    `    public async foo() {` +
-    EOL +
-    `        console.log("Hello World");` +
-    EOL +
-    `    }` +
-    EOL +
-    `}`;
+    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   let loader: StaticLoader;
   let handler: RunnerServiceImpl;
@@ -88,7 +76,7 @@ describe("RunnerServiceImpl", () => {
   describe(".initializeSuiteDataStore", () => {
     it("should initialise suite data store", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
@@ -111,7 +99,7 @@ describe("RunnerServiceImpl", () => {
         throw new Error();
       });
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
@@ -438,13 +426,7 @@ describe("RunnerServiceImpl", () => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text1);
       const code =
-        `@Step("bar")` +
-        EOL +
-        `public async foo() {` +
-        EOL +
-        `    console.log("Hello World");` +
-        EOL +
-        `}`;
+        `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
       const req = new SICReq();
 
       req.setImplementationfilepath("StepImpl.ts");

@@ -1,57 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import { EOL } from "os";
+import { EOL } from "node:os";
+import { ParameterPosition, RefactorRequest } from "../../src/gen/messages_pb";
+import { ProtoStepValue } from "../../src/gen/spec_pb";
 import registry from "../../src/models/StepRegistry";
 import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { RefactorProcessor } from "../../src/processors/RefactorProcessor";
 import { Util } from "../../src/utils/Util";
-import { ProtoStepValue } from "../../src/gen/spec_pb";
-import { RefactorRequest, ParameterPosition } from "../../src/gen/messages_pb";
 
-describe.only("RefactorProcessor", () => {
+describe("RefactorProcessor", () => {
   const text1 =
-    `import { Step } from "gauge-ts";` +
-    EOL +
-    `export default class StepImpl {` +
-    EOL +
-    `    @Step(["foo"])` +
-    EOL +
-    `    public async foo() {` +
-    EOL +
-    `        console.log("Hello World");` +
-    EOL +
-    `    }` +
-    EOL +
-    `}`;
+    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["foo"])${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   const text2 =
-    `import { Step } from "gauge-ts";` +
-    EOL +
-    `export default class StepImpl {` +
-    EOL +
-    `    @Step("The word <word> has <number> vowels.")` +
-    EOL +
-    `    public async foo(word: any, number: any) {` +
-    EOL +
-    `        console.log("Hello World");` +
-    EOL +
-    `    }` +
-    EOL +
-    `}`;
+    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has <number> vowels.")${EOL}    public async foo(word: any, number: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   const text3 =
-    `import { Step } from "gauge-ts";` +
-    EOL +
-    `export default class StepImpl {` +
-    EOL +
-    `    @Step("The word <word> has")` +
-    EOL +
-    `    public async foo(word: any) {` +
-    EOL +
-    `        console.log("Hello World");` +
-    EOL +
-    `    }` +
-    EOL +
-    `}`;
+    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has")${EOL}    public async foo(word: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
   let processor: RefactorProcessor;
 
   beforeEach(() => {
@@ -176,26 +140,26 @@ describe.only("RefactorProcessor", () => {
 
       const changes = res?.getFilechangesList();
 
-      expect(changes![0].getFilename()).toBe("StepImpl.ts");
+      expect(changes?.[0].getFilename()).toBe("StepImpl.ts");
 
-      const diff1 = changes![0].getDiffsList()[0];
+      const diff1 = changes?.[0]?.getDiffsList()[0];
 
-      expect(diff1.getContent()).toBe(
+      expect(diff1?.getContent()).toBe(
         '"This English word <word_en> has <numbers> vowels."',
       );
 
-      const span1 = diff1.getSpan();
+      const span1 = diff1?.getSpan();
 
       expect(span1?.getStart()).toBe(3);
       expect(span1?.getStartchar()).toBe(10);
       expect(span1?.getEnd()).toBe(3);
       expect(span1?.getEndchar()).toBe(48);
 
-      const diff2 = changes![1].getDiffsList()[0];
+      const diff2 = changes?.[1].getDiffsList()[0];
 
-      expect(diff2.getContent()).toBe("arg0: any, arg1: any");
+      expect(diff2?.getContent()).toBe("arg0: any, arg1: any");
 
-      const span2 = diff2.getSpan();
+      const span2 = diff2?.getSpan();
 
       expect(span2?.getStart()).toBe(4);
       expect(span2?.getStartchar()).toBe(21);
@@ -252,26 +216,27 @@ describe.only("RefactorProcessor", () => {
       expect(res?.getFilechangesList().length).toBe(2);
 
       const changes = res?.getFilechangesList();
+      expect(changes).toBeDefined();
 
-      expect(changes![0].getFilename()).toBe("StepImpl.ts");
+      expect(changes?.[0].getFilename()).toBe("StepImpl.ts");
 
-      const diff1 = changes![0].getDiffsList()[0];
-      const diff2 = changes![1].getDiffsList()[0];
+      const diff1 = changes?.[0].getDiffsList()[0];
+      const diff2 = changes?.[1].getDiffsList()[0];
 
-      expect(diff1.getContent()).toBe(
+      expect(diff1?.getContent()).toBe(
         '"This English word <word> has <number> vowels."',
       );
 
-      const span1 = diff1.getSpan();
+      const span1 = diff1?.getSpan();
 
       expect(span1?.getStart()).toBe(3);
       expect(span1?.getStartchar()).toBe(10);
       expect(span1?.getEnd()).toBe(3);
       expect(span1?.getEndchar()).toBe(31);
 
-      expect(diff2.getContent()).toBe("word: any, arg1: any");
+      expect(diff2?.getContent()).toBe("word: any, arg1: any");
 
-      const span2 = diff2.getSpan();
+      const span2 = diff2?.getSpan();
 
       expect(span2?.getStart()).toBe(4);
       expect(span2?.getStartchar()).toBe(21);
@@ -319,7 +284,7 @@ describe.only("RefactorProcessor", () => {
       const res = processor.process(request);
 
       expect(res?.getSuccess()).toBe(false);
-      expect(res?.getError()).toBe("fail to refactor" + EOL + "stacktrace");
+      expect(res?.getError()).toBe(`fail to refactor${EOL}stacktrace`);
     });
   });
 });
