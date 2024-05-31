@@ -1,5 +1,5 @@
-import type { Range } from "./Range";
 import type { CommonFunction } from "../utils/Util";
+import type { Range } from "./Range";
 
 export class StepRegistryEntry {
   private readonly _method: CommonFunction | undefined;
@@ -38,7 +38,8 @@ export class StepRegistryEntry {
   public setInstance(
     instance: Record<string, unknown>,
   ): Record<string, unknown> {
-    return (this._instance = instance);
+    this._instance = instance;
+    return this._instance;
   }
 
   public getFilePath(): string {

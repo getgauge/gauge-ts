@@ -50,7 +50,7 @@ import {
   type SuiteDataStoreInitRequest,
 } from "../src/gen/messages_pb";
 import { ProtoStepValue } from "../src/gen/spec_pb";
-import { StaticLoader } from "../src/loaders/StaticLoader";
+import { type StaticLoaderType, staticLoaderInstance } from "../src/loaders/StaticLoader";
 import { Position } from "../src/models/Position";
 import { Range } from "../src/models/Range";
 import registry from "../src/models/StepRegistry";
@@ -60,15 +60,14 @@ import { Util } from "../src/utils/Util";
 type error = Partial<StatusObject> | ServerErrorResponse | null;
 
 describe("RunnerServiceImpl", () => {
-  const text1 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
-  let loader: StaticLoader;
+  let loader: StaticLoaderType;
   let handler: RunnerServiceImpl;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = new StaticLoader();
+    loader = staticLoaderInstance;
     handler = new RunnerServiceImpl();
     registry.clear();
   });
@@ -425,8 +424,7 @@ describe("RunnerServiceImpl", () => {
     it("implement a stub", () => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text1);
-      const code =
-        `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
+      const code = `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
       const req = new SICReq();
 
       req.setImplementationfilepath("StepImpl.ts");
@@ -522,7 +520,7 @@ describe("RunnerServiceImpl", () => {
       const s = new Server();
 
       handler = new RunnerServiceImpl();
-      // mockProcessExit();
+      mockProcessExit();
       const mockShutdown = jest.spyOn(s, "forceShutdown");
       const req = new KPReq();
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-import { strictEqual } from "assert";
+import { strictEqual } from "node:assert";
 import { ExecuteStepRequest } from "../../src/gen/messages_pb";
 import { Parameter, ProtoTable, ProtoTableRow } from "../../src/gen/spec_pb";
 import registry from "../../src/models/StepRegistry";
@@ -41,7 +41,7 @@ describe("StepExecutionProcessor", () => {
             "hello",
             "hello",
             "StepImpl.ts",
-            (a: unknown) => {},
+            (a: unknown) => { },
           ),
         );
 
@@ -68,7 +68,7 @@ describe("StepExecutionProcessor", () => {
           "hello {} to {}",
           "StepImpl.ts",
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          (arg0: unknown, arg1: unknown) => {},
+          (arg0: unknown, arg1: unknown) => { },
         ),
       );
 

@@ -1,19 +1,20 @@
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class MessageStore {
   private static message: Array<string> = [];
 
   public static pendingMessages(): Array<string> {
-    const m = this.message;
+    const m = MessageStore.message;
 
-    this.clear();
+    MessageStore.clear();
 
     return m;
   }
 
   public static addMessage(message: string): void {
-    this.message.push(message);
+    MessageStore.message.push(message);
   }
 
   public static clear(): void {
-    this.message = new Array<string>();
+    MessageStore.message = new Array<string>();
   }
 }

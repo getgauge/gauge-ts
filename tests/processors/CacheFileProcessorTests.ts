@@ -1,33 +1,31 @@
 import { CacheFileRequest } from "../../src/gen/messages_pb";
-import { StaticLoader } from "../../src/loaders/StaticLoader";
+import { type StaticLoaderType, staticLoaderInstance } from "../../src/loaders/StaticLoader";
 import registry from "../../src/models/StepRegistry";
 import { CacheFileProcessor } from "../../src/processors/CacheFileProcessor";
 import { Util } from "../../src/utils/Util";
 
 describe("CacheFileProcessor", () => {
   let processor: CacheFileProcessor;
-  let loader: StaticLoader;
+  let loader: StaticLoaderType;
   const file1 = "StepImpl1.ts";
-  const text1 =
-    `import { Step } from "gauge-ts";` +
-    `export default class StepImpl {` +
-    `    @Step("foo")` +
-    `    public async foo() {` +
-    `        console.log("Hello World");` +
-    `    }` +
-    `}`;
-  const text2 =
-    `import { Step } from "gauge-ts";` +
-    `export default class StepImpl {` +
-    `    @Step("bar")` +
-    `    public async bar() {` +
-    `        console.log("Hello World");` +
-    `    }` +
-    `}`;
+  const text1 = `import { Step } from "gauge-ts";
+    export default class StepImpl {
+        @Step("foo")
+        public async foo() {
+            console.log("Hello World");
+        }
+    }`;
+  const text2 = `import { Step } from "gauge-ts";
+    export default class StepImpl {
+        @Step("bar")
+        public async bar() {
+            console.log("Hello World");
+        }
+    }`;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = new StaticLoader();
+    loader = staticLoaderInstance;
     processor = new CacheFileProcessor(loader);
     registry.clear();
   });

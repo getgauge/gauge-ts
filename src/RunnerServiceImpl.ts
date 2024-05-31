@@ -2,7 +2,6 @@ import { EOL } from "node:os";
 import { sep } from "node:path";
 import type {
   ServerUnaryCall as SUC,
-  Server,
   sendUnaryData as sUD,
 } from "@grpc/grpc-js";
 import { Status } from "@grpc/grpc-js/build/src/constants";
@@ -47,11 +46,10 @@ import type {
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
-import { StaticLoader } from "./loaders/StaticLoader";
+import { type StaticLoaderType, staticLoaderInstance } from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
 import { CacheFileProcessor } from "./processors/CacheFileProcessor";
 import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ExecutionStartingProcessor } from "./processors/ExecutionStartingProcessor";
 import { RefactorProcessor } from "./processors/RefactorProcessor";
 import { ScenarioExecutionEndingProcessor } from "./processors/ScenarioExecutionEndingProcessor";
@@ -74,17 +72,8 @@ type RpcError = {
   stack: string;
 };
 
-const loader = new StaticLoader();
-
-loader.loadImplementations();
-
 export class RunnerServiceImpl implements IRunnerServer {
-  [name: string]: import("@grpc/grpc-js/build/src/server-call").HandleCall<
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    any,
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    any
-  >;
+  [name: string]: import("@grpc/grpc-js").UntypedHandleCall;
 
   public validateStep(
     call: SUC<StepValidateRequest, StepValidateResponse>,
@@ -101,7 +90,7 @@ export class RunnerServiceImpl implements IRunnerServer {
   }
 
   public initializeSuiteDataStore(
-    call: SUC<SuiteDataStoreInitRequest, ESR>,
+    _call: SUC<SuiteDataStoreInitRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
     try {
@@ -123,8 +112,6 @@ export class RunnerServiceImpl implements IRunnerServer {
     call: SUC<ExecutionStartingRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     new ExecutionStartingProcessor()
       .process(call.request as ExecutionStartingRequest)
       .then((res) => callback(null, res))
@@ -228,7 +215,7 @@ export class RunnerServiceImpl implements IRunnerServer {
     callback: sUD<Empty>,
   ): void {
     try {
-      new CacheFileProcessor(loader).process(call.request as CacheFileRequest);
+      new CacheFileProcessor().process(call.request as CacheFileRequest);
       callback(null, new Empty());
     } catch (error) {
       callback(createRpcError(error as Error), null);

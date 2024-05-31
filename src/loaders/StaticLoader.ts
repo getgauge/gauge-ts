@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   ScriptTarget,
   createSourceFile,
@@ -22,7 +21,7 @@ import registry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Util } from "../utils/Util";
 
-export class StaticLoader extends CodeHelper {
+class StaticLoader extends CodeHelper {
   public loadImplementations(): void {
     this.loadFiles();
   }
@@ -51,11 +50,11 @@ export class StaticLoader extends CodeHelper {
   }
 
   private loadFiles() {
-    Util.getListOfFiles().forEach((file: string) => {
+    for (const file of Util.getListOfFiles()) {
       const text = Util.readFile(file);
 
       this.loadStepsFromText(file, text);
-    });
+    }
   }
 
   private processNode(
@@ -94,3 +93,6 @@ export class StaticLoader extends CodeHelper {
     );
   }
 }
+
+export const staticLoaderInstance = new StaticLoader();
+export type StaticLoaderType = StaticLoader;

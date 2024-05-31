@@ -58,11 +58,11 @@ export class HookRegistry {
     file: string,
     instance: Record<string, unknown>,
   ): void {
-    this._hooks.forEach((hookMethods) => {
-      hookMethods.forEach((hookMethod) => {
+    for (const hookMethods of this._hooks.values()) {
+      for (const hookMethod of hookMethods) {
         hookMethod.setInstance(instance);
-      });
-    });
+      }
+    }
   }
 
   public clear(): void {

@@ -3,6 +3,7 @@ import type { GlobalDataStore } from "./GlobalDataStore";
 
 declare const global: GlobalDataStore;
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class DataStoreFactory {
   public static getSuiteDataStore(): DataStore {
     if (!global.gaugeSuiteDataStore) {

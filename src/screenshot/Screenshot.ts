@@ -18,15 +18,16 @@ export class Screenshot {
   public static async capture(): Promise<string> {
     try {
       if (Screenshot.customScreenshotWriter != null) {
-        const out = this.customScreenshotWriter();
+        const out = Screenshot.customScreenshotWriter();
 
         if (out.constructor.name === Promise.name) {
           return await out;
         }
         return out;
-      } else if (this.customScreenGrabber != null) {
+        // biome-ignore lint/style/noUselessElse: <explanation>
+      } else if (Screenshot.customScreenGrabber != null) {
         let data: Uint8Array;
-        const out = this.customScreenGrabber();
+        const out = Screenshot.customScreenGrabber();
 
         if (out.constructor.name === Promise.name) {
           data = await out;
@@ -38,8 +39,9 @@ export class Screenshot {
         writeFileSync(file, data);
 
         return basename(file);
+        // biome-ignore lint/style/noUselessElse: <explanation>
       } else {
-        return this.captureScreenshot();
+        return Screenshot.captureScreenshot();
       }
     } catch (error) {
       console.log(error);

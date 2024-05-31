@@ -85,7 +85,7 @@ export class Util {
       return fileName;
     }
 
-    return Util.getNewTSFileName(dir, ++counter);
+    return Util.getNewTSFileName(dir, counter + 1);
   }
 
   public static isAsync(m: CommonFunction): boolean {

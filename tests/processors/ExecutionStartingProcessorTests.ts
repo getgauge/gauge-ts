@@ -1,4 +1,4 @@
-import * as inspector from "inspector";
+import * as inspector from "node:inspector";
 import {
   ExecutionInfo,
   ExecutionStartingRequest,
@@ -24,7 +24,7 @@ describe("ExecutionStartingProcessor", () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hookRegistry.addHook(
         HookType.BeforeSuite,
-        new HookMethod(async () => {}, "Hooks.ts"),
+        new HookMethod(async () => { }, "Hooks.ts"),
       );
 
       const req = new ExecutionStartingRequest();
@@ -45,7 +45,7 @@ describe("ExecutionStartingProcessor", () => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       hookRegistry.addHook(
         HookType.AfterSuite,
-        new HookMethod(async () => {}, "Hooks.ts"),
+        new HookMethod(async () => { }, "Hooks.ts"),
       );
 
       const req = new ExecutionStartingRequest();
