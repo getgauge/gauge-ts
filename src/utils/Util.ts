@@ -1,6 +1,6 @@
-import { spawnSync } from "child_process";
-import { existsSync, readFileSync, writeFileSync } from "fs";
-import { extname, join } from "path";
+import { spawnSync } from "node:child_process";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { extname, join } from "node:path";
 import { Extension } from "typescript";
 import { v4 } from "uuid";
 import klawSync = require("klaw-sync");
@@ -10,6 +10,7 @@ export type CommonAsyncFunction<T = unknown> = (
   ...args: unknown[]
 ) => Promise<T>;
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Util {
   public static async importFile(file: string): Promise<unknown> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
@@ -40,14 +41,14 @@ export class Util {
   }
 
   public static getListOfFiles(): Array<string> {
-    return this.getImplDirs().reduce((files: Array<string>, dir) => {
+    return Util.getImplDirs().reduce((files: Array<string>, dir) => {
       if (!existsSync(dir)) {
-        console.log("Failed to load implementations from " + dir);
+        console.log(`Failed to load implementations from ${dir}`);
 
         return files;
       }
 
-      return files.concat(this.collectFilesIn(dir));
+      return files.concat(Util.collectFilesIn(dir));
     }, []);
   }
 
@@ -89,7 +90,7 @@ export class Util {
 
   public static isAsync(m: CommonFunction): boolean {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return m instanceof (async () => {}).constructor;
+    return m instanceof (async () => { }).constructor;
   }
 
   public static getUniqueScreenshotFileName(): string {

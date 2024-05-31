@@ -1,11 +1,12 @@
-import { writeFileSync } from "fs";
-import { basename } from "path";
+import { writeFileSync } from "node:fs";
+import { basename } from "node:path";
 import {
   type CommonAsyncFunction,
   type CommonFunction,
   Util,
 } from "../utils/Util";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: <explanation>
 export class Screenshot {
   private static customScreenshotWriter:
     | CommonFunction<string>
@@ -16,14 +17,13 @@ export class Screenshot {
 
   public static async capture(): Promise<string> {
     try {
-      if (this.customScreenshotWriter != null) {
+      if (Screenshot.customScreenshotWriter != null) {
         const out = this.customScreenshotWriter();
 
         if (out.constructor.name === Promise.name) {
           return await out;
-        } else {
-          return out;
         }
+        return out;
       } else if (this.customScreenGrabber != null) {
         let data: Uint8Array;
         const out = this.customScreenGrabber();
@@ -66,12 +66,12 @@ export class Screenshot {
   public static setCustomScreenGrabber(
     grabber: CommonFunction<Uint8Array> | CommonAsyncFunction<Uint8Array>,
   ): void {
-    this.customScreenGrabber = grabber;
+    Screenshot.customScreenGrabber = grabber;
   }
 
   public static setCustomScreenshotWriter(
     writer: CommonFunction<string> | CommonAsyncFunction<string>,
   ): void {
-    this.customScreenshotWriter = writer;
+    Screenshot.customScreenshotWriter = writer;
   }
 }

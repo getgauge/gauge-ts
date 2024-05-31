@@ -79,9 +79,10 @@ const loader = new StaticLoader();
 loader.loadImplementations();
 
 export class RunnerServiceImpl implements IRunnerServer {
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   [name: string]: import("@grpc/grpc-js/build/src/server-call").HandleCall<
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     any,
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
     any
   >;
 

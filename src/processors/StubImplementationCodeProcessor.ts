@@ -1,5 +1,5 @@
-import { EOL } from "os";
-import { basename } from "path";
+import { EOL } from "node:os";
+import { basename } from "node:path";
 import {
   Extension,
   type Node,
@@ -78,7 +78,7 @@ export class StubImplementationCodeProcessor {
       content
         .split(EOL)
         .map((c) => {
-          return "\t" + c;
+          return `\t${c}`;
         })
         .join(EOL) + EOL,
     );

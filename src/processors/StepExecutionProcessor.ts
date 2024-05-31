@@ -49,7 +49,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
       if (method.length !== params.length) {
         throw new Error(
           `Argument length mismatch for \`${req.getActualsteptext()}\`.` +
-            ` Actual Count: [${method.length}], Expected Count: [${params.length}]`,
+          ` Actual Count: [${method.length}], Expected Count: [${params.length}]`,
         );
       }
       await this.executeMethod(
@@ -63,7 +63,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
       result.setFailed(true);
       const cofErrors = registry.getContinueOnFailureFunctions(method);
 
-      if (cofErrors && cofErrors.includes(error.constructor.name)) {
+      if (cofErrors?.includes(error.constructor.name)) {
         result.setRecoverableerror(true);
       }
       result.setErrormessage(error.message);

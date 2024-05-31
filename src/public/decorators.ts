@@ -3,8 +3,8 @@ import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
 import stepRegistry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
-import type { Operator } from "./Operator";
 import { Screenshot } from "../screenshot/Screenshot";
+import type { Operator } from "./Operator";
 
 /**
  *
@@ -17,7 +17,7 @@ export function Step(stepTexts: string | Array<string>): MethodDecorator {
   return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
     let _stepTexts = stepTexts;
 
-    if (!(_stepTexts instanceof Array)) {
+    if (!(Array.isArray(_stepTexts))) {
       _stepTexts = [_stepTexts];
     }
     for (const s of _stepTexts) {

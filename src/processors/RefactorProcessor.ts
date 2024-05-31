@@ -40,7 +40,6 @@ export class RefactorProcessor extends CodeHelper {
     const newStep = req.getNewstepvalue();
 
     if (!oldStep || !newStep) {
-      // eslint-disable-next-line semi
       return;
     }
 
@@ -178,7 +177,7 @@ export class RefactorProcessor extends CodeHelper {
 
     return !p.includes(name)
       ? name
-      : this.getParamName(index++, params, source);
+      : this.getParamName(index + 1, params, source);
   }
 
   private getStepTextRange(source: SourceFile, node: MethodDeclaration): Span {
@@ -193,7 +192,7 @@ export class RefactorProcessor extends CodeHelper {
     return this.createSpan(source, stepDecExp.arguments[0]);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
   private createSpan(source: SourceFile, node: any): Span {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     const start = source.getLineAndCharacterOfPosition(node.pos);

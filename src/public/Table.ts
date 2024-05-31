@@ -13,9 +13,9 @@ export class Table {
     const header = table.getHeaders();
     const gaugeTable = new Table(header?.getCellsList() ?? []);
 
-    table.getRowsList().forEach((row) => {
+    for (const row of table.getRowsList()) {
       gaugeTable.addRow(row.getCellsList());
-    });
+    }
 
     return gaugeTable;
   }
@@ -37,10 +37,10 @@ export class Table {
   }
 
   public addRow(row: Array<string>): void {
-    if (row.length != this._headers.length) {
+    if (row.length !== this._headers.length) {
       throw new Error(
         `Row size mismatch. Expected row size: ${this._headers.length}.` +
-          `Obtained row size: ${row.length}.`,
+        `Obtained row size: ${row.length}.`,
       );
     }
     this._rows.push(row);

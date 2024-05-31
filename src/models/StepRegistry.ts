@@ -1,8 +1,8 @@
-import { AssertionError } from "assert";
-import type { Range } from "./Range";
-import type { StepRegistryEntry } from "./StepRegistryEntry";
+import { AssertionError } from "node:assert";
 import type { CommonFunction } from "../utils/Util";
 import type { GlobalStepRegistry } from "./GlobalRegistry";
+import type { Range } from "./Range";
+import type { StepRegistryEntry } from "./StepRegistryEntry";
 
 export class StepRegistry {
   private _registry: Map<string, Array<StepRegistryEntry>>;
@@ -60,14 +60,14 @@ export class StepRegistry {
     const positions: Array<{ stepValue: string; span: Range }> = [];
 
     this._registry.forEach((entries, step) => {
-      entries.forEach((entry) => {
+      for (const entry of entries) {
         if (entry.getFilePath() === filePath) {
           positions.push({
             stepValue: step,
             span: entry.getRange() as Range,
           });
         }
-      });
+      }
     });
 
     return positions;
@@ -76,9 +76,9 @@ export class StepRegistry {
   public getStepTexts(): Array<string> {
     let steps: Array<string> = [];
 
-    this._registry.forEach((v: StepRegistryEntry[]) => {
+    for (const v of this._registry.values()) {
       steps = steps.concat(v[0].getStepText());
-    });
+    }
 
     return steps;
   }
@@ -112,13 +112,13 @@ export class StepRegistry {
     file: string,
     instance: Record<string, unknown>,
   ): void {
-    this._registry.forEach((entries) => {
-      entries.forEach((entry) => {
+    for (const entries of this._registry.values()) {
+      for (const entry of entries) {
         if (entry.getFilePath() === file) {
           entry.setInstance(instance);
         }
-      });
-    });
+      }
+    }
   }
 
   public clear(): void {

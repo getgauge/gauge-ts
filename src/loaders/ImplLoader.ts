@@ -17,7 +17,7 @@ export class ImplLoader {
         process.env.STEP_FILE_PATH = file;
         const c = (await Util.importFile(file)) as ModuleType;
 
-        if (c.default && c.default.length == 0) {
+        if (c.default && c.default.length === 0) {
           const instance = new c.default();
 
           ImplLoader.updateRegistry(file, instance);

@@ -1,4 +1,4 @@
-import { open } from "inspector";
+import { open } from "node:inspector";
 import type {
   ExecutionInfo,
   ExecutionStartingRequest,
