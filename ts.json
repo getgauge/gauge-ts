@@ -1,39 +1,21 @@
 {
-    "description": "typescript support for gauge",
-    "gaugeVersionSupport": {
-        "maximum": "",
-        "minimum": "1.0.7"
-    },
-    "id": "ts",
-    "init": {
-        "darwin": [
-            "./launcher.js",
-            "--init"
-        ],
-        "linux": [
-            "./launcher.js",
-            "--init"
-        ],
-        "windows": [
-            "launcher.bat",
-            "--init"
-        ]
-    },
-    "lspLangId": "typescript",
-    "run": {
-        "darwin": [
-            "./launcher.js",
-            "--start"
-        ],
-        "linux": [
-            "./launcher.js",
-            "--start"
-        ],
-        "windows": [
-            "launcher.bat",
-            "--start"
-        ]
-    },
-    "version": "0.1.1",
-    "gRPCSupport": true
+  "description": "typescript support for gauge",
+  "gaugeVersionSupport": {
+    "maximum": "",
+    "minimum": "1.0.7"
+  },
+  "id": "ts",
+  "init": {
+    "darwin": ["./launcher.js", "--init"],
+    "linux": ["./launcher.js", "--init"],
+    "windows": ["launcher.bat", "--init"]
+  },
+  "lspLangId": "typescript",
+  "run": {
+    "darwin": ["./launcher.js", "--start"],
+    "linux": ["./launcher.js", "--start"],
+    "windows": ["launcher.bat", "--start"]
+  },
+  "version": "0.1.1",
+  "gRPCSupport": true
 }

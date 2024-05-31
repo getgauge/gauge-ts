@@ -143,7 +143,7 @@ if (process.argv[2] === "--init") {
 
   console.log("Run `npm install` to get project dependencies.");
 } else if (process.argv[2] === "--start") {
-  const script = `import { GaugeRuntime }  from 'gauge-ts/dist/GaugeRuntime'; let runner = new GaugeRuntime(); runner.start();`;
+  const script = `import { GaugeRuntime }  from './dist/GaugeRuntime'; let runner = new GaugeRuntime(); runner.start();`;
   const opts = [
     "ts-node",
     "-O",
