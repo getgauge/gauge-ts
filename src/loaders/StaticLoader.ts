@@ -6,14 +6,14 @@ import {
   getDecorators,
   isClassDeclaration,
   isMethodDeclaration,
-} from 'typescript';
+} from "typescript";
 
 import type {
   Decorator,
   MethodDeclaration,
   Node,
-  SourceFile
-} from 'typescript';
+  SourceFile,
+} from "typescript";
 
 import { CodeHelper } from "../helpers/CodeHelper";
 import { Position } from "../models/Position";
@@ -23,7 +23,6 @@ import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Util } from "../utils/Util";
 
 export class StaticLoader extends CodeHelper {
-
   public loadImplementations(): void {
     this.loadFiles();
   }
@@ -59,30 +58,39 @@ export class StaticLoader extends CodeHelper {
     });
   }
 
-  private processNode(node: MethodDeclaration, file: string, source: SourceFile) {
+  private processNode(
+    node: MethodDeclaration,
+    file: string,
+    source: SourceFile,
+  ) {
     const stepTexts = this.getStepTexts(node);
 
     for (const stepText of stepTexts) {
       const stepValue = stepText.replace(/(<.*?>)/g, "{}");
 
-      registry.add(stepValue, new StepRegistryEntry(
-        stepText,
+      registry.add(
         stepValue,
-        file,
-        undefined,
-        StaticLoader.getRange(node, source),
-        stepTexts.length > 1
-      ));
+        new StepRegistryEntry(
+          stepText,
+          stepValue,
+          file,
+          undefined,
+          StaticLoader.getRange(node, source),
+          stepTexts.length > 1,
+        ),
+      );
     }
   }
 
   private static getRange(node: MethodDeclaration, source: SourceFile): Range {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dec = (getDecorators(node) as unknown) as Array<Decorator>;
+    const dec = getDecorators(node) as unknown as Array<Decorator>;
     const start = source.getLineAndCharacterOfPosition(dec[0].expression.pos);
     const end = source.getLineAndCharacterOfPosition(node.end);
 
-    return new Range(new Position(start.line + 1, start.character), new Position(end.line + 1, end.character));
+    return new Range(
+      new Position(start.line + 1, start.character),
+      new Position(end.line + 1, end.character),
+    );
   }
-
 }

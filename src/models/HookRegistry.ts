@@ -4,7 +4,6 @@ import type { HookMethod } from "./HookMethod";
 import { HookType } from "./HookType";
 
 export class HookRegistry {
-
   private _hooks: Map<HookType, Array<HookMethod>>;
 
   constructor() {
@@ -16,7 +15,7 @@ export class HookRegistry {
       [HookType.AfterSuite, new Array<HookMethod>()],
       [HookType.AfterSpec, new Array<HookMethod>()],
       [HookType.AfterScenario, new Array<HookMethod>()],
-      [HookType.AfterStep, new Array<HookMethod>()]
+      [HookType.AfterStep, new Array<HookMethod>()],
     ]);
   }
 
@@ -32,7 +31,9 @@ export class HookRegistry {
     }
 
     if (!tags.length) {
-      return hooks.filter((hook) => { return hook.getTags().length === 0; });
+      return hooks.filter((hook) => {
+        return hook.getTags().length === 0;
+      });
     }
 
     return hooks.filter((hook) => {
@@ -53,7 +54,10 @@ export class HookRegistry {
     });
   }
 
-  public setInstanceForMethodsIn(file: string, instance: Record<string, unknown>): void {
+  public setInstanceForMethodsIn(
+    file: string,
+    instance: Record<string, unknown>,
+  ): void {
     this._hooks.forEach((hookMethods) => {
       hookMethods.forEach((hookMethod) => {
         hookMethod.setInstance(instance);
@@ -62,13 +66,16 @@ export class HookRegistry {
   }
 
   public clear(): void {
-    this._hooks.forEach((v, k) => { this._hooks.set(k, new Array<HookMethod>()); });
+    this._hooks.forEach((v, k) => {
+      this._hooks.set(k, new Array<HookMethod>());
+    });
   }
 
   private static hasIntersection(tags: string[], hookTags: string[]): number {
-    return tags.filter((t) => { return hookTags.includes(t); }).length;
+    return tags.filter((t) => {
+      return hookTags.includes(t);
+    }).length;
   }
-
 }
 declare const global: GlobalStepRegistry;
 

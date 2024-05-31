@@ -1,21 +1,19 @@
 export class ScreenshotStore {
+  private static screenshotFiles: Array<string> = [];
 
-    private static screenshotFiles: Array<string> = [];
+  public static pendingScreenshots(): Array<string> {
+    const s = this.screenshotFiles;
 
-    public static pendingScreenshots(): Array<string> {
-        const s = this.screenshotFiles;
+    this.clear();
 
-        this.clear();
+    return s;
+  }
 
-        return s;
-    }
+  public static addScreenshot(screenshotFile: string): void {
+    this.screenshotFiles.push(screenshotFile);
+  }
 
-    public static addScreenshot(screenshotFile: string): void {
-        this.screenshotFiles.push(screenshotFile);
-    }
-
-    public static clear(): void {
-        this.screenshotFiles = new Array<string>();
-    }
-
+  public static clear(): void {
+    this.screenshotFiles = new Array<string>();
+  }
 }

@@ -1,0 +1,8 @@
+{
+  "files": {
+    "ignore": ["dist/**", "node_modules", "src/gen", ".vscode"]
+  },
+  "formatter": {
+    "indentStyle": "space"
+  }
+}

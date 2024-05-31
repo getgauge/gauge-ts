@@ -1,11 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable no-multiple-empty-lines */
-/* eslint-disable padded-blocks */
-/* eslint-disable lines-between-class-members */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { EOL } from "node:os";
 import { sep } from "node:path";
 import type {
@@ -87,9 +79,11 @@ const loader = new StaticLoader();
 loader.loadImplementations();
 
 export class RunnerServiceImpl implements IRunnerServer {
-
   // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  [name: string]: import("@grpc/grpc-js/build/src/server-call").HandleCall<any, any>;
+  [name: string]: import("@grpc/grpc-js/build/src/server-call").HandleCall<
+    any,
+    any
+  >;
 
   public validateStep(
     call: SUC<StepValidateRequest, StepValidateResponse>,
@@ -98,9 +92,7 @@ export class RunnerServiceImpl implements IRunnerServer {
     try {
       callback(
         null,
-        new ValidationProcessor().process(
-          call.request as StepValidateRequest,
-        ),
+        new ValidationProcessor().process(call.request as StepValidateRequest),
       );
     } catch (error) {
       callback(createRpcError(error as Error), null);
@@ -366,7 +358,6 @@ export class RunnerServiceImpl implements IRunnerServer {
     // eslint-disable-next-line padded-blocks
   }
   // eslint-disable-next-line no-multiple-empty-lines
-
 }
 
 function createRpcError(error: Error): RpcError {

@@ -1,15 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable padding-line-between-statements */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable no-multi-spaces */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable padded-blocks */
-import {
-  createPrinter,
-  getDecorators,
-} from "typescript";
+import { createPrinter, getDecorators } from "typescript";
 
 import type {
   Decorator,
@@ -35,7 +24,6 @@ export type ExpressionType = {
 };
 
 export abstract class CodeHelper {
-
   protected printer: Printer = createPrinter();
 
   protected getStepTexts(method: MethodDeclaration): Array<string> {
@@ -82,5 +70,4 @@ export abstract class CodeHelper {
     return arg.text === stepText;
     // eslint-disable-next-line padded-blocks
   }
-
 }

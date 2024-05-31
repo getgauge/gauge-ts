@@ -5,11 +5,10 @@ import { Util } from "../utils/Util";
 type ConstructorType = new () => Record<string, unknown>;
 
 type ModuleType = {
-  default: ConstructorType
-}
+  default: ConstructorType;
+};
 
 export class ImplLoader {
-
   public async loadImplementations(): Promise<void> {
     registry.clear();
     hookRegistry.clear();
@@ -34,10 +33,9 @@ export class ImplLoader {
 
   private static updateRegistry(
     file: string,
-    instance: Record<string, unknown>
+    instance: Record<string, unknown>,
   ) {
     registry.setInstanceForMethodsIn(file, instance);
     hookRegistry.setInstanceForMethodsIn(file, instance);
   }
-
 }

@@ -6,10 +6,11 @@ import { v4 } from "uuid";
 import klawSync = require("klaw-sync");
 
 export type CommonFunction<T = unknown> = (...args: unknown[]) => T;
-export type CommonAsyncFunction<T = unknown> = (...args: unknown[]) => Promise<T>;
+export type CommonAsyncFunction<T = unknown> = (
+  ...args: unknown[]
+) => Promise<T>;
 
 export class Util {
-
   public static async importFile(file: string): Promise<unknown> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await import(file);
@@ -56,22 +57,18 @@ export class Util {
 
   public static collectFilesIn(dir: string): string[] {
     return klawSync(dir, {
-      filter: function (item) {
-        return Util.isTSFile(item.path);
-      },
+      filter: (item) => Util.isTSFile(item.path),
       traverseAll: true,
-    }).map(function (item) {
-      return item.path;
-    });
+    }).map((item) => item.path);
   }
 
   public static getImplDirs(): Array<string> {
     const projectRoot = process.env.GAUGE_PROJECT_ROOT as string;
 
     if (process.env.STEP_IMPL_DIR) {
-      return process.env.STEP_IMPL_DIR.split(",").map(function (dir) {
-        return join(projectRoot, dir.trim());
-      });
+      return process.env.STEP_IMPL_DIR.split(",").map((dir) =>
+        join(projectRoot, dir.trim()),
+      );
     }
 
     return [join(projectRoot, "tests")];
@@ -92,13 +89,12 @@ export class Util {
 
   public static isAsync(m: CommonFunction): boolean {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return m instanceof (async () => { }).constructor;
+    return m instanceof (async () => {}).constructor;
   }
 
   public static getUniqueScreenshotFileName(): string {
-    const dir = process.env.gauge_screenshots_dir as string ?? '';
+    const dir = (process.env.gauge_screenshots_dir as string) ?? "";
 
     return join(dir, `screenshot-${v4()}.png`);
   }
-
 }
