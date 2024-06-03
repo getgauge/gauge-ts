@@ -10,9 +10,11 @@
     "format": "biome format . --write",
     "prebuild": "npm run lint",
     "build": "tsc",
+    "precommit": " npm run format && npm run lint",
     "test": "jest --verbose --detectOpenHandles --forceExit",
     "gen-proto": "sh genproto.sh",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "tsc",
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
