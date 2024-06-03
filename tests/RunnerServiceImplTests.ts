@@ -451,7 +451,7 @@ describe("RunnerServiceImpl", () => {
   });
 
   describe(".validateStep", () => {
-    it("should valiadate a step", () => {
+    it("should validate a step", () => {
       registry.isImplemented = jest.fn().mockReturnValue(true);
 
       const req = new SVReq();

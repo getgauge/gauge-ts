@@ -26,7 +26,6 @@ function package() {
     npm run build
     cp -r ./src/gen ./dist
     mkdir -p deploy
-    cp -r dist deploy/
     cp launcher.* deploy
     cp ts.json deploy
     mkdir -p artifacts

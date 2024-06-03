@@ -1,21 +1,21 @@
 import { EOL } from "node:os";
-import { StaticLoader } from "../../src/loaders/StaticLoader";
+import {
+  type StaticLoaderType,
+  staticLoaderInstance,
+} from "../../src/loaders/StaticLoader";
 import registry from "../../src/models/StepRegistry";
 import { Util } from "../../src/utils/Util";
 
 describe("StaticLoaderTests", () => {
-  let loader: StaticLoader;
-  const TEXT_1 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  let loader: StaticLoaderType;
+  const TEXT_1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
-  const TEXT_2 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("bar")${EOL}    public async bar() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
-  const TEXT_3 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["hello","hi"])${EOL}    public async bar() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const TEXT_2 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("bar")${EOL}    public async bar() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const TEXT_3 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["hello","hi"])${EOL}    public async bar() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = new StaticLoader();
+    loader = staticLoaderInstance;
     registry.clear();
   });
 

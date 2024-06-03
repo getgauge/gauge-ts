@@ -56,6 +56,23 @@ export class Util {
     return extname(file) === Extension.Ts;
   }
 
+  // TODO: Replace this function with the following function to get the list of files
+  //   public static walkSync(dir: string, fileList: string[] = []): string[] {
+  //   const files = readdirSync(dir);
+
+  //   files.forEach((file) => {
+  //     const filePath = join(dir, file);
+  //     const stat = statSync(filePath);
+
+  //     if (stat.isDirectory()) {
+  //       Util.walkSync(filePath, fileList);
+  //     } else if (stat.isFile() && extname(file) === ".ts") {
+  //       fileList.push(filePath);
+  //     }
+  //   });
+
+  //   return fileList;
+  // }
   public static collectFilesIn(dir: string): string[] {
     return klawSync(dir, {
       filter: (item) => Util.isTSFile(item.path),

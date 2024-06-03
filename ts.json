@@ -6,15 +6,33 @@
   },
   "id": "ts",
   "init": {
-    "darwin": ["./launcher.js", "--init"],
-    "linux": ["./launcher.js", "--init"],
-    "windows": ["launcher.bat", "--init"]
+    "darwin": [
+      "./launcher.mjs",
+      "--init"
+    ],
+    "linux": [
+      "./launcher.mjs",
+      "--init"
+    ],
+    "windows": [
+      "launcher.bat",
+      "--init"
+    ]
   },
   "lspLangId": "typescript",
   "run": {
-    "darwin": ["./launcher.js", "--start"],
-    "linux": ["./launcher.js", "--start"],
-    "windows": ["launcher.bat", "--start"]
+    "darwin": [
+      "./launcher.mjs",
+      "--start"
+    ],
+    "linux": [
+      "./launcher.mjs",
+      "--start"
+    ],
+    "windows": [
+      "launcher.bat",
+      "--start"
+    ]
   },
   "version": "0.1.1",
   "gRPCSupport": true

@@ -1,2 +1,2 @@
 @echo off
-node launcher.js %1
+node launcher.mjs %1
