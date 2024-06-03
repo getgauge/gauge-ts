@@ -73,7 +73,7 @@ type RpcError = {
   stack: string;
 };
 
-export class RunnerServiceImpl implements IRunnerServer {
+export class RunnerServer implements IRunnerServer {
   [name: string]: import("@grpc/grpc-js").UntypedHandleCall;
 
   public validateStep(

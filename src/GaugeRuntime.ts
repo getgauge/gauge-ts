@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { RunnerServiceImpl } from "./RunnerServiceImpl";
+import { RunnerServer } from "./RunnerServiceImpl";
 import { RunnerService } from "./gen/services_grpc_pb";
 
 let server: Server | null = null;
@@ -11,7 +11,7 @@ export const start = (): void => {
     return;
   }
   server = new Server();
-  server.addService(RunnerService, new RunnerServiceImpl());
+  server.addService(RunnerService, new RunnerServer());
   server.bindAsync(
     "127.0.0.1:0",
     ServerCredentials.createInsecure(),

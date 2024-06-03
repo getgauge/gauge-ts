@@ -11,7 +11,7 @@ import type { ServerErrorResponse } from "@grpc/grpc-js/build/src/server-call";
 import { mockProcessExit } from "jest-mock-process";
 import { createMock } from "ts-auto-mock";
 import { UnparsedPrologue } from "typescript";
-import { RunnerServiceImpl } from "../src/RunnerServiceImpl";
+import { RunnerServer } from "../src/RunnerServiceImpl";
 import {
   CacheFileRequest as CFReq,
   type ExecutionStatusResponse as ESR,
@@ -62,12 +62,12 @@ describe("RunnerServiceImpl", () => {
   const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   let loader: StaticLoader;
-  let handler: RunnerServiceImpl;
+  let handler: RunnerServer;
 
   beforeEach(() => {
     jest.clearAllMocks();
     loader = new StaticLoader();
-    handler = new RunnerServiceImpl();
+    handler = new RunnerServer();
     registry.clear();
   });
 
@@ -518,7 +518,7 @@ describe("RunnerServiceImpl", () => {
     it("should give a step info", (done) => {
       const s = new Server();
 
-      handler = new RunnerServiceImpl();
+      handler = new RunnerServer();
       mockProcessExit();
       const mockShutdown = jest.spyOn(s, "forceShutdown");
       const req = new KPReq();
