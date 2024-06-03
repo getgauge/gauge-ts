@@ -40,7 +40,7 @@ export class Table {
     if (row.length !== this._headers.length) {
       throw new Error(
         `Row size mismatch. Expected row size: ${this._headers.length}.` +
-        `Obtained row size: ${row.length}.`,
+          `Obtained row size: ${row.length}.`,
       );
     }
     this._rows.push(row);

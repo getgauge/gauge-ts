@@ -1,5 +1,8 @@
 import { CacheFileRequest } from "../gen/messages_pb";
-import { type StaticLoaderType, staticLoaderInstance } from "../loaders/StaticLoader";
+import {
+  type StaticLoaderType,
+  staticLoaderInstance,
+} from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
 

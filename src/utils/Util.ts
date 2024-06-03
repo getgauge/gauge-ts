@@ -1,4 +1,3 @@
-import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { extname, join } from "node:path";
 import { Extension } from "typescript";
@@ -15,11 +14,6 @@ export class Util {
   public static async importFile(file: string): Promise<unknown> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return await import(file);
-  }
-
-  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-  public static spawn(command: string, args: string[]) {
-    return spawnSync(command, args);
   }
 
   // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
@@ -107,7 +101,7 @@ export class Util {
 
   public static isAsync(m: CommonFunction): boolean {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return m instanceof (async () => { }).constructor;
+    return m instanceof (async () => {}).constructor;
   }
 
   public static getUniqueScreenshotFileName(): string {

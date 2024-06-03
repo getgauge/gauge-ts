@@ -17,4 +17,4 @@ export default (): void => {
       console.log(`Listening on port:${port}`);
     },
   );
-}
+};

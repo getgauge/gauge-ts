@@ -37,9 +37,7 @@ export class HookMethod {
   }
 
   public getTagAggregationOperator(): Operator {
-    return this._options?.operator
-      ? this._options.operator
-      : Operator.And;
+    return this._options?.operator ? this._options.operator : Operator.And;
   }
 
   public getInstance(): Record<string, unknown> | undefined {

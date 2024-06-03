@@ -17,7 +17,7 @@ export function Step(stepTexts: string | Array<string>): MethodDecorator {
   return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
     let _stepTexts = stepTexts;
 
-    if (!(Array.isArray(_stepTexts))) {
+    if (!Array.isArray(_stepTexts)) {
       _stepTexts = [_stepTexts];
     }
     for (const s of _stepTexts) {

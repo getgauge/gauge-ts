@@ -49,7 +49,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
       if (method.length !== params.length) {
         throw new Error(
           `Argument length mismatch for \`${req.getActualsteptext()}\`.` +
-          ` Actual Count: [${method.length}], Expected Count: [${params.length}]`,
+            ` Actual Count: [${method.length}], Expected Count: [${params.length}]`,
         );
       }
       await this.executeMethod(

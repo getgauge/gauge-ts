@@ -1,5 +1,7 @@
+import { spawnSync } from "node:child_process";
 import { writeFileSync } from "node:fs";
 import { basename } from "node:path";
+
 import {
   type CommonAsyncFunction,
   type CommonFunction,
@@ -54,7 +56,7 @@ export class Screenshot {
     try {
       const filename = Util.getUniqueScreenshotFileName();
 
-      Util.spawn("gauge_screenshot", [filename]);
+      spawnSync("gauge_screenshot", [filename]);
 
       return basename(filename);
     } catch (error) {
