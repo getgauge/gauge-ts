@@ -49,10 +49,7 @@ import {
   type SuiteDataStoreInitRequest,
 } from "../src/gen/messages_pb";
 import { ProtoStepValue } from "../src/gen/spec_pb";
-import {
-  type StaticLoaderType,
-  staticLoaderInstance,
-} from "../src/loaders/StaticLoader";
+import StaticLoader from "../src/loaders/StaticLoader";
 import { Position } from "../src/models/Position";
 import { Range } from "../src/models/Range";
 import registry from "../src/models/StepRegistry";
@@ -64,12 +61,12 @@ type error = Partial<StatusObject> | ServerErrorResponse | null;
 describe("RunnerServiceImpl", () => {
   const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
-  let loader: StaticLoaderType;
+  let loader: StaticLoader;
   let handler: RunnerServiceImpl;
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = staticLoaderInstance;
+    loader = new StaticLoader();
     handler = new RunnerServiceImpl();
     registry.clear();
   });

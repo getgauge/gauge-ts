@@ -46,10 +46,7 @@ import type {
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
-import {
-  type StaticLoaderType,
-  staticLoaderInstance,
-} from "./loaders/StaticLoader";
+import StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
 import { CacheFileProcessor } from "./processors/CacheFileProcessor";
 import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";

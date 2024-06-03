@@ -21,7 +21,7 @@ import registry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Util } from "../utils/Util";
 
-class StaticLoader extends CodeHelper {
+export default class StaticLoader extends CodeHelper {
   public loadImplementations(): void {
     this.loadFiles();
   }
@@ -93,6 +93,3 @@ class StaticLoader extends CodeHelper {
     );
   }
 }
-
-export const staticLoaderInstance = new StaticLoader();
-export type StaticLoaderType = StaticLoader;

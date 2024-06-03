@@ -1,15 +1,12 @@
 import { CacheFileRequest } from "../gen/messages_pb";
-import {
-  type StaticLoaderType,
-  staticLoaderInstance,
-} from "../loaders/StaticLoader";
+import StaticLoader from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
 
 export class CacheFileProcessor {
-  private readonly _loader: StaticLoaderType;
+  private readonly _loader: StaticLoader;
 
-  constructor(loader: StaticLoaderType = staticLoaderInstance) {
+  constructor(loader: StaticLoader = new StaticLoader()) {
     this._loader = loader;
   }
 
