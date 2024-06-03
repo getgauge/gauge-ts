@@ -42,7 +42,6 @@ import {
   type SpecDataStoreInitRequest,
   SpecExecutionEndingRequest,
   SpecExecutionStartingRequest,
-  // eslint-disable-next-line comma-spacing, no-multi-spaces
   SpecInfo,
   StepExecutionEndingRequest,
   StepExecutionStartingRequest,
@@ -50,7 +49,10 @@ import {
   type SuiteDataStoreInitRequest,
 } from "../src/gen/messages_pb";
 import { ProtoStepValue } from "../src/gen/spec_pb";
-import { type StaticLoaderType, staticLoaderInstance } from "../src/loaders/StaticLoader";
+import {
+  type StaticLoaderType,
+  staticLoaderInstance,
+} from "../src/loaders/StaticLoader";
 import { Position } from "../src/models/Position";
 import { Range } from "../src/models/Range";
 import registry from "../src/models/StepRegistry";
@@ -75,7 +77,7 @@ describe("RunnerServiceImpl", () => {
   describe(".initializeSuiteDataStore", () => {
     it("should initialise suite data store", (done) => {
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
@@ -98,7 +100,7 @@ describe("RunnerServiceImpl", () => {
         throw new Error();
       });
       // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => { } });
+      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
       const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();

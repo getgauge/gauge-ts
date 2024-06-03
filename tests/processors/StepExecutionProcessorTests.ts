@@ -41,7 +41,7 @@ describe("StepExecutionProcessor", () => {
             "hello",
             "hello",
             "StepImpl.ts",
-            (a: unknown) => { },
+            (a: unknown) => {},
           ),
         );
 
@@ -68,7 +68,7 @@ describe("StepExecutionProcessor", () => {
           "hello {} to {}",
           "StepImpl.ts",
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          (arg0: unknown, arg1: unknown) => { },
+          (arg0: unknown, arg1: unknown) => {},
         ),
       );
 

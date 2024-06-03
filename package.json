@@ -20,12 +20,7 @@
     "type": "git",
     "url": "git+https://github.com/bugdiver/gauge-ts.git"
   },
-  "keywords": [
-    "gauge",
-    "Acceptance Test",
-    "Typescript",
-    "Automation"
-  ],
+  "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
   "author": "BugDiver <vinayshankar00@gmail.com>",
   "license": "MIT",
   "bugs": {

@@ -8,14 +8,11 @@ import { RefactorProcessor } from "../../src/processors/RefactorProcessor";
 import { Util } from "../../src/utils/Util";
 
 describe("RefactorProcessor", () => {
-  const text1 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["foo"])${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["foo"])${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
-  const text2 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has <number> vowels.")${EOL}    public async foo(word: any, number: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const text2 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has <number> vowels.")${EOL}    public async foo(word: any, number: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
-  const text3 =
-    `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has")${EOL}    public async foo(word: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
+  const text3 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("The word <word> has")${EOL}    public async foo(word: any) {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
   let processor: RefactorProcessor;
 
   beforeEach(() => {

@@ -2,9 +2,7 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
-    "lib": [
-      "es2023"
-    ],
+    "lib": ["es2023"],
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
@@ -18,11 +16,6 @@
       }
     ]
   },
-  "include": [
-    "src/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

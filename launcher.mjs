@@ -16,7 +16,8 @@ if (process.argv[2] === "--start") {
 
   const opts = [
     "ts-node",
-    '-O', `'{"experimentalDecorators": true, "emitDecoratorMetadata": true}'`,
+    "-O",
+    `'{"experimentalDecorators": true, "emitDecoratorMetadata": true}'`,
     ...(hasModule("tsconfig-paths") ? ["-r", "tsconfig-paths/register"] : []),
     "-e",
     script,
