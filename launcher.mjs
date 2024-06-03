@@ -12,7 +12,7 @@ import { spawn } from "node:child_process";
 const { GAUGE_PROJECT_ROOT } = process.env;
 
 if (process.argv[2] === "--start") {
-  const script = `"import start from 'gauge-ts/dist/GaugeRuntime'; start();"`;
+  const script = `"import { start } from 'gauge-ts/dist/GaugeRuntime'; start();"`;
 
   const opts = [
     "ts-node",

@@ -43,10 +43,11 @@ import type {
   SuiteDataStoreInitRequest,
 } from "./gen/messages_pb";
 
+import { stop } from "./GaugeRuntime";
+
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
-import StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
 import { CacheFileProcessor } from "./processors/CacheFileProcessor";
 import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";
@@ -330,7 +331,7 @@ export class RunnerServiceImpl implements IRunnerServer {
   ): void {
     callback(null, new Empty());
     setTimeout(() => {
-      // this._server?.forceShutdown();
+      stop();
       process.exit(0);
     }, 100);
   }
