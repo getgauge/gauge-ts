@@ -3,6 +3,7 @@ import { extname, join } from "node:path";
 import { Extension } from "typescript";
 import { v4 } from "uuid";
 import klawSync = require("klaw-sync");
+import { spawnSync } from "node:child_process";
 
 export type CommonFunction<T = unknown> = (...args: unknown[]) => T;
 export type CommonAsyncFunction<T = unknown> = (
@@ -29,6 +30,10 @@ export class Util {
 
   public static readFileBuffer(file: string) {
     return readFileSync(file).buffer;
+  }
+
+  public static spawn(command: string, args: string[]) {
+    return spawnSync(command, args);
   }
 
   public static getListOfFiles() {
@@ -64,14 +69,14 @@ export class Util {
 
   //   return fileList;
   // }
-  public static collectFilesIn(dir: string) {
+  public static collectFilesIn(dir: string): string[] {
     return klawSync(dir, {
       filter: (item) => Util.isTSFile(item.path),
       traverseAll: true,
     }).map((item) => item.path);
   }
 
-  public static getImplDirs() {
+  public static getImplDirs(): Array<string> {
     const projectRoot = process.env.GAUGE_PROJECT_ROOT as string;
 
     if (process.env.STEP_IMPL_DIR) {
@@ -83,7 +88,7 @@ export class Util {
     return [join(projectRoot, "tests")];
   }
 
-  public static getNewTSFileName(dir: string) {
+  public static getNewTSFileName(dir: string): string {
     let counter = 0;
     let fileName: string;
 
@@ -96,11 +101,12 @@ export class Util {
     return fileName;
   }
 
-  public static isAsync(m: CommonFunction) {
+  public static isAsync(m: CommonFunction): boolean {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return m instanceof (async () => {}).constructor;
   }
 
-  public static getUniqueScreenshotFileName() {
+  public static getUniqueScreenshotFileName(): string {
     const dir = (process.env.gauge_screenshots_dir as string) ?? "";
 
     return join(dir, `screenshot-${v4()}.png`);

@@ -1,15 +1,12 @@
 import { CacheFileRequest } from "../../src/gen/messages_pb";
-import {
-  type StaticLoaderType,
-  staticLoaderInstance,
-} from "../../src/loaders/StaticLoader";
+import StaticLoader from "../../src/loaders/StaticLoader";
 import registry from "../../src/models/StepRegistry";
 import { CacheFileProcessor } from "../../src/processors/CacheFileProcessor";
 import { Util } from "../../src/utils/Util";
 
 describe("CacheFileProcessor", () => {
   let processor: CacheFileProcessor;
-  let loader: StaticLoaderType;
+  let loader: StaticLoader;
   const file1 = "StepImpl1.ts";
   const text1 = `import { Step } from "gauge-ts";
     export default class StepImpl {
@@ -28,7 +25,7 @@ describe("CacheFileProcessor", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = staticLoaderInstance;
+    loader = new StaticLoader();
     processor = new CacheFileProcessor(loader);
     registry.clear();
   });
