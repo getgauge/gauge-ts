@@ -8,7 +8,7 @@ module.exports = {
     ],
   },
   testEnvironment: "node",
-  reporters: ["jest-silent-reporter"],
+  // reporters: ["jest-silent-reporter"],
   testRegex: "/tests/.*(Test)?\\.(ts)$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   coveragePathIgnorePatterns: ["/node_modules/", "src/gen/*", "src/utils/*"],

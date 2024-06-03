@@ -5,20 +5,22 @@ import { RunnerService } from "./gen/services_grpc_pb";
 
 let server: Server | null = null;
 
-export const start = (): void => {
+export const start = (host = "127.0.0.1:0") => {
   if (server) {
-    console.debug("Server is already running.");
-    return;
+    console.log("Server is already running.");
+    throw new Error("Server is already running.");
   }
   server = new Server();
   server.addService(RunnerService, new RunnerServer());
+  let port: number | null = null;
   server.bindAsync(
-    "127.0.0.1:0",
+    host,
     ServerCredentials.createInsecure(),
-    (err: Error | null, port: number) => {
+    (err: Error | null, boundPort: number) => {
       if (err) {
         throw err;
       }
+      port = boundPort;
       console.debug(`Listening on port:${port}`);
     },
   );
@@ -33,7 +35,6 @@ export const stop = (): void => {
     if (err) {
       console.error("Error shutting down the server:", err);
     } else {
-      console.debug("Server shut down successfully.");
       server = null;
     }
   });

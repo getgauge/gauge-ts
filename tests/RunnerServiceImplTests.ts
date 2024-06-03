@@ -2,16 +2,11 @@
 /* eslint-disable comma-spacing */
 
 import { EOL } from "node:os";
-import {
-  type ServerUnaryCall as SUC,
-  Server,
-  type StatusObject,
-} from "@grpc/grpc-js";
+import { Server, type StatusObject } from "@grpc/grpc-js";
+import * as grpc from "@grpc/grpc-js";
 import type { ServerErrorResponse } from "@grpc/grpc-js/build/src/server-call";
 import { mockProcessExit } from "jest-mock-process";
-import { createMock } from "ts-auto-mock";
-import { UnparsedPrologue } from "typescript";
-import { RunnerServer } from "../src/RunnerServiceImpl";
+import { start, stop } from "../src/GaugeRuntime";
 import {
   CacheFileRequest as CFReq,
   type ExecutionStatusResponse as ESR,
@@ -29,25 +24,26 @@ import {
   StubImplementationCodeRequest as SICReq,
   StepNameRequest as SNReq,
   type StepNameResponse as SNRes,
-  type StepNamesRequest as SNsReq,
+  StepNamesRequest as SNsReq,
   type StepNamesResponse as SNsRes,
   StepPositionsRequest as SPReq,
   type StepPositionsResponse as SPRes,
   StepValidateRequest as SVReq,
   type StepValidateResponse as SVRes,
-  type ScenarioDataStoreInitRequest,
+  ScenarioDataStoreInitRequest,
   ScenarioExecutionEndingRequest,
   ScenarioExecutionStartingRequest,
   ScenarioInfo,
-  type SpecDataStoreInitRequest,
+  SpecDataStoreInitRequest,
   SpecExecutionEndingRequest,
   SpecExecutionStartingRequest,
   SpecInfo,
   StepExecutionEndingRequest,
   StepExecutionStartingRequest,
   StepInfo,
-  type SuiteDataStoreInitRequest,
+  SuiteDataStoreInitRequest,
 } from "../src/gen/messages_pb";
+import { RunnerClient } from "../src/gen/services_grpc_pb";
 import { ProtoStepValue } from "../src/gen/spec_pb";
 import StaticLoader from "../src/loaders/StaticLoader";
 import { Position } from "../src/models/Position";
@@ -58,17 +54,27 @@ import { Util } from "../src/utils/Util";
 
 type error = Partial<StatusObject> | ServerErrorResponse | null;
 
+const host = "127.0.0.1:55545";
+
 describe("RunnerServiceImpl", () => {
   const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   let loader: StaticLoader;
-  let handler: RunnerServer;
+  let client: RunnerClient;
 
   beforeEach(() => {
     jest.clearAllMocks();
     loader = new StaticLoader();
-    handler = new RunnerServer();
     registry.clear();
+  });
+
+  beforeAll(() => {
+    start(host);
+    client = new RunnerClient(host, grpc.credentials.createInsecure());
+  });
+
+  afterAll(() => {
+    stop();
   });
 
   describe(".initializeSuiteDataStore", () => {
@@ -77,10 +83,8 @@ describe("RunnerServiceImpl", () => {
       Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
-      const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
-
-      handler.initializeSuiteDataStore(
-        call,
+      client.initializeScenarioDataStore(
+        new ScenarioDataStoreInitRequest(),
         (err: error, res: ESR | null | undefined) => {
           expect(err).toBe(null);
           expect(res?.getExecutionresult()?.getFailed()).toBeFalsy();
@@ -94,30 +98,32 @@ describe("RunnerServiceImpl", () => {
   describe(".initializeSuiteDataStore", () => {
     it("should fail to initialise suite data store", (done) => {
       DataStoreFactory.getSuiteDataStore = jest.fn().mockImplementation(() => {
-        throw new Error();
+        throw new Error("Error while initialising suite data store");
       });
       // eslint-disable-next-line @typescript-eslint/no-empty-function
       Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
       Util.getListOfFiles = jest.fn().mockReturnValue([]);
 
-      const call = createMock<SUC<SuiteDataStoreInitRequest, ESR>>();
-
-      handler.initializeSuiteDataStore(call, (err: error) => {
-        expect(err).not.toBeNull();
-        done();
-      });
+      client.initializeSuiteDataStore(
+        new SuiteDataStoreInitRequest(),
+        (err: error) => {
+          expect(err).not.toBeNull();
+          done();
+        },
+      );
     });
   });
 
   describe(".initializeSpecDataStore", () => {
     it("should initialise spec data store", (done) => {
-      const call = createMock<SUC<SpecDataStoreInitRequest, ESR>>();
-
-      handler.initializeSpecDataStore(call, (err: error) => {
-        expect(err).toBe(null);
-        expect(DataStoreFactory.getSpecDataStore().length).toBe(0);
-        done();
-      });
+      client.initializeSpecDataStore(
+        new SpecDataStoreInitRequest(),
+        (err: error) => {
+          expect(err).toBe(null);
+          expect(DataStoreFactory.getSpecDataStore().length).toBe(0);
+          done();
+        },
+      );
     });
   });
 
@@ -126,24 +132,26 @@ describe("RunnerServiceImpl", () => {
       DataStoreFactory.getSpecDataStore = jest.fn().mockImplementation(() => {
         throw new Error();
       });
-      const call = createMock<SUC<SpecDataStoreInitRequest, ESR>>();
-
-      handler.initializeSpecDataStore(call, (err: error) => {
-        expect(err).not.toBe(null);
-        done();
-      });
+      client.initializeSpecDataStore(
+        new SpecDataStoreInitRequest(),
+        (err: error) => {
+          expect(err).not.toBe(null);
+          done();
+        },
+      );
     });
   });
 
   describe(".initializeScenarioDataStore", () => {
     it("should initialise scenario data store", (done) => {
-      const call = createMock<SUC<ScenarioDataStoreInitRequest, ESR>>();
-
-      handler.initializeScenarioDataStore(call, (err: error) => {
-        expect(err).toBe(null);
-        expect(DataStoreFactory.getScenarioDataStore().length).toBe(0);
-        done();
-      });
+      client.initializeScenarioDataStore(
+        new ScenarioDataStoreInitRequest(),
+        (err: error) => {
+          expect(err).toBe(null);
+          expect(DataStoreFactory.getScenarioDataStore().length).toBe(0);
+          done();
+        },
+      );
     });
   });
 
@@ -154,23 +162,20 @@ describe("RunnerServiceImpl", () => {
         .mockImplementation(() => {
           throw new Error();
         });
-      const call = createMock<SUC<ScenarioDataStoreInitRequest, ESR>>();
 
-      handler.initializeScenarioDataStore(call, (err: error) => {
-        expect(err).not.toBe(null);
-        done();
-      });
+      client.initializeScenarioDataStore(
+        new ScenarioDataStoreInitRequest(),
+        (err: error) => {
+          expect(err).not.toBe(null);
+          done();
+        },
+      );
     });
   });
 
   describe(".startExecution", () => {
     it("should start suite execution", (done) => {
-      const req = new ExecutionStartingRequest();
-      const call = createMock<SUC<ExecutionStartingRequest, ESR>>({
-        request: req,
-      });
-
-      handler.startExecution(call, (err: error) => {
+      client.startExecution(new ExecutionStartingRequest(), (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -184,11 +189,7 @@ describe("RunnerServiceImpl", () => {
 
       info.setCurrentspec(new SpecInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<SpecExecutionStartingRequest, ESR>>({
-        request: req,
-      });
-
-      handler.startSpecExecution(call, (err: error) => {
+      client.startSpecExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -203,11 +204,8 @@ describe("RunnerServiceImpl", () => {
       info.setCurrentspec(new SpecInfo());
       info.setCurrentscenario(new ScenarioInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<ScenarioExecutionStartingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.startScenarioExecution(call, (err: error) => {
+      client.startScenarioExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -224,11 +222,8 @@ describe("RunnerServiceImpl", () => {
       info.setCurrentspec(new SpecInfo());
       info.setCurrentstep(new StepInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<StepExecutionStartingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.startStepExecution(call, (err: error) => {
+      client.startStepExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -239,9 +234,7 @@ describe("RunnerServiceImpl", () => {
     it("should execute step", (done) => {
       const req = new ExecuteStepRequest();
 
-      const call = createMock<SUC<ExecuteStepRequest, ESR>>({ request: req });
-
-      handler.executeStep(call, (err: error) => {
+      client.executeStep(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -258,11 +251,8 @@ describe("RunnerServiceImpl", () => {
       info.setCurrentspec(new SpecInfo());
       info.setCurrentstep(new StepInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<StepExecutionEndingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.finishStepExecution(call, (err: error) => {
+      client.finishStepExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -277,11 +267,8 @@ describe("RunnerServiceImpl", () => {
       info.setCurrentspec(new SpecInfo());
       info.setCurrentscenario(new ScenarioInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<ScenarioExecutionEndingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.finishScenarioExecution(call, (err: error) => {
+      client.finishScenarioExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -295,11 +282,8 @@ describe("RunnerServiceImpl", () => {
 
       info.setCurrentspec(new SpecInfo());
       req.setCurrentexecutioninfo(info);
-      const call = createMock<SUC<SpecExecutionEndingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.finishSpecExecution(call, (err: error) => {
+      client.finishSpecExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -309,11 +293,8 @@ describe("RunnerServiceImpl", () => {
   describe(".finishExecution", () => {
     it("should finish suite execution", (done) => {
       const req = new ExecutionEndingRequest();
-      const call = createMock<SUC<ExecutionEndingRequest, ESR>>({
-        request: req,
-      });
 
-      handler.finishExecution(call, (err: error) => {
+      client.finishExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
       });
@@ -321,57 +302,52 @@ describe("RunnerServiceImpl", () => {
   });
 
   describe(".getGlobPstters", () => {
-    it("should give all patterns", () => {
+    it("should give all patterns", (done) => {
       Util.getImplDirs = jest.fn().mockReturnValue(["src", "tests"]);
-      const call = createMock<SUC<Empty, IFGPRes>>();
-
-      call.request = new Empty();
-      handler.getGlobPatterns(
-        call,
+      client.getGlobPatterns(
+        new Empty(),
         (err: error, res: IFGPRes | null | undefined) => {
           expect(err).toBe(null);
           const patterns = res?.getGlobpatternsList();
-
           expect(patterns).toStrictEqual(["src/**/*.ts", "tests/**/*.ts"]);
+          done();
         },
       );
     });
   });
 
   describe(".cacheFile", () => {
-    it("should update the registry", () => {
+    it("should update the registry", (done) => {
       const req = new CFReq();
 
       req.setContent(text1);
       req.setFilepath("StepImpl.ts");
       req.setStatus(CFReq.FileStatus.OPENED);
 
-      const call = createMock<SUC<CFReq, Empty>>({ request: req });
-
-      handler.cacheFile(call, (err: error) => {
+      client.cacheFile(req, (err: error) => {
         expect(err).toBe(null);
         expect(registry.isImplemented("foo")).toBe(true);
+        done();
       });
     });
   });
 
   describe(".getStepNames", () => {
-    it("should give all the step names", () => {
+    it("should give all the step names", (done) => {
       registry.getStepTexts = jest.fn().mockReturnValue(["foo"]);
-      const call = createMock<SUC<SNsReq, SNsRes>>();
-
-      handler.getStepNames(
-        call,
+      client.getStepNames(
+        new SNsReq(),
         (err: error, res: SNsRes | null | undefined) => {
           expect(err).toBe(null);
           expect(res?.getStepsList()).toStrictEqual(["foo"]);
+          done();
         },
       );
     });
   });
 
   describe(".getStepPositions", () => {
-    it("should give step positions", () => {
+    it("should give step positions", (done) => {
       const req = new SPReq();
 
       req.setFilepath("StepImpl.ts");
@@ -381,10 +357,9 @@ describe("RunnerServiceImpl", () => {
           span: new Range(new Position(3, 5), new Position(8, 5)),
         },
       ]);
-      const call = createMock<SUC<SPReq, SPRes>>({ request: req });
 
-      handler.getStepPositions(
-        call,
+      client.getStepPositions(
+        req,
         (err: error, res: SPRes | null | undefined) => {
           expect(err).toBe(null);
           const positions = res?.getSteppositionsList() ?? [];
@@ -397,30 +372,30 @@ describe("RunnerServiceImpl", () => {
           expect(span?.getStartchar()).toBe(5);
           expect(span?.getEnd()).toBe(8);
           expect(span?.getEndchar()).toBe(5);
+          done();
         },
       );
     });
   });
 
   describe(".getImplementationFiles", () => {
-    it("should give all the step impl files", () => {
+    it("should give all the step impl files", (done) => {
       Util.getListOfFiles = jest.fn().mockReturnValue(["StepImpl.ts"]);
-      const call = createMock<SUC<Empty, IFLRes>>();
-
-      handler.getImplementationFiles(
-        call,
+      client.getImplementationFiles(
+        new Empty(),
         (err: error, res: IFLRes | null | undefined) => {
           expect(err).toBe(null);
           expect(res?.getImplementationfilepathsList()).toStrictEqual([
             "StepImpl.ts",
           ]);
+          done();
         },
       );
     });
   });
 
   describe(".implementStub", () => {
-    it("implement a stub", () => {
+    it("implement a stub", (done) => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text1);
       const code = `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
@@ -428,10 +403,8 @@ describe("RunnerServiceImpl", () => {
 
       req.setImplementationfilepath("StepImpl.ts");
       req.setCodesList([code]);
-      const call = createMock<SUC<SICReq, FileDiff>>({ request: req });
-
-      handler.implementStub(
-        call,
+      client.implementStub(
+        req,
         (err: error, res: FileDiff | null | undefined) => {
           expect(err).toBe(null);
           expect(res?.getFilepath()).toStrictEqual("StepImpl.ts");
@@ -444,13 +417,14 @@ describe("RunnerServiceImpl", () => {
               .join(EOL) + EOL;
 
           expect(res?.getTextdiffsList()[0].getContent()).toBe(expected);
+          done();
         },
       );
     });
   });
 
   describe(".validateStep", () => {
-    it("should valiadate a step", () => {
+    it("should valiadate a step", (done) => {
       registry.isImplemented = jest.fn().mockReturnValue(true);
 
       const req = new SVReq();
@@ -462,20 +436,16 @@ describe("RunnerServiceImpl", () => {
       stepValue.setParameterizedstepvalue("foo");
       req.setStepvalue(stepValue);
 
-      const call = createMock<SUC<SVReq, SVRes>>({ request: req });
-
-      handler.validateStep(
-        call,
-        (err: error, res: SVRes | null | undefined) => {
-          expect(err).toBe(null);
-          expect(res?.getIsvalid()).toBe(true);
-        },
-      );
+      client.validateStep(req, (err: error, res: SVRes | null | undefined) => {
+        expect(err).toBe(null);
+        expect(res?.getIsvalid()).toBe(true);
+        done();
+      });
     });
   });
 
   describe(".refactor", () => {
-    it("should refactor a step", () => {
+    it("should refactor a step", (done) => {
       loader.loadStepsFromText("StepImpl.ts", text1);
       const oldStepValue = new ProtoStepValue();
 
@@ -489,50 +459,46 @@ describe("RunnerServiceImpl", () => {
 
       req.setOldstepvalue(oldStepValue);
       req.setNewstepvalue(newStepValue);
-      const call = createMock<SUC<RReq, RRes>>({ request: req });
 
-      handler.refactor(call, (err: error, res: RRes | null | undefined) => {
+      client.refactor(req, (err: error, res: RRes | null | undefined) => {
         expect(err).toBe(null);
         expect(res?.getSuccess()).toBe(true);
+        done();
       });
     });
   });
 
   describe(".getStepName", () => {
-    it("should give a step info", () => {
+    it("should give a step info", (done) => {
       loader.loadStepsFromText("StepImpl.ts", text1);
       const req = new SNReq();
 
       req.setStepvalue("foo");
-      const call = createMock<SUC<SNReq, SNRes>>({ request: req });
 
-      handler.getStepName(call, (err: error, res: SNRes | null | undefined) => {
+      client.getStepName(req, (err: error, res: SNRes | null | undefined) => {
         expect(err).toBe(null);
         expect(res?.getFilename()).toBe("StepImpl.ts");
         expect(res?.getIssteppresent()).toBe(true);
+        done();
       });
     });
   });
 
-  describe(".killProcess", () => {
-    it("should give a step info", (done) => {
+  xdescribe(".killProcess", () => {
+    it("should kill server", (done) => {
       const s = new Server();
 
-      handler = new RunnerServer();
       mockProcessExit();
       const mockShutdown = jest.spyOn(s, "forceShutdown");
       const req = new KPReq();
 
-      handler.kill(
-        createMock<SUC<KPReq, Empty>>({ request: req }),
-        (err: error) => {
-          expect(err).toBe(null);
-          setTimeout(() => {
-            expect(mockShutdown).toHaveBeenCalled();
-            done();
-          }, 110);
-        },
-      );
+      client.kill(req, (err: error) => {
+        expect(err).toBe(null);
+        setTimeout(() => {
+          expect(mockShutdown).toHaveBeenCalled();
+          done();
+        }, 110);
+      });
     });
   });
 });

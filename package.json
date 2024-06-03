@@ -46,7 +46,6 @@
     "jest-mock-process": "^2.0.0",
     "jest-silent-reporter": "^0.6.0",
     "jest-ts-auto-mock": "^2.1.0",
-    "ts-auto-mock": "^3.7.3",
     "ts-jest": "^29.1.4",
     "ttypescript": "^1.5.12"
   }
