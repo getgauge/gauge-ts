@@ -1,8 +1,5 @@
 # Gauge Typescript
-[![NPM](https://img.shields.io/npm/v/gauge-ts.svg?style=flat-square)](https://www.npmjs.com/package/gauge-ts)
-[![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
-[![Build Status](https://dev.azure.com/bugdiver/gauge-ts/_apis/build/status/BugDiver.gauge-ts?branchName=master)](https://dev.azure.com/bugdiver/gauge-ts/_build/latest?definitionId=1&branchName=master)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/BugDiver/gauge-ts/blob/master/LICENSE)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/BugDiver/gauge-ts/blob/master/LICENSE)
 <a class="github-button" href="https://github.com/bugdiver/gauge-ts" data-icon="octicon-star" data-show-count="true" aria-label="Star bugdiver/gauge-ts on GitHub">Star</a>
 
 A [typescript](https://www.typescriptlang.org/) runner for [Gauge](https://gauge.org).
@@ -44,7 +41,7 @@ gauge install ts -f {location_of_zip_file}
 
 ## Create a Project
 
-Once you have installed the `gauge-ts` plugin, you can create a sample app. To verify your installation run 
+Once you have installed the `gauge-ts` plugin, you can create a sample app. To verify your installation run
 
 ```bash
 gauge -v
@@ -182,7 +179,7 @@ export default class StepImpl {
 
 #### Tagged hooks
 
-Gauge allows to control the execution by running filtered hooks using `tags`. 
+Gauge allows to control the execution by running filtered hooks using `tags`.
 
 
 ```javascript
