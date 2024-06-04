@@ -56,7 +56,7 @@ type error = Partial<StatusObject> | ServerErrorResponse | null;
 
 const host = "127.0.0.1:55545";
 
-describe("RunnerServiceImpl", () => {
+describe("RunnerServer", () => {
   const text1 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step("foo")${EOL}    public async foo() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   let loader: StaticLoader;

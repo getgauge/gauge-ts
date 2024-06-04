@@ -11,7 +11,16 @@ import { spawn } from "node:child_process";
 
 const { GAUGE_PROJECT_ROOT } = process.env;
 
-if (process.argv[2] === "--start") {
+function hasModule(name) {
+  try {
+    require.resolve(name, { paths: [GAUGE_PROJECT_ROOT] });
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
+function startCommand() {
   const script = `"import { start } from 'gauge-ts/dist/GaugeRuntime'; start();"`;
 
   const opts = [
@@ -35,11 +44,18 @@ if (process.argv[2] === "--start") {
   });
 }
 
-function hasModule(name) {
-  try {
-    require.resolve(name, { paths: [GAUGE_PROJECT_ROOT] });
-    return true;
-  } catch (e) {
-    return false;
+const commands = {
+  "--start": startCommand,
+};
+
+function main() {
+  const command = process.argv[2];
+
+  if (commands[command]) {
+    commands[command]();
+  } else {
+    throw new Error(`Unknown or missing command: ${command}`);
   }
 }
+
+main();

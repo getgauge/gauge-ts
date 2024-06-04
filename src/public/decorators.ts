@@ -13,8 +13,12 @@ import type { Operator } from "./Operator";
  *
  * @constructor
  */
-export function Step(stepTexts: string | Array<string>): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+export function Step(stepTexts: string | Array<string>) {
+  return (
+    target: unknown,
+    _propertyKey: string | symbol,
+    descriptor: PropertyDescriptor,
+  ) => {
     let _stepTexts = stepTexts;
 
     if (!Array.isArray(_stepTexts)) {
@@ -45,7 +49,7 @@ export function ContinueOnFailure(exceptions?: Array<string>): MethodDecorator {
 }
 
 export function BeforeSuite(): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+  return (_target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(

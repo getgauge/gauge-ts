@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { RunnerServer } from "./RunnerServiceImpl";
+import RunnerServer from "./RunnerServer";
 import { RunnerService } from "./gen/services_grpc_pb";
 
 let server: Server | null = null;
