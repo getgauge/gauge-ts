@@ -6,7 +6,7 @@ jobs:
   test:
     strategy:
       matrix:
-        node-version: [12.x,13.x, 14.x]
+        node-version: [20.x]
         os: [ubuntu-latest, macOS-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
@@ -20,13 +20,9 @@ jobs:
       - name: npm install and test
         run: |
           npm install
-          npm run test:coverage
+          npm test
         env:
           CI: true
-
-      - name: Update coverage
-        run: |
-          npm run codecov -- -t ${{ secrets.CODECOV_TOKEN }}
 
   build-artifacts:
     needs: test
@@ -51,7 +47,7 @@ jobs:
     needs: build-artifacts
     strategy:
       matrix:
-        node-version: [12.x, 13.x, 14.x]
+        node-version: [20.x]
         os: [macOS-latest, ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
