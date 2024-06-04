@@ -7,7 +7,7 @@ import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
 import { ExecutionStartingProcessor } from "../../src/processors/ExecutionStartingProcessor";
-jest.mock("inspector");
+jest.mock("node:inspector");
 
 describe("ExecutionStartingProcessor", () => {
   let processor: ExecutionStartingProcessor;
@@ -42,7 +42,6 @@ describe("ExecutionStartingProcessor", () => {
 
       process.env.DEBUGGING = "true";
       process.env.DEBUG_PORT = "1234";
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       hookRegistry.addHook(
         HookType.AfterSuite,
         new HookMethod(async () => {}, "Hooks.ts"),
