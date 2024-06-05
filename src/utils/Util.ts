@@ -1,9 +1,14 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import {
+  existsSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+  writeFileSync,
+} from "node:fs";
 import { extname, join } from "node:path";
 import { Extension } from "typescript";
 import { v4 } from "uuid";
-import klawSync = require("klaw-sync");
-import { spawnSync } from "node:child_process";
 
 export type CommonFunction<T = unknown> = (...args: unknown[]) => T;
 export type CommonAsyncFunction<T = unknown> = (
@@ -52,28 +57,25 @@ export class Util {
     return extname(file) === Extension.Ts;
   }
 
-  // TODO: Replace this function with the following function to get the list of files
-  //   public static walkSync(dir: string, fileList: string[] = []): string[] {
-  //   const files = readdirSync(dir);
+  private static walkSync(dir: string, fileList: string[] = []): string[] {
+    const files = readdirSync(dir);
 
-  //   files.forEach((file) => {
-  //     const filePath = join(dir, file);
-  //     const stat = statSync(filePath);
+    for (const file of files) {
+      const filePath = join(dir, file);
+      const stat = statSync(filePath);
 
-  //     if (stat.isDirectory()) {
-  //       Util.walkSync(filePath, fileList);
-  //     } else if (stat.isFile() && extname(file) === ".ts") {
-  //       fileList.push(filePath);
-  //     }
-  //   });
+      if (stat.isDirectory()) {
+        Util.walkSync(filePath, fileList);
+      } else if (stat.isFile() && Util.isTSFile(file)) {
+        fileList.push(filePath);
+      }
+    }
 
-  //   return fileList;
-  // }
+    return fileList;
+  }
+
   public static collectFilesIn(dir: string): string[] {
-    return klawSync(dir, {
-      filter: (item) => Util.isTSFile(item.path),
-      traverseAll: true,
-    }).map((item) => item.path);
+    return Util.walkSync(dir);
   }
 
   public static getImplDirs(): Array<string> {
@@ -102,7 +104,6 @@ export class Util {
   }
 
   public static isAsync(m: CommonFunction): boolean {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     return m instanceof (async () => {}).constructor;
   }
 
