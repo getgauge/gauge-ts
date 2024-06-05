@@ -6,14 +6,13 @@ import StaticLoader from "./loaders/StaticLoader";
 
 let server: Server | null = null;
 
-export const start = (host = "127.0.0.1:0") => {
+export const start = (host = "127.0.0.1:0", loader = new StaticLoader()) => {
   if (server) {
     console.log("Server is already running.");
     throw new Error("Server is already running.");
   }
-  new StaticLoader().loadImplementations();
   server = new Server();
-  server.addService(RunnerService, new RunnerServer());
+  server.addService(RunnerService, new RunnerServer(loader));
   let port: number | null = null;
   server.bindAsync(
     host,

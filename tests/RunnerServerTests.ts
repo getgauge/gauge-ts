@@ -64,12 +64,13 @@ describe("RunnerServer", () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    loader = new StaticLoader();
     registry.clear();
   });
 
   beforeAll(() => {
-    start(host);
+    loader = new StaticLoader();
+    jest.spyOn(loader, "loadImplementations").mockImplementation();
+    start(host, loader);
     client = new RunnerClient(host, grpc.credentials.createInsecure());
   });
 
@@ -79,10 +80,6 @@ describe("RunnerServer", () => {
 
   describe(".initializeSuiteDataStore", () => {
     it("should initialise suite data store", (done) => {
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
-      Util.getListOfFiles = jest.fn().mockReturnValue([]);
-
       client.initializeScenarioDataStore(
         new ScenarioDataStoreInitRequest(),
         (err: error, res: ESR | null | undefined) => {
@@ -100,10 +97,6 @@ describe("RunnerServer", () => {
       DataStoreFactory.getSuiteDataStore = jest.fn().mockImplementation(() => {
         throw new Error("Error while initialising suite data store");
       });
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      Util.importFile = jest.fn().mockReturnValue({ default: () => {} });
-      Util.getListOfFiles = jest.fn().mockReturnValue([]);
-
       client.initializeSuiteDataStore(
         new SuiteDataStoreInitRequest(),
         (err: error) => {

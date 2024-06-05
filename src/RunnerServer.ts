@@ -48,24 +48,23 @@ import { stop } from "./GaugeRuntime";
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
+import type StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
-import {
-  cacheFileProcessor,
-  executionEndingProcessor,
-  executionStartingProcessor,
-  refactorProcessor,
-  scenarioExecutionEndingProcessor,
-  scenarioExecutionStartingProcessor,
-  specExecutionEndingProcessor,
-  specExecutionStartingProcessor,
-  stepExecutionEndingProcessor,
-  stepExecutionProcessor,
-  stepExecutionStartingProcessor,
-  stepNameProcessor,
-  stepPositionsProcessor,
-  stubImplementationCodeProcessor,
-  validationProcessor,
-} from "./processors";
+import { CacheFileProcessor } from "./processors/CacheFileProcessor";
+import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";
+import { ExecutionStartingProcessor } from "./processors/ExecutionStartingProcessor";
+import { RefactorProcessor } from "./processors/RefactorProcessor";
+import { ScenarioExecutionEndingProcessor } from "./processors/ScenarioExecutionEndingProcessor";
+import { ScenarioExecutionStartingProcessor } from "./processors/ScenarioExecutionStartingProcessor";
+import { SpecExecutionEndingProcessor } from "./processors/SpecExecutionEndingProcessor";
+import { SpecExecutionStartingProcessor } from "./processors/SpecExecutionStartingProcessor";
+import { StepExecutionEndingProcessor } from "./processors/StepExecutionEndingProcessor";
+import { StepExecutionProcessor } from "./processors/StepExecutionProcessor";
+import { StepExecutionStartingProcessor } from "./processors/StepExecutionStartingProcessor";
+import { StepNameProcessor } from "./processors/StepNameProcessor";
+import { StepPositionsProcessor } from "./processors/StepPositionsProcessor";
+import { StubImplementationCodeProcessor } from "./processors/StubImplementationCodeProcessor";
+import { ValidationProcessor } from "./processors/ValidationProcessor";
 import { Util } from "./utils/Util";
 
 type RpcError = {
@@ -77,6 +76,47 @@ type RpcError = {
 
 export default class RunnerServer implements IRunnerServer {
   [name: string]: import("@grpc/grpc-js").UntypedHandleCall;
+  private static cacheFileProcessor: CacheFileProcessor;
+  private static executionEndingProcessor: ExecutionEndingProcessor;
+  private static executionStartingProcessor: ExecutionStartingProcessor;
+  private static refactorProcessor: RefactorProcessor;
+  private static scenarioExecutionEndingProcessor: ScenarioExecutionEndingProcessor;
+  private static scenarioExecutionStartingProcessor: ScenarioExecutionStartingProcessor;
+  private static specExecutionEndingProcessor: SpecExecutionEndingProcessor;
+  private static specExecutionStartingProcessor: SpecExecutionStartingProcessor;
+  private static stepExecutionEndingProcessor: StepExecutionEndingProcessor;
+  private static stepExecutionProcessor: StepExecutionProcessor;
+  private static stepExecutionStartingProcessor: StepExecutionStartingProcessor;
+  private static stepNameProcessor: StepNameProcessor;
+  private static stepPositionsProcessor: StepPositionsProcessor;
+  private static stubImplementationCodeProcessor: StubImplementationCodeProcessor;
+  private static validationProcessor: ValidationProcessor;
+
+  constructor(loader: StaticLoader) {
+    loader.loadImplementations();
+    RunnerServer.cacheFileProcessor = new CacheFileProcessor(loader);
+    RunnerServer.executionEndingProcessor = new ExecutionEndingProcessor();
+    RunnerServer.executionStartingProcessor = new ExecutionStartingProcessor();
+    RunnerServer.refactorProcessor = new RefactorProcessor();
+    RunnerServer.scenarioExecutionEndingProcessor =
+      new ScenarioExecutionEndingProcessor();
+    RunnerServer.scenarioExecutionStartingProcessor =
+      new ScenarioExecutionStartingProcessor();
+    RunnerServer.specExecutionEndingProcessor =
+      new SpecExecutionEndingProcessor();
+    RunnerServer.specExecutionStartingProcessor =
+      new SpecExecutionStartingProcessor();
+    RunnerServer.stepExecutionEndingProcessor =
+      new StepExecutionEndingProcessor();
+    RunnerServer.stepExecutionProcessor = new StepExecutionProcessor();
+    RunnerServer.stepExecutionStartingProcessor =
+      new StepExecutionStartingProcessor();
+    RunnerServer.stepNameProcessor = new StepNameProcessor();
+    RunnerServer.stepPositionsProcessor = new StepPositionsProcessor();
+    RunnerServer.stubImplementationCodeProcessor =
+      new StubImplementationCodeProcessor();
+    RunnerServer.validationProcessor = new ValidationProcessor();
+  }
 
   public validateStep(
     call: SUC<StepValidateRequest, StepValidateResponse>,
@@ -85,7 +125,9 @@ export default class RunnerServer implements IRunnerServer {
     try {
       callback(
         null,
-        validationProcessor.process(call.request as StepValidateRequest),
+        RunnerServer.validationProcessor.process(
+          call.request as StepValidateRequest,
+        ),
       );
     } catch (error) {
       callback(createRpcError(error as Error), null);
@@ -115,7 +157,7 @@ export default class RunnerServer implements IRunnerServer {
     call: SUC<ExecutionStartingRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    executionStartingProcessor
+    RunnerServer.executionStartingProcessor
       .process(call.request as ExecutionStartingRequest)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -134,7 +176,7 @@ export default class RunnerServer implements IRunnerServer {
   }
 
   public startSpecExecution(call: SUC<SPESR, ESR>, callback: sUD<ESR>): void {
-    specExecutionStartingProcessor
+    RunnerServer.specExecutionStartingProcessor
       .process(call.request as SPESR)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -156,14 +198,14 @@ export default class RunnerServer implements IRunnerServer {
     call: SUC<SCESR, ESR>,
     callback: sUD<ESR>,
   ): void {
-    scenarioExecutionStartingProcessor
+    RunnerServer.scenarioExecutionStartingProcessor
       .process(call.request as SCESR)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public startStepExecution(call: SUC<STESR, ESR>, callback: sUD<ESR>): void {
-    stepExecutionStartingProcessor
+    RunnerServer.stepExecutionStartingProcessor
       .process(call.request as STESR)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -173,14 +215,14 @@ export default class RunnerServer implements IRunnerServer {
     call: SUC<ExecuteStepRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    stepExecutionProcessor
+    RunnerServer.stepExecutionProcessor
       .process(call.request as ExecuteStepRequest)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishStepExecution(call: SUC<STEER, ESR>, callback: sUD<ESR>): void {
-    stepExecutionEndingProcessor
+    RunnerServer.stepExecutionEndingProcessor
       .process(call.request as STEER)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -190,14 +232,14 @@ export default class RunnerServer implements IRunnerServer {
     call: SUC<SCEER, ESR>,
     callback: sUD<ESR>,
   ): void {
-    scenarioExecutionEndingProcessor
+    RunnerServer.scenarioExecutionEndingProcessor
       .process(call.request as SCEER)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
   }
 
   public finishSpecExecution(call: SUC<SPEER, ESR>, callback: sUD<ESR>): void {
-    specExecutionEndingProcessor
+    RunnerServer.specExecutionEndingProcessor
       .process(call.request as SPEER)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -207,7 +249,7 @@ export default class RunnerServer implements IRunnerServer {
     call: SUC<ExecutionEndingRequest, ESR>,
     callback: sUD<ESR>,
   ): void {
-    executionEndingProcessor
+    RunnerServer.executionEndingProcessor
       .process(call.request as ExecutionEndingRequest)
       .then((res) => callback(null, res))
       .catch((error: Error) => callback(createRpcError(error), null));
@@ -218,7 +260,7 @@ export default class RunnerServer implements IRunnerServer {
     callback: sUD<Empty>,
   ): void {
     try {
-      cacheFileProcessor.process(call.request as CacheFileRequest);
+      RunnerServer.cacheFileProcessor.process(call.request as CacheFileRequest);
       callback(null, new Empty());
     } catch (error) {
       callback(createRpcError(error as Error), null);
@@ -232,7 +274,7 @@ export default class RunnerServer implements IRunnerServer {
     try {
       callback(
         null,
-        stepNameProcessor.process(call.request as StepNameRequest),
+        RunnerServer.stepNameProcessor.process(call.request as StepNameRequest),
       );
     } catch (error) {
       callback(createRpcError(error as Error), null);
@@ -274,7 +316,9 @@ export default class RunnerServer implements IRunnerServer {
     try {
       callback(
         null,
-        stepPositionsProcessor.process(call.request as StepPositionsRequest),
+        RunnerServer.stepPositionsProcessor.process(
+          call.request as StepPositionsRequest,
+        ),
       );
     } catch (error) {
       callback(createRpcError(error as Error), null);
@@ -302,7 +346,7 @@ export default class RunnerServer implements IRunnerServer {
     try {
       callback(
         null,
-        stubImplementationCodeProcessor.process(
+        RunnerServer.stubImplementationCodeProcessor.process(
           call.request as StubImplementationCodeRequest,
         ),
       );
@@ -318,7 +362,7 @@ export default class RunnerServer implements IRunnerServer {
     try {
       callback(
         null,
-        refactorProcessor.process(call.request as RefactorRequest),
+        RunnerServer.refactorProcessor.process(call.request as RefactorRequest),
       );
     } catch (error) {
       callback(createRpcError(error as Error), null);
