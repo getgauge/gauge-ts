@@ -2,6 +2,7 @@
 import { Server, ServerCredentials } from "@grpc/grpc-js";
 import RunnerServer from "./RunnerServer";
 import { RunnerService } from "./gen/services_grpc_pb";
+import StaticLoader from "./loaders/StaticLoader";
 
 let server: Server | null = null;
 
@@ -10,6 +11,7 @@ export const start = (host = "127.0.0.1:0") => {
     console.log("Server is already running.");
     throw new Error("Server is already running.");
   }
+  new StaticLoader().loadImplementations();
   server = new Server();
   server.addService(RunnerService, new RunnerServer());
   let port: number | null = null;
