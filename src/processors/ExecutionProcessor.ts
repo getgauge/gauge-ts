@@ -18,10 +18,6 @@ export class ExecutionProcessor {
     method: CommonFunction,
     params: unknown[],
   ): Promise<void> {
-    if (Util.isAsync(method)) {
-      await method.apply(instance, params);
-    } else {
-      method.apply(instance, params);
-    }
+    await method.apply(instance, params);
   }
 }

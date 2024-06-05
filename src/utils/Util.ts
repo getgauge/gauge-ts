@@ -103,10 +103,6 @@ export class Util {
     return fileName;
   }
 
-  public static isAsync(m: CommonFunction): boolean {
-    return m instanceof (async () => {}).constructor;
-  }
-
   public static getUniqueScreenshotFileName(): string {
     const dir = (process.env.gauge_screenshots_dir as string) ?? "";
 
