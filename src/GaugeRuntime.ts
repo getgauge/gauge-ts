@@ -4,15 +4,15 @@ import RunnerServer from "./RunnerServer";
 import { RunnerService } from "./gen/services_grpc_pb";
 import StaticLoader from "./loaders/StaticLoader";
 
-let server: Server | null = null;
+let serverInstance: Server | null = null;
 
-export const start = (host = "127.0.0.1:0", loader = new StaticLoader()) => {
-  if (server) {
-    console.log("Server is already running.");
-    throw new Error("Server is already running.");
-  }
-  server = new Server();
-  server.addService(RunnerService, new RunnerServer(loader));
+export const start = (
+  host = "127.0.0.1:0",
+  server = new Server(),
+  runnerServer = new RunnerServer(new StaticLoader()),
+) => {
+  serverInstance = server;
+  server.addService(RunnerService, runnerServer);
   let port: number | null = null;
   server.bindAsync(
     host,
@@ -27,16 +27,16 @@ export const start = (host = "127.0.0.1:0", loader = new StaticLoader()) => {
   );
 };
 
-export const stop = (): void => {
-  if (!server) {
+export const stop = (server = serverInstance): void => {
+  if (!serverInstance) {
     console.debug("Server is not running.");
     return;
   }
-  server.tryShutdown((err) => {
+  server?.tryShutdown((err) => {
     if (err) {
       console.error("Error shutting down the server:", err);
     } else {
-      server = null;
+      serverInstance = null;
     }
   });
 };

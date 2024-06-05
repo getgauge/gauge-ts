@@ -7,6 +7,7 @@ import * as grpc from "@grpc/grpc-js";
 import type { ServerErrorResponse } from "@grpc/grpc-js/build/src/server-call";
 import { mockProcessExit } from "jest-mock-process";
 import { start, stop } from "../src/GaugeRuntime";
+import RunnerServer from "../src/RunnerServer";
 import {
   CacheFileRequest as CFReq,
   type ExecutionStatusResponse as ESR,
@@ -70,7 +71,7 @@ describe("RunnerServer", () => {
   beforeAll(() => {
     loader = new StaticLoader();
     jest.spyOn(loader, "loadImplementations").mockImplementation();
-    start(host, loader);
+    start(host, new Server(), new RunnerServer(loader));
     client = new RunnerClient(host, grpc.credentials.createInsecure());
   });
 
