@@ -18,13 +18,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bugdiver/gauge-ts.git"
+    "url": "git+https://github.com/getgauge/gauge-ts.git"
   },
   "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
-  "author": "BugDiver <vinayshankar00@gmail.com>",
+  "author": "Gauge <getgauge@outlook.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/bugdiver/gauge-ts/issues"
+    "url": "https://github.com/getgauge/gauge-ts/issues"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.10.8",
