@@ -11,7 +11,6 @@ import {
   BeforeStep,
   BeforeSuite,
   ContinueOnFailure,
-  CustomScreenGrabber,
   CustomScreenshotWriter,
   Step,
 } from "../../src/public/decorators";
@@ -137,24 +136,6 @@ describe("decoators", () => {
 
       AfterStep()(new Object(), "", { value: impl });
       expect(hookRegistry.get(HookType.AfterStep, []).length).toBe(1);
-    });
-  });
-
-  describe("CustomScreenGrabber", () => {
-    it("should add screen grabber function and give the deprecation warning", async () => {
-      const impl = () => {
-        return new Uint8Array();
-      };
-      let warning = "";
-
-      console.warn = jest.fn().mockImplementation((...str) => {
-        warning = str as unknown as string;
-      });
-      CustomScreenGrabber()(new Object(), "", { value: impl });
-      const file = await Screenshot.capture();
-
-      expect(file).toContain(".png");
-      expect(warning).not.toBe("");
     });
   });
 

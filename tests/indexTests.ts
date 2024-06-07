@@ -13,7 +13,6 @@ describe("gaauge-ts", () => {
     expect(gaugeTs.AfterSpec).toBeInstanceOf(Function);
     expect(gaugeTs.AfterSuite).toBeInstanceOf(Function);
 
-    expect(gaugeTs.CustomScreenGrabber).toBeInstanceOf(Function);
     expect(gaugeTs.CustomScreenshotWriter).toBeInstanceOf(Function);
 
     expect(gaugeTs.ExecutionContext).toBeDefined();
