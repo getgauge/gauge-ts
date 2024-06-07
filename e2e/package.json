@@ -1,0 +1,17 @@
+{
+  "name": "e2e",
+  "description": "Starter template for writing TypeScript tests for Gauge",
+  "scripts": {
+    "test": "gauge run specs"
+  },
+  "dependencies": {
+    "gauge-ts": "*",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  },
+  "devDependencies": {
+    "@getgauge/cli": "latest",
+    "@types/node": "latest",
+    "taiko": "^1.4.0"
+  }
+}

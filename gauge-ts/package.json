@@ -1,0 +1,53 @@
+{
+  "name": "gauge-ts",
+  "version": "0.3.0",
+  "description": "Typescript runner for Gauge",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "lint": "biome lint . --apply",
+    "check": "biome ci .",
+    "format": "biome format . --write",
+    "prebuild": "npm run lint",
+    "preclean:build": "rimraf dist deploy artifacts",
+    "build": "tsc",
+    "clean:build": "npm run build",
+    "postbuild": "copyup -a ./src/gen/** ./dist",
+    "precommit": " npm run format && npm run lint",
+    "test": "jest --verbose --detectOpenHandles --forceExit",
+    "gen-proto": "sh genproto.sh",
+    "prepublishOnly": "tsc",
+    "prepare": "husky"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/getgauge/gauge-ts.git"
+  },
+  "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
+  "author": "Gauge <getgauge@outlook.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/getgauge/gauge-ts/issues"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.10.8",
+    "google-protobuf": "^3.13.0",
+    "ts-node": "^10.9.0",
+    "typescript": "^5.0.4",
+    "uuid": "^8.3.0"
+  },
+  "devDependencies": {
+    "copyfiles": "2.4.1",
+    "@biomejs/biome": "1.7.3",
+    "@types/google-protobuf": "^3.7.3",
+    "@types/jest": "^24.9.1",
+    "@types/uuid": "^8.3.0",
+    "grpc_tools_node_protoc_ts": "^5.3.3",
+    "grpc-tools": "^1.12.4",
+    "husky": "^9.0.11",
+    "jest": "^29.7.0",
+    "jest-mock-process": "^2.0.0",
+    "jest-silent-reporter": "^0.6.0",
+    "ts-jest": "^29.1.4"
+  }
+}

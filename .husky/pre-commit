@@ -1,1 +1,1 @@
-npm run precommit
+npm run precommit -w gauge-ts

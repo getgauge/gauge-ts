@@ -10,3 +10,6 @@ deploy/
 artifacts/
 *.tgz
 .zed
+.gauge
+logs
+reports
