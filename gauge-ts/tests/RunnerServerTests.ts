@@ -6,7 +6,7 @@ import { Server, type StatusObject } from "@grpc/grpc-js";
 import * as grpc from "@grpc/grpc-js";
 import type { ServerErrorResponse } from "@grpc/grpc-js/build/src/server-call";
 import { mockProcessExit } from "jest-mock-process";
-import { start, stop } from "../src/GaugeRuntime";
+import { start, stop } from "../src/RunnerServer";
 import RunnerServer from "../src/RunnerServer";
 import {
   CacheFileRequest as CFReq,
