@@ -8,7 +8,7 @@
     "preclean:build": "rimraf dist deploy artifacts",
     "build": "tsc",
     "clean:build": "npm run build",
-    "postbuild": "copyup -a ./src/gen/** ./dist",
+    "postbuild": "copyfiles -f \"./src/gen/**\" \"./dist/gen\"",
     "package": "./build.sh package",
     "precommit": " npm run format && npm run lint",
     "test": "jest --verbose --detectOpenHandles --forceExit",
@@ -19,7 +19,12 @@
     "type": "git",
     "url": "git+https://github.com/getgauge/gauge-ts.git"
   },
-  "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
+  "keywords": [
+    "gauge",
+    "Acceptance Test",
+    "Typescript",
+    "Automation"
+  ],
   "author": "Gauge <getgauge@outlook.com>",
   "license": "MIT",
   "bugs": {

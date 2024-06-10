@@ -19,6 +19,7 @@ $tasks.Add('package', @{
         description = "Generate gauge-ts plugin zip file";
         script      = {
             Invoke-Command $tasks.Get_Item("build").script
+            npm run clean:build
             mkdir -p deploy
             Copy-Item launcher.* deploy
             Copy-Item ts.json deploy
