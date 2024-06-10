@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES6",
-    "lib": [
-      "esnext"
-    ],
+    "lib": ["esnext"],
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
@@ -11,11 +9,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": [
-    "tests/**/*",
-    "gen/**/*"
-  ],
-  "exclude": [
-    "node_modules/"
-  ]
+  "include": ["tests/**/*", "gen/**/*"],
+  "exclude": ["node_modules/"]
 }

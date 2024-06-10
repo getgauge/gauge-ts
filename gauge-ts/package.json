@@ -5,10 +5,6 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "lint": "biome lint . --apply",
-    "check": "biome ci .",
-    "format": "biome format . --write",
-    "prebuild": "npm run lint",
     "preclean:build": "rimraf dist deploy artifacts",
     "build": "tsc",
     "clean:build": "npm run build",

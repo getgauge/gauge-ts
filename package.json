@@ -1,12 +1,13 @@
 {
   "name": "gauge",
-  "workspaces": [
-    "gauge-ts",
-    "e2e"
-  ],
+  "workspaces": ["gauge-ts", "e2e"],
   "description": "Gauge ts workspace",
   "scripts": {
     "build": "npm run build --workspaces --if-present",
-    "test": "npm test --workspaces --if-present"
+    "test": "npm test --workspaces --if-present",
+    "format": "biome format . --write",
+    "lint": "biome lint . --apply",
+    "precommit": "npm run format && npm run lint",
+    "check": "biome check ."
   }
 }
