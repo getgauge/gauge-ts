@@ -13,6 +13,7 @@
     "build": "tsc",
     "clean:build": "npm run build",
     "postbuild": "copyup -a ./src/gen/** ./dist",
+    "package": "./build.sh package",
     "precommit": " npm run format && npm run lint",
     "test": "jest --verbose --detectOpenHandles --forceExit",
     "gen-proto": "sh genproto.sh",

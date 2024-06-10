@@ -37,11 +37,10 @@ jobs:
       - run: npm ci
 
       - name: Create artifact
-        working-directory: gauge-ts
         run: |
-          ./build.sh package
-          npm pack
-          mv ./gauge-ts-*.tgz ./artifacts
+          npm run package -w gauge-ts
+          npm pack -w gauge-ts
+          mv ./gauge-ts-*.tgz ./gauge-ts/artifacts
 
       - name: Upload artifacts for local
         uses: actions/upload-artifact@v1
