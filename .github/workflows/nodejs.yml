@@ -71,7 +71,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: gauge-ts
-          path: ./artifacts
+          path: ./gauge-ts/artifacts
 
   e2e-test:
     needs: build-artifacts
