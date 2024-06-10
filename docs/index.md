@@ -1,6 +1,6 @@
 # Gauge Typescript
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/BugDiver/gauge-ts/blob/master/LICENSE)
-<a class="github-button" href="https://github.com/bugdiver/gauge-ts" data-icon="octicon-star" data-show-count="true" aria-label="Star bugdiver/gauge-ts on GitHub">Star</a>
+<a class="github-button" href="https://github.com/getgauge/gauge-ts" data-icon="octicon-star" data-show-count="true" aria-label="Star bugdiver/gauge-ts on GitHub">Star</a>
 
 A [typescript](https://www.typescriptlang.org/) runner for [Gauge](https://gauge.org).
 
@@ -33,7 +33,7 @@ To install the first component
 gauge install ts
 ```
 
-or download the `zip` file from [Github Release](https://github.com/BugDiver/gauge-ts/releases) and run
+or download the `zip` file from [Github Release](https://github.com/getgauge/gauge-ts/releases) and run
 
 ```
 gauge install ts -f {location_of_zip_file}
@@ -482,14 +482,14 @@ Gauge-Ts follows the protocol and implements the apis required by gauge to suppo
 
 ## Contact & Support
 
-- Create a [Github issue](https://github.com/bugdiver/gauge-ts/issues) for bug reports, feature requests, or questions
-- Add a ⭐️ [star on GitHub](https://github.com/bugdiver/gauge-ts) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fbugdiver%2Fgauge-ts&via=bugdiverr&hashtags=getgauge,automation,bdd,typescript) to support the project!
+- Create a [Github issue](https://github.com/getgauge/gauge-ts/issues) for bug reports, feature requests, or questions
+- Add a ⭐️ [star on GitHub](https://github.com/getgauge/gauge-ts)
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/bugdiver/gauge-ts/blob/master/LICENSE) for details.
 
-Copyright (c) Vinay Shankar Shukla ([@BugDiver](https://github.com/bugdiver))
+Copyright (c) Vinay Shankar Shukla (Gauge](https://github.com/getgauge))
 
 <!-- GitHub Buttons -->
 
