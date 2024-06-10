@@ -91,6 +91,7 @@ jobs:
       - name: npm dependencies
         run: |
           npm ci
+          npm run build
 
       - uses: actions/download-artifact@v1
         with:
