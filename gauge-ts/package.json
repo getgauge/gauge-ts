@@ -19,12 +19,7 @@
     "type": "git",
     "url": "git+https://github.com/getgauge/gauge-ts.git"
   },
-  "keywords": [
-    "gauge",
-    "Acceptance Test",
-    "Typescript",
-    "Automation"
-  ],
+  "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
   "author": "Gauge <getgauge@outlook.com>",
   "license": "MIT",
   "bugs": {
