@@ -19,7 +19,7 @@ jobs:
 
       - name: npm install and test
         run: |
-          npm install
+          npm ci
           npm test -w gauge-ts
         env:
           CI: true
@@ -43,7 +43,7 @@ jobs:
           name: gauge-ts
           path: ./artifacts
 
-  sample-project:
+  e2e-test:
     needs: build-artifacts
     strategy:
       matrix:
@@ -52,14 +52,15 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: BugDiver/setup-gauge@master
-        with:
-          gauge-version: master
-
+      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
+      - name: npm dependencies
+        run: |
+          npm ci
 
       - uses: actions/download-artifact@v1
         with:
@@ -68,18 +69,10 @@ jobs:
 
       - name: Install gauge-ts
         run: |
-          gauge install ts -f ./artifacts/gauge-ts-*.zip
+          npx gauge install ts -f ./artifacts/gauge-ts-*.zip
         shell: bash
 
-      - name: Initialize a sample project
+      - name: Run functional tests
         run: |
-          mkdir sample
-          cd sample
-          gauge init ts
-          npm install ../artifacts/gauge-ts-*.tgz
+          npm run test -w e2e
         shell: bash
-
-      - name: Run sample project
-        run: |
-          cd sample
-          gauge run specs
