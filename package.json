@@ -3,11 +3,16 @@
   "workspaces": ["gauge-ts", "e2e"],
   "description": "Gauge ts workspace",
   "scripts": {
+    "prepare": "husky",
     "build": "npm run build --workspaces --if-present",
     "test": "npm test --workspaces --if-present",
-    "format": "biome format . --write",
-    "lint": "biome lint . --apply",
+    "format": "npx @biomejs/biome format . --write",
+    "lint": "npx @biomejs/biome lint . --write",
     "precommit": "npm run format && npm run lint",
-    "check": "biome check ."
+    "check": "npx @biomejs/biome check ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.8.0",
+    "husky": "^9.0.11"
   }
 }

@@ -13,8 +13,7 @@
     "precommit": " npm run format && npm run lint",
     "test": "jest --verbose --detectOpenHandles --forceExit",
     "gen-proto": "sh genproto.sh",
-    "prepublishOnly": "tsc",
-    "prepare": "husky"
+    "prepublishOnly": "tsc"
   },
   "repository": {
     "type": "git",
