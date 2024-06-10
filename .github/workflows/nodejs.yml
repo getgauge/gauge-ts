@@ -34,10 +34,9 @@ jobs:
         with:
           node-version: "20.x"
 
-      - run: npm ci
-
       - name: Create artifact
         run: |
+          npm ci
           npm run package -w gauge-ts
           npm pack -w gauge-ts
           mv ./gauge-ts-*.tgz ./gauge-ts/artifacts
