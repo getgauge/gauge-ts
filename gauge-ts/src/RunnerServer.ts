@@ -1,5 +1,8 @@
 import { EOL } from "node:os";
 import { sep } from "node:path";
+import { Server, ServerCredentials } from "@grpc/grpc-js";
+import { RunnerService } from "./gen/services_grpc_pb";
+
 import type {
   ServerUnaryCall as SUC,
   sendUnaryData as sUD,
@@ -43,12 +46,10 @@ import type {
   SuiteDataStoreInitRequest,
 } from "./gen/messages_pb";
 
-import { stop } from "./GaugeRuntime";
-
 import type { IRunnerServer } from "./gen/services_grpc_pb";
 import { ProtoExecutionResult } from "./gen/spec_pb";
 import { ImplLoader } from "./loaders/ImplLoader";
-import type StaticLoader from "./loaders/StaticLoader";
+import StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
 import { CacheFileProcessor } from "./processors/CacheFileProcessor";
 import { ExecutionEndingProcessor } from "./processors/ExecutionEndingProcessor";
@@ -402,3 +403,40 @@ function createRpcError(error: Error): RpcError {
     details: `${error.message}${EOL}${error.stack ?? ""}`,
   };
 }
+
+let serverInstance: Server | null = null;
+
+export const start = (
+  host = "127.0.0.1:0",
+  server = new Server(),
+  runnerService = new RunnerServer(new StaticLoader()),
+) => {
+  serverInstance = server;
+  server.addService(RunnerService, runnerService);
+  let port: number | null = null;
+  server.bindAsync(
+    host,
+    ServerCredentials.createInsecure(),
+    (err: Error | null, boundPort: number) => {
+      if (err) {
+        throw err;
+      }
+      port = boundPort;
+      console.debug(`Listening on port:${port}`);
+    },
+  );
+};
+
+export const stop = (server = serverInstance): void => {
+  if (!serverInstance) {
+    console.debug("Server is not running.");
+    return;
+  }
+  server?.tryShutdown((err) => {
+    if (err) {
+      console.error("Error shutting down the server:", err);
+    } else {
+      serverInstance = null;
+    }
+  });
+};

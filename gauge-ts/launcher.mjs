@@ -21,7 +21,7 @@ function hasModule(name) {
 }
 
 function startCommand() {
-  const script = `"import { start } from 'gauge-ts/dist/GaugeRuntime'; start();"`;
+  const script = `"import { start } from 'gauge-ts/dist/RunnerServer'; start();"`;
 
   const opts = [
     "ts-node",
