@@ -7,7 +7,7 @@ jobs:
     if: github.event.deployment.environment == 'production'
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: '${{ ecrets.GAUGEBOT_GITHUB_TOKEN }}'
+      GITHUB_TOKEN: '${{ secrets.GAUGEBOT_GITHUB_TOKEN }}'
       NPM_TOKEN: '${{ secrets.NPM_TOKEN }}'
       CI: true
 
