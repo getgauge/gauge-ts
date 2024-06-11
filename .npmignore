@@ -12,7 +12,7 @@ tests
 jest*
 TODO*
 ts*
-launcher.js
+launcher.mjs
 azure*
 .gitmodules
 *.ps1
