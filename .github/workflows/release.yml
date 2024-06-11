@@ -24,8 +24,8 @@ jobs:
           git config --global user.name "$(git --no-pager log --format=format:'%an' -n 1)"
           git config --global user.email "$(git --no-pager log --format=format:'%ae' -n 1)"
 
-      - run: Install dependencies
-          npm install
+      - name: Install dependencies
+        run: npm install
 
       - name: Package
         working-directory: gauge-ts
