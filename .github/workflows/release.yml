@@ -7,7 +7,7 @@ jobs:
     if: github.event.deployment.environment == 'production'
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+      GITHUB_TOKEN: '${{ ecrets.GAUGEBOT_GITHUB_TOKEN }}'
       NPM_TOKEN: '${{ secrets.NPM_TOKEN }}'
       CI: true
 
@@ -41,25 +41,15 @@ jobs:
           cd artifacts
           version=$(ls gauge-ts* | head -1 | sed "s/\.[^\.]*$//" | sed "s/gauge-ts-//" | sed "s/-[a-z]*\.[a-z0-9_]*$//");
           if [ -z "$version" ]; then
-              echo "Gauge version is not set"
+              echo "version is not set"
               exit 1
           fi
+          echo "VERSION=$version" >> $GITHUB_ENV
 
           echo -e "gauge-ts v$version\n\n" > desc.txt
           release_description=$(ruby -e "$(curl -sSfL https://github.com/getgauge/gauge/raw/master/build/create_release_text.rb)" getgauge gauge-ts)
           echo "$release_description" >> desc.txt
-          echo "Creating new draft for release v$version"
-
-          gh release create "v$version" -F ./desc.txt
-          sleep 10
-
-          echo "Start uploading assets..."
-          for i in `ls $artifacts`; do
-              gh release upload "v$version" $i
-          done
-
-          cat desc.txt
-          rm -rf desc.txt
+          gh release create --title "Gauge Typescript v${version}" --notes-file ./desc.txt "v${version}" gauge-ts*
 
       - name: Deploy npm
         working-directory: gauge-ts
@@ -67,3 +57,12 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish --access=public
+
+      - name: Update metadata in gauge-repository
+        run: |
+          git clone https://github.com/getgauge/gauge-repository.git
+          cd gauge-repository
+          python update_metadata.py ts $VERSION
+          commit_message=$(echo -e "Update ts to v$VERSION")
+          git commit -am "$commit_message"
+          git push "https://$GITHUB_ACTOR:$GITHUB_TOKEN@github.com/getgauge/gauge-repository.git" master
