@@ -50,7 +50,7 @@ jobs:
           echo "$release_description" >> desc.txt
           echo "Creating new draft for release v$version"
 
-          gh release create "v$version" ./desc.txt
+          gh release create "v$version" -F ./desc.txt
           sleep 10
 
           echo "Start uploading assets..."
