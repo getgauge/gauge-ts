@@ -26,7 +26,7 @@
     "url": "https://github.com/getgauge/gauge-ts/issues"
   },
   "dependencies": {
-    "@grpc/grpc-js": "^1.10.8",
+    "@grpc/grpc-js": "^1.10.9",
     "google-protobuf": "^3.13.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.4",
