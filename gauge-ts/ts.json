@@ -16,6 +16,6 @@
     "linux": ["./launcher.mjs", "--start"],
     "windows": ["launcher.bat", "--start"]
   },
-  "version": "0.3.0",
+  "version": "0.3.1",
   "gRPCSupport": true
 }
