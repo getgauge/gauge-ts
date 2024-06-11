@@ -9,3 +9,7 @@ yarn-error.log*
 deploy/
 artifacts/
 *.tgz
+.zed
+.gauge
+logs
+reports

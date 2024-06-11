@@ -1,9 +1,6 @@
 # Gauge Typescript
-[![NPM](https://img.shields.io/npm/v/gauge-ts.svg?style=flat-square)](https://www.npmjs.com/package/gauge-ts)
-[![codecov](https://codecov.io/gh/BugDiver/gauge-ts/branch/master/graph/badge.svg)](https://codecov.io/gh/BugDiver/gauge-ts)
-[![Build Status](https://dev.azure.com/bugdiver/gauge-ts/_apis/build/status/BugDiver.gauge-ts?branchName=master)](https://dev.azure.com/bugdiver/gauge-ts/_build/latest?definitionId=1&branchName=master)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/BugDiver/gauge-ts/blob/master/LICENSE)
-<a class="github-button" href="https://github.com/bugdiver/gauge-ts" data-icon="octicon-star" data-show-count="true" aria-label="Star bugdiver/gauge-ts on GitHub">Star</a>
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://github.com/BugDiver/gauge-ts/blob/master/LICENSE)
+<a class="github-button" href="https://github.com/getgauge/gauge-ts" data-icon="octicon-star" data-show-count="true" aria-label="Star bugdiver/gauge-ts on GitHub">Star</a>
 
 A [typescript](https://www.typescriptlang.org/) runner for [Gauge](https://gauge.org).
 
@@ -36,7 +33,7 @@ To install the first component
 gauge install ts
 ```
 
-or download the `zip` file from [Github Release](https://github.com/BugDiver/gauge-ts/releases) and run
+or download the `zip` file from [Github Release](https://github.com/getgauge/gauge-ts/releases) and run
 
 ```
 gauge install ts -f {location_of_zip_file}
@@ -44,7 +41,7 @@ gauge install ts -f {location_of_zip_file}
 
 ## Create a Project
 
-Once you have installed the `gauge-ts` plugin, you can create a sample app. To verify your installation run 
+Once you have installed the `gauge-ts` plugin, you can create a sample app. To verify your installation run
 
 ```bash
 gauge -v
@@ -76,7 +73,7 @@ NOTE: All the classes containing step/hook implementations needs to be exported 
 **Syntax**
 
 ```javascript
-import {Step} from 'gauge-ts';
+import { Step } from 'gauge-ts';
 export default class StepImpl {
 
     @Step("Hello <world>")
@@ -90,7 +87,7 @@ export default class StepImpl {
 
 **aliases**
 ```javascript
-import {Step} from 'gauge-ts';
+import { Step } from 'gauge-ts';
 export default class StepImpl {
 
     @Step(["Hello <world>", "Hi <world>"])
@@ -107,7 +104,7 @@ export default class StepImpl {
 #### Suite Hooks
 
 ```javascript
-import {BeforeSuite, AfterSuite} from 'gauge-ts';
+import { BeforeSuite, AfterSuite } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeSuite()
@@ -126,7 +123,7 @@ export default class StepImpl {
 #### Spec Hooks
 
 ```javascript
-import {BeforeSpec, AfterSpec} from 'gauge-ts';
+import { BeforeSpec, AfterSpec } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeSpec()
@@ -145,7 +142,7 @@ export default class StepImpl {
 #### Scenario Hooks
 
 ```javascript
-import {BeforeScenario, AfterScenario} from 'gauge-ts';
+import { BeforeScenario, AfterScenario } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeScenario()
@@ -164,7 +161,7 @@ export default class StepImpl {
 #### Step Hooks
 
 ```javascript
-import {BeforeStep, AfterStep} from 'gauge-ts';
+import { BeforeStep, AfterStep } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeStep()
@@ -182,11 +179,11 @@ export default class StepImpl {
 
 #### Tagged hooks
 
-Gauge allows to control the execution by running filtered hooks using `tags`. 
+Gauge allows to control the execution by running filtered hooks using `tags`.
 
 
 ```javascript
-import {BeforeSpec} from 'gauge-ts';
+import { BeforeSpec } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeSpec({tags: ["ready"]})
@@ -201,7 +198,7 @@ You can use operators as well to filter hooks
 
 
 ```javascript
-import {BeforeSpec, BeforeScenario, Operator} from 'gauge-ts';
+import { BeforeSpec, BeforeScenario, Operator } from 'gauge-ts';
 export default class StepImpl {
 
     @BeforeSpec({tags: ["ready", "done"], operator: Operator.And})
@@ -225,7 +222,11 @@ To get additional information about the current specification, scenario and step
 
 
 ```javascript
-import {BeforeStep, AfterStep, ExecutionContext, Scenario, StepInfo} from 'gauge-ts';
+import {
+  BeforeStep, AfterStep,
+  ExecutionContext, Scenario
+  , StepInfo } from 'gauge-ts';
+
 export default class StepImpl {
 
     @BeforeStep()
@@ -260,7 +261,7 @@ WARNING: `SuiteStore` is not advised to be used when executing specs in parallel
 
 ```javascript
 // import factory
-import {DataStoreFactory, DataStore} from 'gauge-ts';
+import { DataStoreFactory, DataStore } from 'gauge-ts';
 
 // Adding value
 let suiteStore: DataStore = DataStoreFactory.getSuiteDataStore();
@@ -278,7 +279,7 @@ This data store keeps values added to it during the life cycle of the specificat
 
 ```javascript
 // import factory
-import {DataStoreFactory, DataStore} from 'gauge-ts';
+import { DataStoreFactory, DataStore } from 'gauge-ts';
 
 // Adding value
 let specStore: DataStore = DataStoreFactory.getSpecDataStore();
@@ -296,7 +297,7 @@ This data store keeps values added to it in the life cycle of the scenario execu
 
 ```javascript
 // import factory
-import {DataStoreFactory, DataStore} from 'gauge-ts';
+import { DataStoreFactory, DataStore } from 'gauge-ts';
 
 // Adding value
 let scenarioStore: DataStore = DataStoreFactory.getSpecDataStore();
@@ -315,7 +316,7 @@ If you need to take CustomScreenshots (using webdriver for example) because you 
 
 ```javascript
 // import CustomScreenshotGrabber
-import {CustomScreenGrabber} from 'gauge-ts';
+import { CustomScreenGrabber } from 'gauge-ts';
 
 export default class ScreenGrabber {
     @CustomScreenGrabber()
@@ -357,7 +358,7 @@ These messages will appear under steps in the execution reports.
 
 ```javascript
 // import the class
-import {Gauge} from 'gauge-ts';
+import { Gauge } from 'gauge-ts';
 
 // write messages
 Gauge.writeMessage("Custom message for report");
@@ -370,7 +371,7 @@ Custom screenshot can be added to execution reports using the below API from the
 These screenshots will appear under steps in the execution reports.
 ```javascript
 // import the class
-import {Gauge} from 'gauge-ts';
+import { Gauge } from 'gauge-ts';
 
 // write messages
 await Gauge.captureScreenshot();
@@ -383,7 +384,7 @@ The default behavior in gauge is to break execution on the first failure in a st
 To address that requirement, gauge provides a way for language runners to mark steps as recoverable, depending on whether the step implementation asks for it explicitly. Each language runner uses different syntax, depending on the language idioms to allow a step implementation to be marked to continue on failure.
 ```javascript
 // import type
-import {ContinueOnFailure} from 'gauge-ts';
+import { ContinueOnFailure } from 'gauge-ts';
 
 // The ``@ContinueOnFailure`` decorator tells Gauge to continue executing other
 // steps even if the current step fails.
@@ -402,7 +403,7 @@ Continue on Failure can take an optional parameter to specify the list of error 
 
 ```javascript
 // import type
-import {ContinueOnFailure} from 'gauge-ts';
+import { ContinueOnFailure } from 'gauge-ts';
 export default class StepImpl {
     @ContinueOnFailure(['AssertionError', 'CustomError'])
     @Step("hello")
@@ -481,14 +482,14 @@ Gauge-Ts follows the protocol and implements the apis required by gauge to suppo
 
 ## Contact & Support
 
-- Create a [Github issue](https://github.com/bugdiver/gauge-ts/issues) for bug reports, feature requests, or questions
-- Add a ⭐️ [star on GitHub](https://github.com/bugdiver/gauge-ts) or ❤️ [tweet](https://twitter.com/intent/tweet?url=https%3A%2F%2Fgithub.com%2Fbugdiver%2Fgauge-ts&via=bugdiverr&hashtags=getgauge,automation,bdd,typescript) to support the project!
+- Create a [Github issue](https://github.com/getgauge/gauge-ts/issues) for bug reports, feature requests, or questions
+- Add a ⭐️ [star on GitHub](https://github.com/getgauge/gauge-ts)
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/bugdiver/gauge-ts/blob/master/LICENSE) for details.
 
-Copyright (c) Vinay Shankar Shukla ([@BugDiver](https://github.com/bugdiver))
+Copyright (c) Vinay Shankar Shukla (Gauge](https://github.com/getgauge))
 
 <!-- GitHub Buttons -->
 

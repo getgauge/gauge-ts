@@ -11,5 +11,5 @@ curl \
     -H "Authorization: token $GITHUB_TOKEN" \
     -H "Accept: application/vnd.github.ant-man-preview+json" \
     -H "Content-Type: application/json" \
-    https://api.github.com/repos/bugdiver/gauge-ts/deployments \
+    https://api.github.com/repos/getgauge/gauge-ts/deployments \
     --data '{"ref": "main", "required_contexts": [], "environment": "production"}'
