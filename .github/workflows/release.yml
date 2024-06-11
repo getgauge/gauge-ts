@@ -31,7 +31,7 @@ jobs:
       - name: Package
         working-directory: gauge-ts
         run: |
-          npm build
+          npm run build
           ./build.sh package
 
 
