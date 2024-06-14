@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+import { createRequire } from "node:module";
+const require = createRequire(import.meta.url);
+
 const version = process.versions.node.split(".");
 if (Number.parseInt(version[0]) < 20) {
   throw new Error(

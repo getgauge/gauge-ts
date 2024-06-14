@@ -12,6 +12,7 @@
   "devDependencies": {
     "@getgauge/cli": "latest",
     "@types/node": "latest",
-    "taiko": "^1.4.0"
+    "taiko": "^1.4.0",
+    "tsconfig-paths": "^4.2.0"
   }
 }
