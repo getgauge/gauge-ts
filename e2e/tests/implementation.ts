@@ -1,17 +1,21 @@
 import * as assert from "node:assert";
+import VowelCounter from "@lib/VowelCounter";
 import { DataStoreFactory, Step, type Table } from "gauge-ts";
 
 class Implementation {
   static vowelsCount = (word: string): number => {
-    const vowels = DataStoreFactory.getSpecDataStore().get(
-      "vowels",
-    ) as string[];
-    return word.split("").filter((c) => vowels.includes(c)).length;
+    const counter = DataStoreFactory.getSpecDataStore().get(
+      "counter",
+    ) as VowelCounter;
+    return counter.countVowels(word);
   };
 
   @Step("Vowels in English language are <aeiou>.")
   public async listVowels(vowels: string) {
-    DataStoreFactory.getSpecDataStore().put("vowels", vowels.split(""));
+    DataStoreFactory.getSpecDataStore().put(
+      "counter",
+      new VowelCounter(vowels.split("")),
+    );
   }
 
   @Step("The word <gauge> has <3> vowels.")
