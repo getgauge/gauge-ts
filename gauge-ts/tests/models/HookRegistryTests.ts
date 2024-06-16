@@ -99,6 +99,7 @@ describe("HookRegistry", () => {
       );
 
       hookRegistry.setInstanceForMethodsIn(FILE, {});
+      hookRegistry.setInstanceForMethodsIn(FILE_1, {});
       expect(
         hookRegistry.get(HookType.BeforeSuite, [])[0].getInstance(),
       ).toBeDefined();
