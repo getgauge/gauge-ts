@@ -309,6 +309,63 @@ String elementId = scenarioStore.get("element-id") as string;
 
 ```
 
+### Custom Paramter Parsers
+
+* By default gauge-ts tries to convert the spec parameter to primitives (number, boolean), for table parameters gauge-ts will convert paramters
+to `Table` type. gauge-ts also provide a way to customize the paramter parsing.
+If you need to have custom paramters in your step implementations create a paramter parser which should implements methods from `ParamterParser` interface.
+
+Step definition:
+```md
+
+* step with a person parameter type "{\"name\": \"John\", \"age\": 40 }"
+
+```
+
+Step Implementation:
+```javascript
+import { Step } from 'gauge-ts';
+
+export class Person {
+  name: string;
+  age: number;
+  constructor(name: string, age: number) {
+    this.name = name;
+    this.age = age;
+  }
+
+  public isAdult(): boolean {
+    return this.age >= 18;
+  }
+}
+
+export default class Implementation {
+    @Step
+    public async isAdult(person: Person)y {
+      assert.ok(person.isAdult())
+    }
+}
+
+```
+Cusotm ParameterParser:
+```javascript
+
+import { Parameter, ParameterParser } from 'gauge-ts';
+import { Person } from '@lib/Person';
+export default class PersonParameterParser implements ParameterParser {
+
+  public canParse(paramter: Parameter): boolean {
+    return paramter.getValue().startsWith("{") && paramter.getValue().endsWith("}");
+  }
+
+  public parse(parameter: Parameter): Object {
+    const person = JSON.parse(parameter.getValue());
+    return new Person(person.name, person.age);
+  }
+}
+
+```
+
 ### Custom Screenshots
 
 * By default gauge captures the display screen on failure if this feature has been enabled.

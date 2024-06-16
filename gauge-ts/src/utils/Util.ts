@@ -9,6 +9,7 @@ import {
 import { extname, join } from "node:path";
 import { Extension } from "typescript";
 import { v4 } from "uuid";
+import type { ParameterParser } from "../processors/params/ParameterParser";
 
 export type CommonFunction<T = unknown> = (...args: unknown[]) => T;
 export type CommonAsyncFunction<T = unknown> = (
@@ -39,6 +40,13 @@ export class Util {
 
   public static spawn(command: string, args: string[]) {
     return spawnSync(command, args);
+  }
+
+  public static isCustomParameterParser(
+    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
+    object: any,
+  ): object is ParameterParser {
+    return object.canParse && object.parse !== undefined;
   }
 
   public static getListOfFiles() {

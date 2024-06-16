@@ -5,6 +5,7 @@ import { Parameter, ProtoTable, ProtoTableRow } from "../../src/gen/spec_pb";
 import registry from "../../src/models/StepRegistry";
 import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { StepExecutionProcessor } from "../../src/processors/StepExecutionProcessor";
+import type { ParameterParsingChain } from "../../src/processors/params/ParameterParsingChain";
 import { Screenshot } from "../../src/screenshot/Screenshot";
 
 describe("StepExecutionProcessor", () => {
@@ -13,7 +14,12 @@ describe("StepExecutionProcessor", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     Screenshot.capture = jest.fn();
-    processor = new StepExecutionProcessor();
+    const chain = {
+      parse: jest.fn(),
+      canParse: jest.fn(),
+      addCustomParser: jest.fn(),
+    } as unknown as ParameterParsingChain;
+    processor = new StepExecutionProcessor(chain);
   });
 
   describe(".process", () => {

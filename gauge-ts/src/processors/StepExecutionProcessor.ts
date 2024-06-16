@@ -2,20 +2,21 @@ import type {
   ExecuteStepRequest,
   ExecutionStatusResponse,
 } from "../gen/messages_pb";
-import {
-  Parameter,
-  ProtoExecutionResult,
-  type ProtoTable,
-} from "../gen/spec_pb";
+import { ProtoExecutionResult } from "../gen/spec_pb";
 import registry from "../models/StepRegistry";
-import { Table } from "../public/Table";
 import { Screenshot } from "../screenshot/Screenshot";
 import { MessageStore } from "../stores/MessageStore";
 import { ScreenshotStore } from "../stores/ScreenshotStore";
 import type { CommonFunction } from "../utils/Util";
 import { ExecutionProcessor } from "./ExecutionProcessor";
+import type { ParameterParsingChain } from "./params/ParameterParsingChain";
 
 export class StepExecutionProcessor extends ExecutionProcessor {
+  private parsingChain: ParameterParsingChain;
+  constructor(parameterParsingChain: ParameterParsingChain) {
+    super();
+    this.parsingChain = parameterParsingChain;
+  }
   public async process(
     req: ExecuteStepRequest,
   ): Promise<ExecutionStatusResponse> {
@@ -37,11 +38,9 @@ export class StepExecutionProcessor extends ExecutionProcessor {
 
     result.setFailed(false);
     const mi = registry.get(req.getParsedsteptext());
-    const params = req.getParametersList().map((item) => {
-      return this.isTable(item)
-        ? Table.from(item.getTable() as ProtoTable)
-        : item.getValue();
-    });
+    const params = req
+      .getParametersList()
+      .map((p) => this.parsingChain.parse(p));
 
     const method = mi.getMethod() as CommonFunction;
 
@@ -79,13 +78,6 @@ export class StepExecutionProcessor extends ExecutionProcessor {
     result.setScreenshotfilesList(ScreenshotStore.pendingScreenshots());
 
     return result;
-  }
-
-  private isTable(item: Parameter): boolean {
-    return (
-      item.getParametertype() === Parameter.ParameterType.TABLE ||
-      item.getParametertype() === Parameter.ParameterType.SPECIAL_TABLE
-    );
   }
 
   private executionError(message: string): ExecutionStatusResponse {

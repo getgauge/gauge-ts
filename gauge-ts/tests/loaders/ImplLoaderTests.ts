@@ -1,11 +1,19 @@
 import { ImplLoader } from "../../src/loaders/ImplLoader";
+import type { ParameterParsingChain } from "../../src/processors/params/ParameterParsingChain";
 import { Util } from "../../src/utils/Util";
+
+jest.mock("../../src/processors/params/ParameterParsingChain");
 
 describe("ImplLoader", () => {
   let loader: ImplLoader;
-
+  let chain: ParameterParsingChain;
   beforeEach(() => {
-    loader = new ImplLoader();
+    chain = {
+      addCustomParser: jest.fn(),
+      canParse: jest.fn(),
+      parse: jest.fn(),
+    } as unknown as ParameterParsingChain;
+    loader = new ImplLoader(chain);
   });
 
   afterEach(() => {
@@ -43,6 +51,18 @@ describe("ImplLoader", () => {
       });
       await loader.loadImplementations();
       expect(exception).toContain("failed to import");
+    });
+
+    it("shold load custom parameter parser", async () => {
+      Util.getListOfFiles = jest.fn().mockReturnValue(["CustomParser.ts"]);
+      Util.importFile = jest.fn().mockReturnValue({
+        default: function () {
+          this.canParse = jest.fn().mockReturnValue(true);
+          this.parse = jest.fn().mockReturnValue("parsed");
+        },
+      });
+      await loader.loadImplementations();
+      expect(chain.addCustomParser).toHaveBeenCalledWith(expect.any(Object));
     });
   });
 });

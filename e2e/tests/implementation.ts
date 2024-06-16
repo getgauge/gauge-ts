@@ -2,7 +2,9 @@ import * as assert from "node:assert";
 import VowelCounter from "@lib/VowelCounter";
 import { DataStoreFactory, Step, type Table } from "gauge-ts";
 
-class Implementation {
+import type { Person } from "@lib/Person";
+
+export default class Implementation {
   static vowelsCount = (word: string): number => {
     const counter = DataStoreFactory.getSpecDataStore().get(
       "counter",
@@ -30,5 +32,11 @@ class Implementation {
       const count = row.getCell("Vowel Count");
       assert.equal(Implementation.vowelsCount(word), Number.parseInt(count));
     }
+  }
+  @Step("This step uses a custom parameter of type Person and value <person>")
+  public async validatePerson(person: Person) {
+    assert.equal(person.name, "John");
+    assert.equal(person.age, 30);
+    assert.ok(person.isAdult());
   }
 }
