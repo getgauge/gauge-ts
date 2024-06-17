@@ -1,5 +1,7 @@
 import hookRegistry from "../models/HookRegistry";
 import registry from "../models/StepRegistry";
+import type { ParameterParser } from "../processors/params/ParameterParser";
+import type { ParameterParsingChain } from "../processors/params/ParameterParsingChain";
 import { Util } from "../utils/Util";
 
 type ConstructorType = new () => Record<string, unknown>;
@@ -9,6 +11,12 @@ type ModuleType = {
 };
 
 export class ImplLoader {
+  private parameterParsingChain: ParameterParsingChain;
+
+  constructor(parameterParsingChain: ParameterParsingChain) {
+    this.parameterParsingChain = parameterParsingChain;
+  }
+
   public async loadImplementations(): Promise<void> {
     registry.clear();
     hookRegistry.clear();
@@ -16,11 +24,15 @@ export class ImplLoader {
       try {
         process.env.STEP_FILE_PATH = file;
         const c = (await Util.importFile(file)) as ModuleType;
-
         if (c.default && c.default.length === 0) {
           const instance = new c.default();
-
-          ImplLoader.updateRegistry(file, instance);
+          if (Util.isCustomParameterParser(instance)) {
+            this.parameterParsingChain.addCustomParser(
+              instance as ParameterParser,
+            );
+          } else {
+            ImplLoader.updateRegistry(file, instance);
+          }
         }
       } catch (error) {
         const err = error as Error;

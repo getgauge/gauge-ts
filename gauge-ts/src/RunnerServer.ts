@@ -66,6 +66,7 @@ import { StepNameProcessor } from "./processors/StepNameProcessor";
 import { StepPositionsProcessor } from "./processors/StepPositionsProcessor";
 import { StubImplementationCodeProcessor } from "./processors/StubImplementationCodeProcessor";
 import { ValidationProcessor } from "./processors/ValidationProcessor";
+import { ParameterParsingChain } from "./processors/params/ParameterParsingChain";
 import { Util } from "./utils/Util";
 
 type RpcError = {
@@ -92,8 +93,10 @@ export default class RunnerServer implements IRunnerServer {
   private static stepPositionsProcessor: StepPositionsProcessor;
   private static stubImplementationCodeProcessor: StubImplementationCodeProcessor;
   private static validationProcessor: ValidationProcessor;
+  private static parameterParsingChain: ParameterParsingChain;
 
   constructor(loader: StaticLoader) {
+    RunnerServer.parameterParsingChain = new ParameterParsingChain();
     loader.loadImplementations();
     RunnerServer.cacheFileProcessor = new CacheFileProcessor(loader);
     RunnerServer.executionEndingProcessor = new ExecutionEndingProcessor();
@@ -109,7 +112,9 @@ export default class RunnerServer implements IRunnerServer {
       new SpecExecutionStartingProcessor();
     RunnerServer.stepExecutionEndingProcessor =
       new StepExecutionEndingProcessor();
-    RunnerServer.stepExecutionProcessor = new StepExecutionProcessor();
+    RunnerServer.stepExecutionProcessor = new StepExecutionProcessor(
+      RunnerServer.parameterParsingChain,
+    );
     RunnerServer.stepExecutionStartingProcessor =
       new StepExecutionStartingProcessor();
     RunnerServer.stepNameProcessor = new StepNameProcessor();
@@ -141,7 +146,7 @@ export default class RunnerServer implements IRunnerServer {
   ): void {
     try {
       DataStoreFactory.getSuiteDataStore().clear();
-      const loader = new ImplLoader();
+      const loader = new ImplLoader(RunnerServer.parameterParsingChain);
 
       loader
         .loadImplementations()

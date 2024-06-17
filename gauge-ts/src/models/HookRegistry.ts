@@ -60,7 +60,9 @@ export class HookRegistry {
   ): void {
     for (const hookMethods of this._hooks.values()) {
       for (const hookMethod of hookMethods) {
-        hookMethod.setInstance(instance);
+        if (hookMethod.getFilePath() === file) {
+          hookMethod.setInstance(instance);
+        }
       }
     }
   }

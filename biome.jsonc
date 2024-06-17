@@ -2,6 +2,7 @@
   "files": {
     "ignore": [
       "dist/**",
+      "coverage/**",
       "node_modules",
       "src/gen",
       ".vscode",

@@ -1,3 +1,5 @@
+import { Parameter } from "./gen/spec_pb";
+import { ParameterParser } from "./processors/params/ParameterParser";
 import { Gauge } from "./public/Gauge";
 import { Operator } from "./public/Operator";
 import { Table } from "./public/Table";
@@ -38,6 +40,8 @@ export {
   AfterSpec,
   AfterSuite,
   CustomScreenshotWriter,
+  ParameterParser,
+  Parameter,
   ExecutionContext,
   Specification,
   Scenario,
