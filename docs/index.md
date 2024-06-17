@@ -309,11 +309,11 @@ String elementId = scenarioStore.get("element-id") as string;
 
 ```
 
-### Custom Paramter Parsers
+### Custom Parameter Parsers
 
-* By default gauge-ts tries to convert the spec parameter to primitives (number, boolean), for table parameters gauge-ts will convert paramters
-to `Table` type. gauge-ts also provide a way to customize the paramter parsing.
-If you need to have custom paramters in your step implementations create a paramter parser which should implements methods from `ParamterParser` interface.
+* By default gauge-ts tries to convert the spec parameter to primitives (number, boolean), for table parameters gauge-ts will convert parameters
+to `Table` type. gauge-ts also provide a way to customize the parameter parsing.
+If you need to have custom paramters in your step implementations create a parameter parser which should implements methods from `ParameterParser` interface.
 
 Step definition:
 ```md
@@ -347,7 +347,7 @@ export default class Implementation {
 }
 
 ```
-Cusotm ParameterParser:
+Custom ParameterParser:
 ```javascript
 
 import { Parameter, ParameterParser } from 'gauge-ts';

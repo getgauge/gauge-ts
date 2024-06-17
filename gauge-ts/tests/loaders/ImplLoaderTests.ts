@@ -53,7 +53,7 @@ describe("ImplLoader", () => {
       expect(exception).toContain("failed to import");
     });
 
-    it("shold load custom parameter parser", async () => {
+    it("should load custom parameter parser", async () => {
       Util.getListOfFiles = jest.fn().mockReturnValue(["CustomParser.ts"]);
       Util.importFile = jest.fn().mockReturnValue({
         default: function () {

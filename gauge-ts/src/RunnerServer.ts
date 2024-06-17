@@ -93,10 +93,10 @@ export default class RunnerServer implements IRunnerServer {
   private static stepPositionsProcessor: StepPositionsProcessor;
   private static stubImplementationCodeProcessor: StubImplementationCodeProcessor;
   private static validationProcessor: ValidationProcessor;
-  private static paramterParsingChain: ParameterParsingChain;
+  private static parameterParsingChain: ParameterParsingChain;
 
   constructor(loader: StaticLoader) {
-    RunnerServer.paramterParsingChain = new ParameterParsingChain();
+    RunnerServer.parameterParsingChain = new ParameterParsingChain();
     loader.loadImplementations();
     RunnerServer.cacheFileProcessor = new CacheFileProcessor(loader);
     RunnerServer.executionEndingProcessor = new ExecutionEndingProcessor();
@@ -113,7 +113,7 @@ export default class RunnerServer implements IRunnerServer {
     RunnerServer.stepExecutionEndingProcessor =
       new StepExecutionEndingProcessor();
     RunnerServer.stepExecutionProcessor = new StepExecutionProcessor(
-      RunnerServer.paramterParsingChain,
+      RunnerServer.parameterParsingChain,
     );
     RunnerServer.stepExecutionStartingProcessor =
       new StepExecutionStartingProcessor();
@@ -146,7 +146,7 @@ export default class RunnerServer implements IRunnerServer {
   ): void {
     try {
       DataStoreFactory.getSuiteDataStore().clear();
-      const loader = new ImplLoader(RunnerServer.paramterParsingChain);
+      const loader = new ImplLoader(RunnerServer.parameterParsingChain);
 
       loader
         .loadImplementations()

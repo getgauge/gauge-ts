@@ -1,9 +1,9 @@
 import { Person } from "@lib/Person";
 import type { Parameter, ParameterParser } from "gauge-ts";
 export default class PersonParameterParser implements ParameterParser {
-  public canParse(paramter: Parameter): boolean {
+  public canParse(parameter: Parameter): boolean {
     return (
-      paramter.getValue().startsWith("{") && paramter.getValue().endsWith("}")
+      parameter.getValue().startsWith("{") && parameter.getValue().endsWith("}")
     );
   }
 
