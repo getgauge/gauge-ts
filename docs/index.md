@@ -313,7 +313,7 @@ String elementId = scenarioStore.get("element-id") as string;
 
 * By default gauge-ts tries to convert the spec parameter to primitives (number, boolean), for table parameters gauge-ts will convert parameters
 to `Table` type. gauge-ts also provide a way to customize the parameter parsing.
-If you need to have custom paramters in your step implementations create a parameter parser which should implements methods from `ParameterParser` interface.
+If you need to have custom parameters in your step implementations create a parameter parser which should implements methods from `ParameterParser` interface.
 
 Step definition:
 ```md
@@ -354,8 +354,8 @@ import { Parameter, ParameterParser } from 'gauge-ts';
 import { Person } from '@lib/Person';
 export default class PersonParameterParser implements ParameterParser {
 
-  public canParse(paramter: Parameter): boolean {
-    return paramter.getValue().startsWith("{") && paramter.getValue().endsWith("}");
+  public canParse(parameter: Parameter): boolean {
+    return parameter.getValue().startsWith("{") && parameter.getValue().endsWith("}");
   }
 
   public parse(parameter: Parameter): Object {

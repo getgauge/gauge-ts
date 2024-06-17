@@ -11,10 +11,10 @@ type ModuleType = {
 };
 
 export class ImplLoader {
-  private parameterParsignChain: ParameterParsingChain;
+  private parameterParsingChain: ParameterParsingChain;
 
-  constructor(parameterParsignChain: ParameterParsingChain) {
-    this.parameterParsignChain = parameterParsignChain;
+  constructor(parameterParsingChain: ParameterParsingChain) {
+    this.parameterParsingChain = parameterParsingChain;
   }
 
   public async loadImplementations(): Promise<void> {
@@ -27,7 +27,7 @@ export class ImplLoader {
         if (c.default && c.default.length === 0) {
           const instance = new c.default();
           if (Util.isCustomParameterParser(instance)) {
-            this.parameterParsignChain.addCustomParser(
+            this.parameterParsingChain.addCustomParser(
               instance as ParameterParser,
             );
           } else {
