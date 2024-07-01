@@ -27,7 +27,7 @@ export class PrimitiveParser implements ParameterParser {
   }
 
   private convertToNumber(value: string): number | undefined {
-    const num = Number(value);
+    const num = Number.parseFloat(value);
     return Number.isNaN(num) ? undefined : num;
   }
 
