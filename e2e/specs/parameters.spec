@@ -1,4 +1,4 @@
-# Paramters
+# Parameters
 
 ## Check parameter conversion
 
