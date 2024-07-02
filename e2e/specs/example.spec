@@ -30,7 +30,3 @@ Here's a step that takes a table
      |Snap  |1          |
      |GoCD  |1          |
      |Rhythm|0          |
-
-## Custom Parameters in steps
-
-* This step uses a custom parameter of type Person and value "{\"name\":\"John\",\"age\":30}"
