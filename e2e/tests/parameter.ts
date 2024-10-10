@@ -8,16 +8,14 @@ export default class Parameter {
     assert.strictEqual(original.trim(), expected);
   }
 
-  @Step("This step uses a custom parameter of type Person and value <person>")
+  @Step("Convert custom parameter of type Person and value <person>")
   public async validatePerson(person: Person) {
     assert.strictEqual(person.name, "John");
     assert.strictEqual(person.age, 30);
     assert.ok(person.isAdult());
   }
-  @Step(
-    "This step checks if strings with numbers for example <value> is correct",
-  )
-  async setFilter(value: string) {
+  @Step("Check strings with numbers for example <value> is correct")
+  async checkStringConversion(value: string) {
     assert.strictEqual(value, "3 % 4");
   }
 }

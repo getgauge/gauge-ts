@@ -27,12 +27,11 @@ export class PrimitiveParser implements ParameterParser {
   }
 
   private convertToNumber(value: string): number | undefined {
-    const trimmedValue = value.trim();
-    if (/^-?\d+(\.\d+)?$/.test(trimmedValue)) {
-      const num = Number.parseFloat(trimmedValue);
-      return Number.isFinite(num) ? num : undefined;
+    if (value.trim() === "") {
+      return undefined;
     }
-    return undefined;
+    const num = Number(value);
+    return Number.isFinite(num) ? num : undefined;
   }
 
   private convertToBoolean(value: string): boolean | undefined {
