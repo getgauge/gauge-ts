@@ -14,4 +14,10 @@ export default class Parameter {
     assert.strictEqual(person.age, 30);
     assert.ok(person.isAdult());
   }
+  @Step(
+    "This step checks if strings with numbers for example <value> is correct",
+  )
+  async setFilter(value: string) {
+    assert.strictEqual(value, "3 % 4");
+  }
 }

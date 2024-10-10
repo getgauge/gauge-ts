@@ -27,8 +27,12 @@ export class PrimitiveParser implements ParameterParser {
   }
 
   private convertToNumber(value: string): number | undefined {
-    const num = Number.parseFloat(value);
-    return Number.isNaN(num) ? undefined : num;
+    const trimmedValue = value.trim();
+    if (/^-?\d+(\.\d+)?$/.test(trimmedValue)) {
+      const num = Number.parseFloat(trimmedValue);
+      return Number.isFinite(num) ? num : undefined;
+    }
+    return undefined;
   }
 
   private convertToBoolean(value: string): boolean | undefined {
