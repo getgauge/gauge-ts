@@ -532,7 +532,7 @@ This will change all spec files to reflect the change.
 
 ## Editor (authoring) and Debugging Support
 
-Gauge supports [LSP](https://blog.getgauge.io/gauge-and-the-language-server-protocol-c56fbcfba177) which can be used to used to integrate Gauge with any (if it supports) LSP. Gauge has it's official plugin for [Visual Studio Code](https://github.com/getgauge/gauge-vscode/blob/master/README.md) which allows author/debug to write their tests in multiple language.
+Gauge supports LSP which can be used to used to integrate Gauge with any (if it supports) LSP. Gauge has it's official plugin for [Visual Studio Code](https://github.com/getgauge/gauge-vscode/blob/master/README.md) which allows author/debug to write their tests in multiple language.
 
 Gauge-Ts follows the protocol and implements the apis required by gauge to support a language. Install the `gauge` plugin for VS Code for a rich editing and debugging support with Gauge and Typescript.
 
