@@ -17,9 +17,13 @@ export class PrimitiveParser implements ParameterParser {
 
   public parse(parameter: Parameter): unknown {
     const paramValue = parameter.getValue();
-    const disablePrimitiveParsing = process.env.GAUGE_TS_DISABLE_PRIMITIVE_PARSING;
+    const disablePrimitiveParsing =
+      process.env.GAUGE_TS_DISABLE_PRIMITIVE_PARSING;
 
-    if (disablePrimitiveParsing && disablePrimitiveParsing.toLowerCase() === 'true') {
+    if (
+      disablePrimitiveParsing &&
+      disablePrimitiveParsing.toLowerCase() === "true"
+    ) {
       return paramValue;
     }
 
