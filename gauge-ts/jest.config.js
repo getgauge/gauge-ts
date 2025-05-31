@@ -5,9 +5,9 @@ module.exports = {
       {
         tsconfig: "tsconfig.json",
         compiler: "typescript",
-        diagnostics: false
-      }
-    ]
+        diagnostics: false,
+      },
+    ],
   },
   testEnvironment: "node",
   // reporters: ["jest-silent-reporter"],

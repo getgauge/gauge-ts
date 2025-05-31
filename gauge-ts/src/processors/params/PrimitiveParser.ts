@@ -42,7 +42,8 @@ export class PrimitiveParser implements ParameterParser {
       return undefined;
     }
     // Match valid numeric formats: integers without leading zeros, floats (.5, 0.5, 1.0), and exponentials
-    const numericPattern = /^[+-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+    const numericPattern =
+      /^[+-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
     if (!numericPattern.test(trimmedValue)) {
       return undefined;
     }
