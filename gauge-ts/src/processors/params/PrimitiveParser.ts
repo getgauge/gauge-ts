@@ -36,19 +36,18 @@ export class PrimitiveParser implements ParameterParser {
     return paramValue;
   }
 
-  private convertToNumber(value: string): number | undefined {
+  public convertToNumber(value: string): number | undefined {
     const trimmedValue = value.trim();
     if (trimmedValue === "") {
       return undefined;
     }
-    const num = Number(trimmedValue);
-    if (!Number.isFinite(num)) {
+    // Match valid numeric formats: integers without leading zeros, floats (.5, 0.5, 1.0), and exponentials
+    const numericPattern = /^[+-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+    if (!numericPattern.test(trimmedValue)) {
       return undefined;
     }
-    // Ensure that the string representation of the number is the same as the original trimmed string
-    // This prevents partial parsing of strings like UUIDs or numbers with leading/trailing non-numeric characters,
-    // and also handles cases like "012345" not being treated as 12345 unless String(12345) was "012345" (which it is not).
-    if (String(num) !== trimmedValue) {
+    const num = Number(trimmedValue);
+    if (!Number.isFinite(num)) {
       return undefined;
     }
     return num;

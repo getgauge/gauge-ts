@@ -1,5 +1,5 @@
-import { Parameter } from "../../../../src/gen/spec_pb";
-import { PrimitiveParser } from "../../../../src/processors/params/PrimitiveParser";
+import { Parameter } from "../../../src/gen/spec_pb";
+import { PrimitiveParser } from "../../../src/processors/params/PrimitiveParser";
 
 describe("PrimitiveParser", () => {
   let parser: PrimitiveParser;
