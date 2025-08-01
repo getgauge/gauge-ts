@@ -27,7 +27,7 @@ To compile Typescript to commonjs:
 
 ##### Installing
 
-To install the the typescript plugin use (Note, this will uninstall gauge-ts before installing the compiled version):
+To install the typescript plugin use (Note, this will uninstall gauge-ts before installing the compiled version):
 
 ````
 ./build.sh | .\build.ps1 package
