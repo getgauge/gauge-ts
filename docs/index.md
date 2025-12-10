@@ -269,7 +269,7 @@ suiteStore.put("element-id", "455678");
 
 // Fetching value
 let suiteStore: DataStore = DataStoreFactory.getSuiteDataStore();
-String elementId = suiteStore.get("element-id") as string;
+let elementId: string = suiteStore.get("element-id") as string;
 
 ```
 
@@ -287,7 +287,7 @@ specStore.put("element-id", "455678");
 
 // Fetching value
 let specStore: DataStore = DataStoreFactory.getSpecDataStore();
-String elementId = specStore.get("element-id") as string;
+let elementId: string = specStore.get("element-id") as string;
 
 ```
 
@@ -305,7 +305,7 @@ scenarioStore.put("element-id", "455678");
 
 // Fetching value
 let scenarioStore: DataStore = DataStoreFactory.getScenarioDataStore();
-String elementId = scenarioStore.get("element-id") as string;
+let elementId: string = scenarioStore.get("element-id") as string;
 
 ```
 
