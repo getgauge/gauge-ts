@@ -18,6 +18,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup git
@@ -34,7 +35,6 @@ jobs:
         run: |
           npm run build
           ./build.sh package
-
 
       - name: Deploy on github
         working-directory: gauge-ts
@@ -54,8 +54,7 @@ jobs:
 
       - name: Deploy npm
         working-directory: gauge-ts
-        run: | # See https://github.com/actions/setup-node/issues/1440
-          unset NODE_AUTH_TOKEN
+        run: |
           npm publish --access=public
 
       - name: Update metadata in gauge-repository

@@ -13,6 +13,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
 
       - name: Install dependencies
         run: |
@@ -37,6 +38,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
+          check-latest: true
 
       - name: Install dependencies
         run: |
@@ -59,6 +61,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
+          check-latest: true
 
       - name: Create artifact
         run: |
@@ -87,6 +90,7 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
+          check-latest: true
 
       - name: npm dependencies
         run: |
