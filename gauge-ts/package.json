@@ -30,7 +30,7 @@
     "google-protobuf": "^3.13.0",
     "ts-node": "^10.9.0",
     "typescript": "^5.0.4",
-    "uuid": "^8.3.0"
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "copyfiles": "2.4.1",
