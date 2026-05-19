@@ -1,10 +1,10 @@
-import type { CommonFunction } from "../utils/Util";
 import { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
 import stepRegistry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Screenshot } from "../screenshot/Screenshot";
+import type { CommonFunction } from "../utils/Util";
 import type { Operator } from "./Operator";
 
 export function Step(stepTexts: string | Array<string>) {
