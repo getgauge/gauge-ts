@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-    "target": "ES6",
+    "target": "ES2020",
     "lib": ["esnext"],
     "declaration": true,
     "outDir": "./dist",
     "strict": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "paths": {
       "@lib/*": ["./src/*"]
     }
