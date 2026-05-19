@@ -1,6 +1,6 @@
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
-import regsitry from "../../src/models/StepRegistry";
+import registry from "../../src/models/StepRegistry";
 import {
   AfterScenario,
   AfterSpec,
@@ -16,31 +16,35 @@ import {
 } from "../../src/public/decorators";
 import { Screenshot } from "../../src/screenshot/Screenshot";
 
-describe("decoators", () => {
+describe("decorators", () => {
   beforeEach(() => {
-    regsitry.clear();
+    registry.clear();
     hookRegistry.clear();
     jest.clearAllMocks();
   });
 
   describe("Step", () => {
     it("should add step to stepRegistry", () => {
-      Step("hello")(new Object(), "", {
-        value: () => {
-          console.log("hello");
-        },
-      });
-      expect(regsitry.isImplemented("hello")).toBeTruthy();
+      const stepCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      const stepMethod = () => {
+        console.log("hello");
+      };
+      Step("hello")(stepMethod, stepCtx);
+      expect(registry.isImplemented("hello")).toBeTruthy();
     });
 
     it("should add step with aliases to stepRegistry", () => {
-      Step(["hi", "hello"])(new Object(), "", {
-        value: () => {
-          console.log("hello");
-        },
-      });
-      expect(regsitry.isImplemented("hi")).toBeTruthy();
-      expect(regsitry.isImplemented("hello")).toBeTruthy();
+      const stepCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      const stepMethod = () => {
+        console.log("hello");
+      };
+      Step(["hi", "hello"])(stepMethod, stepCtx);
+      expect(registry.isImplemented("hi")).toBeTruthy();
+      expect(registry.isImplemented("hello")).toBeTruthy();
     });
   });
 
@@ -49,9 +53,11 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      ContinueOnFailure()(new Object(), "", { value: impl });
-      expect(regsitry.getContinueOnFailureFunctions(impl).length).toBe(1);
+      const cfCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      ContinueOnFailure()(impl, cfCtx);
+      expect(registry.getContinueOnFailureFunctions(impl).length).toBe(1);
     });
   });
 
@@ -60,8 +66,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      BeforeSuite()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      BeforeSuite()(impl, hookCtx);
       expect(hookRegistry.get(HookType.BeforeSuite, []).length).toBe(1);
     });
   });
@@ -71,8 +79,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      AfterSuite()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      AfterSuite()(impl, hookCtx);
       expect(hookRegistry.get(HookType.AfterSuite, []).length).toBe(1);
     });
   });
@@ -82,8 +92,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      BeforeSpec()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      BeforeSpec()(impl, hookCtx);
       expect(hookRegistry.get(HookType.BeforeSpec, []).length).toBe(1);
     });
   });
@@ -92,8 +104,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      AfterSpec()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      AfterSpec()(impl, hookCtx);
       expect(hookRegistry.get(HookType.AfterSpec, []).length).toBe(1);
     });
   });
@@ -102,8 +116,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      BeforeScenario()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      BeforeScenario()(impl, hookCtx);
       expect(hookRegistry.get(HookType.BeforeScenario, []).length).toBe(1);
     });
   });
@@ -112,8 +128,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      AfterScenario()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      AfterScenario()(impl, hookCtx);
       expect(hookRegistry.get(HookType.AfterScenario, []).length).toBe(1);
     });
   });
@@ -122,8 +140,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      BeforeStep()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      BeforeStep()(impl, hookCtx);
       expect(hookRegistry.get(HookType.BeforeStep, []).length).toBe(1);
     });
   });
@@ -133,8 +153,10 @@ describe("decoators", () => {
       const impl = () => {
         console.log("hello");
       };
-
-      AfterStep()(new Object(), "", { value: impl });
+      const hookCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      AfterStep()(impl, hookCtx);
       expect(hookRegistry.get(HookType.AfterStep, []).length).toBe(1);
     });
   });
@@ -144,8 +166,10 @@ describe("decoators", () => {
       const impl = () => {
         return "foo.png";
       };
-
-      CustomScreenshotWriter()(new Object(), "", { value: impl });
+      const csCtx = {
+        addInitializer: (fn: () => void) => fn(),
+      } as unknown as ClassMethodDecoratorContext;
+      CustomScreenshotWriter()(impl, csCtx);
       const file = await Screenshot.capture();
 
       expect(file).toBe("foo.png");
