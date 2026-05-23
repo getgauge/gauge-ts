@@ -11,7 +11,7 @@
     "postbuild": "copyfiles -f \"./src/gen/**\" \"./dist/gen\"",
     "package": "./build.sh package",
     "precommit": " npm run format && npm run lint",
-    "test": "jest --verbose --detectOpenHandles --forceExit",
+    "test": "jest --verbose --detectOpenHandles --forceExit --no-watchman",
     "gen-proto": "sh genproto.sh",
     "prepublishOnly": "tsc"
   },
