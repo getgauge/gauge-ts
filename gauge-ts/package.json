@@ -1,6 +1,6 @@
 {
   "name": "gauge-ts",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Typescript runner for Gauge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
