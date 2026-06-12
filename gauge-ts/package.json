@@ -5,7 +5,7 @@
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "preclean:build": "rimraf dist deploy artifacts",
+    "preclean:build": "node -e \"['dist','deploy','artifacts'].forEach((dir) => require('fs').rmSync(dir, { recursive: true, force: true }))\"",
     "build": "tsc",
     "clean:build": "npm run build",
     "postbuild": "copyfiles -f \"./src/gen/**\" \"./dist/gen\"",
