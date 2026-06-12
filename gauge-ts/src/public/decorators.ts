@@ -4,21 +4,11 @@ import { HookType } from "../models/HookType";
 import stepRegistry from "../models/StepRegistry";
 import { StepRegistryEntry } from "../models/StepRegistryEntry";
 import { Screenshot } from "../screenshot/Screenshot";
+import type { CommonFunction } from "../utils/Util";
 import type { Operator } from "./Operator";
 
-/**
- *
- * @param stepTexts form accept only string parameters.
- * As far as you want to use e.g. number you will need to convert it first
- *
- * @constructor
- */
 export function Step(stepTexts: string | Array<string>) {
-  return (
-    target: unknown,
-    _propertyKey: string | symbol,
-    descriptor: PropertyDescriptor,
-  ) => {
+  return (target: CommonFunction, context: ClassMethodDecoratorContext) => {
     let _stepTexts = stepTexts;
 
     if (!Array.isArray(_stepTexts)) {
@@ -33,53 +23,53 @@ export function Step(stepTexts: string | Array<string>) {
           s,
           stepValue,
           process.env.STEP_FILE_PATH as string,
-          descriptor.value,
+          target,
           undefined,
           _stepTexts.length > 1,
         ),
       );
     }
+    context.addInitializer(function (this: unknown): void {
+      stepRegistry.setInstanceForMethod(
+        target,
+        this as Record<string, unknown>,
+      );
+    });
   };
 }
 
-export function ContinueOnFailure(exceptions?: Array<string>): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
-    stepRegistry.addContinueOnFailure(descriptor.value, exceptions);
+export function ContinueOnFailure(exceptions?: Array<string>) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
+    stepRegistry.addContinueOnFailure(target, exceptions);
   };
 }
 
-export function BeforeSuite(): MethodDecorator {
-  return (_target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+export function BeforeSuite() {
+  return (_target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
-    hookRegistry.addHook(
-      HookType.BeforeSuite,
-      new HookMethod(descriptor.value, file),
-    );
+    hookRegistry.addHook(HookType.BeforeSuite, new HookMethod(_target, file));
   };
 }
 
-export function AfterSuite(): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+export function AfterSuite() {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
-    hookRegistry.addHook(
-      HookType.AfterSuite,
-      new HookMethod(descriptor.value, file),
-    );
+    hookRegistry.addHook(HookType.AfterSuite, new HookMethod(target, file));
   };
 }
 
 export function BeforeSpec(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.BeforeSpec,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
@@ -87,13 +77,13 @@ export function BeforeSpec(options?: {
 export function AfterSpec(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.AfterSpec,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
@@ -101,13 +91,13 @@ export function AfterSpec(options?: {
 export function BeforeScenario(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.BeforeScenario,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
@@ -115,13 +105,13 @@ export function BeforeScenario(options?: {
 export function AfterScenario(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.AfterScenario,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
@@ -129,13 +119,13 @@ export function AfterScenario(options?: {
 export function BeforeStep(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.BeforeStep,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
@@ -143,19 +133,22 @@ export function BeforeStep(options?: {
 export function AfterStep(options?: {
   tags: Array<string>;
   operator?: Operator;
-}): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
+}) {
+  return (target: CommonFunction, _context: ClassMethodDecoratorContext) => {
     const file = process.env.STEP_FILE_PATH as string;
 
     hookRegistry.addHook(
       HookType.AfterStep,
-      new HookMethod(descriptor.value, file, options),
+      new HookMethod(target, file, options),
     );
   };
 }
 
-export function CustomScreenshotWriter(): MethodDecorator {
-  return (target: unknown, _propertyKey, descriptor: PropertyDescriptor) => {
-    Screenshot.setCustomScreenshotWriter(descriptor.value);
+export function CustomScreenshotWriter() {
+  return (
+    target: CommonFunction<string>,
+    _context: ClassMethodDecoratorContext,
+  ) => {
+    Screenshot.setCustomScreenshotWriter(target);
   };
 }

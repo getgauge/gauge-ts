@@ -24,13 +24,13 @@ function hasModule(name) {
 }
 
 function startCommand() {
-  const script = `"import { start } from 'gauge-ts/dist/RunnerServer'; start();"`;
-
   const opts = [
     "ts-node",
-    ...(hasModule("tsconfig-paths") ? ["-r", "tsconfig-paths/register"] : []),
+    "--esm",
+    "-r",
+    "tsconfig-paths/register",
     "-e",
-    script,
+    `"import { start } from 'gauge-ts/dist/RunnerServer'; start();"`,
   ];
 
   const runner = spawn("npx", opts, {

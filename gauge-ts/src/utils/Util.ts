@@ -11,7 +11,8 @@ import { Extension } from "typescript";
 import { v4 } from "uuid";
 import type { ParameterParser } from "../processors/params/ParameterParser";
 
-export type CommonFunction<T = unknown> = (...args: unknown[]) => T;
+// biome-ignore lint/suspicious/noExplicitAny: accepts class methods with arbitrary parameter signatures
+export type CommonFunction<T = unknown> = (...args: any[]) => T;
 export type CommonAsyncFunction<T = unknown> = (
   ...args: unknown[]
 ) => Promise<T>;

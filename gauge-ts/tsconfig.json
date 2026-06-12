@@ -7,8 +7,6 @@
     "outDir": "./dist",
     "strict": true,
     "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
     "plugins": [
       {
         "cacheBetweenTests": false

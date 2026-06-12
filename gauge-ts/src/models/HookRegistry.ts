@@ -1,4 +1,5 @@
 import { Operator } from "..";
+import type { CommonFunction } from "../utils/Util";
 import type { GlobalStepRegistry } from "./GlobalRegistry";
 import type { HookMethod } from "./HookMethod";
 import { HookType } from "./HookType";
@@ -61,6 +62,19 @@ export class HookRegistry {
     for (const hookMethods of this._hooks.values()) {
       for (const hookMethod of hookMethods) {
         if (hookMethod.getFilePath() === file) {
+          hookMethod.setInstance(instance);
+        }
+      }
+    }
+  }
+
+  public setInstanceForMethod(
+    method: CommonFunction,
+    instance: Record<string, unknown>,
+  ): void {
+    for (const hookMethods of this._hooks.values()) {
+      for (const hookMethod of hookMethods) {
+        if (hookMethod.getMethod() === method) {
           hookMethod.setInstance(instance);
         }
       }

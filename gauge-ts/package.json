@@ -1,6 +1,6 @@
 {
   "name": "gauge-ts",
-  "version": "0.3.6",
+  "version": "0.4.0",
   "description": "Typescript runner for Gauge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -29,7 +29,7 @@
     "@grpc/grpc-js": "^1.14.4",
     "google-protobuf": "^3.13.0",
     "ts-node": "^10.9.0",
-    "typescript": "^5.0.4",
+    "typescript": "^5.4.5",
     "uuid": "^8.3.0"
   },
   "devDependencies": {

@@ -121,6 +121,19 @@ export class StepRegistry {
     }
   }
 
+  public setInstanceForMethod(
+    method: CommonFunction,
+    instance: Record<string, unknown>,
+  ): void {
+    for (const entries of this._registry.values()) {
+      for (const entry of entries) {
+        if (entry.getMethod() === method) {
+          entry.setInstance(instance);
+        }
+      }
+    }
+  }
+
   public clear(): void {
     this._registry.clear();
     this._continueOnFailureFunctions.clear();
