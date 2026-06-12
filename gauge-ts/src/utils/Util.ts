@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import {
   existsSync,
   readFileSync,
@@ -8,7 +9,6 @@ import {
 } from "node:fs";
 import { extname, join } from "node:path";
 import { Extension } from "typescript";
-import { v4 } from "uuid";
 import type { ParameterParser } from "../processors/params/ParameterParser";
 
 // biome-ignore lint/suspicious/noExplicitAny: accepts class methods with arbitrary parameter signatures
@@ -115,6 +115,6 @@ export class Util {
   public static getUniqueScreenshotFileName(): string {
     const dir = (process.env.gauge_screenshots_dir as string) ?? "";
 
-    return join(dir, `screenshot-${v4()}.png`);
+    return join(dir, `screenshot-${randomUUID()}.png`);
   }
 }
