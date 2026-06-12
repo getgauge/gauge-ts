@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { randomUUID } from "node:crypto";
 import {
   existsSync,
   readFileSync,
@@ -7,7 +8,6 @@ import {
   writeFileSync,
 } from "node:fs";
 import { extname, join } from "node:path";
-import { randomUUID } from "node:crypto";
 import { Extension } from "typescript";
 import type { ParameterParser } from "../processors/params/ParameterParser";
 
