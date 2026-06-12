@@ -11,6 +11,9 @@
     "precommit": "npm run format && npm run lint",
     "check": "npx @biomejs/biome check ."
   },
+  "overrides": {
+    "handlebars": "4.7.9"
+  },
   "devDependencies": {
     "@biomejs/biome": "1.8.0",
     "husky": "^9.0.11"
