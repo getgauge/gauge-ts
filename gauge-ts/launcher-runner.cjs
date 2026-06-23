@@ -20,4 +20,16 @@ function getPackageRunner(value = process.env.GAUGE_TS_PACKAGE_RUNNER) {
   return runner;
 }
 
-module.exports = { getPackageRunner };
+function getTsNodeArgs({ hasTsconfigPaths, useShell }) {
+  const shellQuote = useShell ? '"' : "";
+
+  return [
+    "ts-node",
+    "--esm",
+    ...(hasTsconfigPaths ? ["-r", "tsconfig-paths/register"] : []),
+    "-e",
+    `${shellQuote}import { start } from 'gauge-ts/dist/RunnerServer'; start();${shellQuote}`,
+  ];
+}
+
+module.exports = { getPackageRunner, getTsNodeArgs };

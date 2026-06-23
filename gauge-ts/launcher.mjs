@@ -13,7 +13,7 @@ if (Number.parseInt(version[0]) < 20) {
 import { spawn } from "node:child_process";
 import launcherRunner from "./launcher-runner.cjs";
 
-const { getPackageRunner } = launcherRunner;
+const { getPackageRunner, getTsNodeArgs } = launcherRunner;
 
 const { GAUGE_PROJECT_ROOT } = process.env;
 
@@ -28,16 +28,10 @@ function hasModule(name) {
 
 function startCommand() {
   const useShell = process.platform === "win32";
-  const shellQuote = useShell ? '"' : "";
-
-  const opts = [
-    "ts-node",
-    "--esm",
-    "-r",
-    "tsconfig-paths/register",
-    "-e",
-    `${shellQuote}import { start } from 'gauge-ts/dist/RunnerServer'; start();${shellQuote}`,
-  ];
+  const opts = getTsNodeArgs({
+    hasTsconfigPaths: hasModule("tsconfig-paths"),
+    useShell,
+  });
 
   const [command, ...runnerArgs] = getPackageRunner();
   const runner = spawn(command, [...runnerArgs, ...opts], {
