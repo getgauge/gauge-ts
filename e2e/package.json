@@ -10,8 +10,8 @@
     "typescript": "^5.4.5"
   },
   "devDependencies": {
-    "@getgauge/cli": "latest",
-    "@types/node": "latest",
+    "@getgauge/cli": "^1.6.34",
+    "@types/node": "*",
     "taiko": "^1.4.0",
     "tsconfig-paths": "^4.2.0"
   }
