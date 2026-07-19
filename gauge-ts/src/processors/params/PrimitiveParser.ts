@@ -17,6 +17,16 @@ export class PrimitiveParser implements ParameterParser {
 
   public parse(parameter: Parameter): unknown {
     const paramValue = parameter.getValue();
+    const disablePrimitiveParsing =
+      process.env.GAUGE_TS_DISABLE_PRIMITIVE_PARSING;
+
+    if (
+      disablePrimitiveParsing &&
+      disablePrimitiveParsing.toLowerCase() === "true"
+    ) {
+      return paramValue;
+    }
+
     for (const converter of this.converters) {
       const v = converter(paramValue);
       if (v !== undefined) {
@@ -26,12 +36,22 @@ export class PrimitiveParser implements ParameterParser {
     return paramValue;
   }
 
-  private convertToNumber(value: string): number | undefined {
-    if (value.trim() === "") {
+  public convertToNumber(value: string): number | undefined {
+    const trimmedValue = value.trim();
+    if (trimmedValue === "") {
       return undefined;
     }
-    const num = Number(value);
-    return Number.isFinite(num) ? num : undefined;
+    // Match valid numeric formats: integers without leading zeros, floats (.5, 0.5, 1.0), and exponentials
+    const numericPattern =
+      /^[+-]?(?:(?:0|[1-9]\d*)(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?$/;
+    if (!numericPattern.test(trimmedValue)) {
+      return undefined;
+    }
+    const num = Number(trimmedValue);
+    if (!Number.isFinite(num)) {
+      return undefined;
+    }
+    return num;
   }
 
   private convertToBoolean(value: string): boolean | undefined {
