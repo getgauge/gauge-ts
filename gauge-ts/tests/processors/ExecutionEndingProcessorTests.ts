@@ -1,7 +1,4 @@
-import {
-  ExecutionEndingRequest,
-  ExecutionInfo,
-} from "../../src/gen/messages_pb";
+import { ExecutionEndingRequest, ExecutionInfo } from "../../src/gen/messages";
 import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
@@ -25,12 +22,12 @@ describe("ExecutionEndingProcessor", () => {
         HookType.AfterSuite,
         new HookMethod(async () => {}, "Hooks.ts"),
       );
-      const req = new ExecutionEndingRequest();
-
-      req.setCurrentexecutioninfo(new ExecutionInfo());
+      const req = ExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({}),
+      });
       const res = await processor.process(req);
 
-      expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+      expect(res?.executionResult?.failed).toBe(false);
     });
 
     it("should process ExecutionEndingRequest and give error if a hook fails", async () => {
@@ -48,15 +45,15 @@ describe("ExecutionEndingProcessor", () => {
         ),
       );
 
-      const req = new ExecutionEndingRequest();
+      const req = ExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({}),
+      });
 
-      req.setCurrentexecutioninfo(new ExecutionInfo());
+      const res = (await processor.process(req)).executionResult;
 
-      const res = (await processor.process(req)).getExecutionresult();
-
-      expect(res?.getFailed()).toBe(true);
-      expect(res?.getErrormessage()).toBe("failed");
-      expect(res?.getScreenshotsList().length).toBe(0);
+      expect(res?.failed).toBe(true);
+      expect(res?.errorMessage).toBe("failed");
+      expect(res?.screenshots.length).toBe(0);
     });
 
     it("should process ExecutionEndingRequest and give error with screenshot if a hook fails", async () => {
@@ -73,16 +70,16 @@ describe("ExecutionEndingProcessor", () => {
         ),
       );
 
-      const req = new ExecutionEndingRequest();
+      const req = ExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({}),
+      });
 
-      req.setCurrentexecutioninfo(new ExecutionInfo());
+      const res = (await processor.process(req)).executionResult;
 
-      const res = (await processor.process(req)).getExecutionresult();
+      expect(res?.failed).toBe(true);
+      expect(res?.errorMessage).toBe("failed");
 
-      expect(res?.getFailed()).toBe(true);
-      expect(res?.getErrormessage()).toBe("failed");
-
-      expect(res?.getFailurescreenshotfile()).toBeTruthy();
+      expect(res?.failureScreenshotFile).toBeTruthy();
     });
   });
 });

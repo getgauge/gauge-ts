@@ -13,24 +13,19 @@ import {
   FileDiff,
   type StubImplementationCodeRequest,
   TextDiff,
-} from "../gen/messages_pb";
-import { Span } from "../gen/spec_pb";
+} from "../gen/messages";
+import { Span } from "../gen/spec";
 import { Util } from "../utils/Util";
 
 export class StubImplementationCodeProcessor {
   public process(req: StubImplementationCodeRequest): FileDiff {
-    const filePath = req.getImplementationfilepath();
-    const content = req.getCodesList().reduce((acc, cur) => {
-      return acc + EOL + cur;
-    });
-    const fileDiff = new FileDiff();
-
-    fileDiff.setFilepath(filePath);
+    const filePath = req.implementationFilePath;
+    const content = req.codes.join(EOL);
     const textDiffs = new Array<TextDiff>();
 
     if (!Util.exists(filePath)) {
-      const filePath = Util.getNewTSFileName(Util.getImplDirs()[0]);
-      const className = basename(filePath).replace(Extension.Ts, "");
+      const newFilePath = Util.getNewTSFileName(Util.getImplDirs()[0]);
+      const className = basename(newFilePath).replace(Extension.Ts, "");
 
       textDiffs.push(this.diffForImplementationInNewClass(content, className));
     } else {
@@ -38,9 +33,8 @@ export class StubImplementationCodeProcessor {
         this.diffForImplementationInExistingClass(filePath, content),
       );
     }
-    fileDiff.setTextdiffsList(textDiffs);
 
-    return fileDiff;
+    return FileDiff.create({ filePath, textDiffs });
   }
 
   private diffForImplementationInExistingClass(
@@ -65,43 +59,40 @@ export class StubImplementationCodeProcessor {
     const pos = source.getLineAndCharacterOfPosition(
       (lastMethod as unknown as Node).end,
     );
-    const span = new Span();
+    const span = Span.create({
+      start: String(pos.line + 1),
+      end: String(pos.line + 1),
+      startChar: "0",
+      endChar: "0",
+    });
 
-    span.setStart(pos.line + 1);
-    span.setEnd(pos.line + 1);
-    span.setStartchar(0);
-    span.setEndchar(0);
-    const textDiff = new TextDiff();
-
-    textDiff.setSpan(span);
-    textDiff.setContent(
-      content
-        .split(EOL)
-        .map((c) => {
-          return `\t${c}`;
-        })
-        .join(EOL) + EOL,
-    );
-
-    return textDiff;
+    return TextDiff.create({
+      span,
+      content:
+        content
+          .split(EOL)
+          .map((c) => {
+            return `\t${c}`;
+          })
+          .join(EOL) + EOL,
+    });
   }
 
   private diffForImplementationInNewClass(
     content: string,
     className: string,
   ): TextDiff {
-    const span = new Span();
+    const span = Span.create({
+      start: "0",
+      end: "0",
+      startChar: "0",
+      endChar: "0",
+    });
 
-    span.setStart(0);
-    span.setEnd(0);
-    span.setStartchar(0);
-    span.setEndchar(0);
-    const textDiff = new TextDiff();
-
-    textDiff.setSpan(span);
-    textDiff.setContent(this.getContentForNewClass(content, className));
-
-    return textDiff;
+    return TextDiff.create({
+      span,
+      content: this.getContentForNewClass(content, className),
+    });
   }
 
   private getContentForNewClass(content: string, className: string): string {

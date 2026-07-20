@@ -1,4 +1,4 @@
-import type { Parameter } from "../../gen/spec_pb";
+import type { Parameter } from "../../gen/spec";
 
 export interface ParameterParser {
   canParse(parameter: Parameter): boolean;

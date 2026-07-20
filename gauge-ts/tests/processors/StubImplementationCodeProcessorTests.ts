@@ -1,5 +1,5 @@
 import { EOL } from "node:os";
-import { StubImplementationCodeRequest } from "../../src/gen/messages_pb";
+import { StubImplementationCodeRequest } from "../../src/gen/messages";
 import hookRegistry from "../../src/models/HookRegistry";
 import { StubImplementationCodeProcessor } from "../../src/processors/StubImplementationCodeProcessor";
 import { Util } from "../../src/utils/Util";
@@ -22,22 +22,22 @@ describe("StubImplementationCodeProcessor", () => {
       Util.readFile = jest.fn().mockReturnValue(text1);
       const code = `@Step("foo")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
 
-      const req = new StubImplementationCodeRequest();
-
-      req.setImplementationfilepath("foo.ts");
-      req.setCodesList([code]);
+      const req = StubImplementationCodeRequest.create({
+        implementationFilePath: "foo.ts",
+        codes: [code],
+      });
 
       const res = processor.process(req);
-      const diffs = res?.getTextdiffsList();
+      const diffs = res?.textDiffs;
 
       expect(diffs.length).toBe(1);
 
-      const span = diffs[0].getSpan();
+      const span = diffs[0].span;
 
-      expect(span?.getStart()).toBe(6);
-      expect(span?.getStartchar()).toBe(0);
-      expect(span?.getEnd()).toBe(6);
-      expect(span?.getEndchar()).toBe(0);
+      expect(span?.start).toBe("6");
+      expect(span?.startChar).toBe("0");
+      expect(span?.end).toBe("6");
+      expect(span?.endChar).toBe("0");
 
       const expected =
         code
@@ -47,7 +47,7 @@ describe("StubImplementationCodeProcessor", () => {
           })
           .join(EOL) + EOL;
 
-      expect(diffs[0].getContent()).toBe(expected);
+      expect(diffs[0].content).toBe(expected);
     });
 
     it("should process StubImplementationCodeRequest and give the diff when file does not exists", () => {
@@ -58,22 +58,22 @@ describe("StubImplementationCodeProcessor", () => {
 
       const code2 = `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
 
-      const req = new StubImplementationCodeRequest();
-
-      req.setImplementationfilepath("foo.ts");
-      req.setCodesList([code1, code2]);
+      const req = StubImplementationCodeRequest.create({
+        implementationFilePath: "foo.ts",
+        codes: [code1, code2],
+      });
 
       const res = processor.process(req);
-      const diffs = res?.getTextdiffsList();
+      const diffs = res?.textDiffs;
 
       expect(diffs.length).toBe(1);
 
-      const span = diffs[0].getSpan();
+      const span = diffs[0].span;
 
-      expect(span?.getStart()).toBe(0);
-      expect(span?.getStartchar()).toBe(0);
-      expect(span?.getEnd()).toBe(0);
-      expect(span?.getEndchar()).toBe(0);
+      expect(span?.start).toBe("0");
+      expect(span?.startChar).toBe("0");
+      expect(span?.end).toBe("0");
+      expect(span?.endChar).toBe("0");
 
       const expected = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}${code1
         .split(EOL)
@@ -87,7 +87,7 @@ describe("StubImplementationCodeProcessor", () => {
         })
         .join(EOL)}${EOL}}`;
 
-      expect(diffs[0].getContent()).toBe(expected);
+      expect(diffs[0].content).toBe(expected);
     });
   });
 });

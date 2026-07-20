@@ -1,4 +1,4 @@
-import type { Parameter } from "../../gen/spec_pb";
+import type { Parameter } from "../../gen/spec";
 import type { ParameterParser } from "./ParameterParser";
 
 type ConvertFunction = (value: string) => unknown | undefined;
@@ -16,7 +16,7 @@ export class PrimitiveParser implements ParameterParser {
   }
 
   public parse(parameter: Parameter): unknown {
-    const paramValue = parameter.getValue();
+    const paramValue = parameter.value;
     for (const converter of this.converters) {
       const v = converter(paramValue);
       if (v !== undefined) {

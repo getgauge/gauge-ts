@@ -3,7 +3,7 @@ import {
   ExecutionInfo,
   SpecExecutionEndingRequest,
   SpecInfo,
-} from "../../src/gen/messages_pb";
+} from "../../src/gen/messages";
 import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
@@ -31,21 +31,19 @@ describe("SpecExecutionStartingProcessor", () => {
         new HookMethod(async () => {}, "Hooks.ts"),
       );
 
-      const currentSpec = new SpecInfo();
+      const currentSpec = SpecInfo.create({
+        name: "foo",
+        fileName: "foo.spec",
+        tags: [],
+      });
+      const info = ExecutionInfo.create({ currentSpec });
+      const req = SpecExecutionEndingRequest.create({
+        currentExecutionInfo: info,
+      });
 
-      currentSpec.setName("foo");
-      currentSpec.setFilename("foo.spec");
-      currentSpec.setTagsList([]);
-      const info = new ExecutionInfo();
+      const res = (await processor.process(req)).executionResult;
 
-      info.setCurrentspec(currentSpec);
-      const req = new SpecExecutionEndingRequest();
-
-      req.setCurrentexecutioninfo(info);
-
-      const res = (await processor.process(req)).getExecutionresult();
-
-      expect(res?.getFailed()).toBe(false);
+      expect(res?.failed).toBe(false);
     });
   });
 });

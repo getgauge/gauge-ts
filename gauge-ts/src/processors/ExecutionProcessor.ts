@@ -1,16 +1,12 @@
-import { ExecutionStatusResponse } from "../gen/messages_pb";
-import type { ProtoExecutionResult } from "../gen/spec_pb";
+import { ExecutionStatusResponse } from "../gen/messages";
+import type { ProtoExecutionResult } from "../gen/spec";
 import { type CommonFunction, Util } from "../utils/Util";
 
 export class ExecutionProcessor {
   protected createExecutionResponse(
     result: ProtoExecutionResult,
   ): ExecutionStatusResponse {
-    const res = new ExecutionStatusResponse();
-
-    res.setExecutionresult(result);
-
-    return res;
+    return ExecutionStatusResponse.create({ executionResult: result });
   }
 
   protected async executeMethod(

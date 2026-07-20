@@ -1,4 +1,4 @@
-import { StepNameRequest } from "../../src/gen/messages_pb";
+import { StepNameRequest } from "../../src/gen/messages";
 import { Position } from "../../src/models/Position";
 import { Range } from "../../src/models/Range";
 import registry from "../../src/models/StepRegistry";
@@ -28,33 +28,29 @@ describe("StepNameProcessor", () => {
         ),
       );
 
-      const req = new StepNameRequest();
-
-      req.setStepvalue("foo");
+      const req = StepNameRequest.create({ stepValue: "foo" });
 
       const res = processor.process(req);
 
-      expect(res?.getFilename()).toBe("foo.ts");
-      expect(res?.getIssteppresent()).toBe(true);
-      expect(res?.getHasalias()).toBe(false);
-      expect(res?.getStepnameList()).toStrictEqual(["foo"]);
+      expect(res?.fileName).toBe("foo.ts");
+      expect(res?.isStepPresent).toBe(true);
+      expect(res?.hasAlias).toBe(false);
+      expect(res?.stepName).toStrictEqual(["foo"]);
 
-      const span = res?.getSpan();
+      const span = res?.span;
 
-      expect(span?.getStart()).toBe(3);
-      expect(span?.getStartchar()).toBe(3);
-      expect(span?.getEnd()).toBe(7);
-      expect(span?.getEndchar()).toBe(3);
+      expect(span?.start).toBe("3");
+      expect(span?.startChar).toBe("3");
+      expect(span?.end).toBe("7");
+      expect(span?.endChar).toBe("3");
     });
 
     it("should give the step info if step is not implemented", () => {
-      const req = new StepNameRequest();
-
-      req.setStepvalue("foo");
+      const req = StepNameRequest.create({ stepValue: "foo" });
 
       const res = processor.process(req);
 
-      expect(res?.getIssteppresent()).toBe(false);
+      expect(res?.isStepPresent).toBe(false);
     });
   });
 });

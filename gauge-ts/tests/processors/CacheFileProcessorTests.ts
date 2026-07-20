@@ -1,4 +1,7 @@
-import { CacheFileRequest } from "../../src/gen/messages_pb";
+import {
+  CacheFileRequest,
+  CacheFileRequest_FileStatus,
+} from "../../src/gen/messages";
 import StaticLoader from "../../src/loaders/StaticLoader";
 import registry from "../../src/models/StepRegistry";
 import { CacheFileProcessor } from "../../src/processors/CacheFileProcessor";
@@ -32,24 +35,24 @@ describe("CacheFileProcessor", () => {
 
   describe(".process", () => {
     it("should process cacheFileRequest when a file is opened", () => {
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.OPENED);
-      req.setContent(text1);
-      req.setFilepath(file1);
-      req.setIsclosed(false);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.OPENED,
+        content: text1,
+        filePath: file1,
+        isClosed: false,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(true);
     });
 
     it("should process cacheFileRequest when a file is changed", () => {
       loader.loadStepsFromText(file1, text1);
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.CHANGED);
-      req.setContent(text2);
-      req.setFilepath(file1);
-      req.setIsclosed(false);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.CHANGED,
+        content: text2,
+        filePath: file1,
+        isClosed: false,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(false);
       expect(registry.isImplemented("bar")).toBe(true);
@@ -58,11 +61,11 @@ describe("CacheFileProcessor", () => {
     it("should process cacheFileRequest when a file is created", () => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text1);
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.CREATED);
-      req.setFilepath(file1);
-      req.setIsclosed(false);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.CREATED,
+        filePath: file1,
+        isClosed: false,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(true);
     });
@@ -70,11 +73,11 @@ describe("CacheFileProcessor", () => {
     it("should process cacheFileRequest when a file is created and cached", () => {
       registry.isFileCached = jest.fn().mockReturnValue(true);
 
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.CREATED);
-      req.setFilepath(file1);
-      req.setIsclosed(false);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.CREATED,
+        filePath: file1,
+        isClosed: false,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(false);
     });
@@ -87,11 +90,11 @@ describe("CacheFileProcessor", () => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text2);
 
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.CLOSED);
-      req.setFilepath(file1);
-      req.setIsclosed(true);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.CLOSED,
+        filePath: file1,
+        isClosed: true,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(false);
       expect(registry.isImplemented("bar")).toBe(true);
@@ -99,20 +102,20 @@ describe("CacheFileProcessor", () => {
 
     it("should process cacheFileRequest when a file closed and dont exists anymore", () => {
       Util.exists = jest.fn().mockReturnValue(false);
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.CLOSED);
-      req.setFilepath(file1);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.CLOSED,
+        filePath: file1,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(false);
     });
 
     it("should process cacheFileRequest when a file deleted", () => {
       loader.loadStepsFromText(file1, text1);
-      const req = new CacheFileRequest();
-
-      req.setStatus(CacheFileRequest.FileStatus.DELETED);
-      req.setFilepath(file1);
+      const req = CacheFileRequest.create({
+        status: CacheFileRequest_FileStatus.DELETED,
+        filePath: file1,
+      });
       processor.process(req);
       expect(registry.isImplemented("foo")).toBe(false);
     });

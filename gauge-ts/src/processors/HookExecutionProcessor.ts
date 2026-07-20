@@ -13,8 +13,8 @@ import type {
   SpecInfo,
   StepExecutionEndingRequest,
   StepExecutionStartingRequest,
-} from "../gen/messages_pb";
-import { ProtoExecutionResult } from "../gen/spec_pb";
+} from "../gen/messages";
+import { ProtoExecutionResult } from "../gen/spec";
 import type { HookMethod } from "../models/HookMethod";
 import type { HookType } from "../models/HookType";
 import { ExecutionContext } from "../public/context/ExecutionContext";
@@ -58,9 +58,8 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     const start = Date.now();
     const context = this.getExecutionContext(this.getExecutionInfo(req));
     const hooks = this.getApplicableHooks(req);
-    const result = new ProtoExecutionResult();
+    const result = ProtoExecutionResult.create({ failed: false });
 
-    result.setFailed(false);
     try {
       for (const hook of hooks) {
         await this.executeMethod(
@@ -72,19 +71,19 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     } catch (error) {
       const err = error as Error;
 
-      result.setFailed(true);
-      result.setRecoverableerror(false);
-      result.setErrormessage(err.message);
-      result.setStacktrace(err.stack ?? "");
+      result.failed = true;
+      result.recoverableError = false;
+      result.errorMessage = err.message;
+      result.stackTrace = err.stack ?? "";
       if (process.env.screenshot_on_failure !== "false") {
         const s = await Screenshot.capture();
 
-        result.setFailurescreenshotfile(s);
+        result.failureScreenshotFile = s;
       }
     }
-    result.setExecutiontime(Date.now() - start);
-    result.setMessageList(MessageStore.pendingMessages());
-    result.setScreenshotfilesList(ScreenshotStore.pendingScreenshots());
+    result.executionTime = String(Date.now() - start);
+    result.message = MessageStore.pendingMessages();
+    result.screenshotFiles = ScreenshotStore.pendingScreenshots();
 
     return result;
   }
@@ -93,10 +92,10 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     if (!info) {
       return new ExecutionContext(null, null, null, null);
     }
-    const specInfo = info.getCurrentspec();
-    const scenarioInfo = info.getCurrentscenario();
-    const stepInfo = info.getCurrentstep();
-    const trace = info.getStacktrace();
+    const specInfo = info.currentSpec;
+    const scenarioInfo = info.currentScenario;
+    const stepInfo = info.currentStep;
+    const trace = info.stacktrace;
 
     return new ExecutionContext(
       this.toSpec(specInfo),
@@ -113,10 +112,10 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     const info = specInfo;
 
     return new Specification(
-      info.getName(),
-      info.getFilename(),
-      info.getIsfailed(),
-      info.getTagsList(),
+      info.name,
+      info.fileName,
+      info.isFailed,
+      info.tags,
     );
   }
 
@@ -126,7 +125,7 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     }
     const info = scenInfo;
 
-    return new Scenario(info.getName(), info.getIsfailed(), info.getTagsList());
+    return new Scenario(info.name, info.isFailed, info.tags);
   }
 
   private toStepInfo(stepInfo: ProtoStepInfo | undefined): StepInfo | null {
@@ -135,24 +134,24 @@ export abstract class HookExecutionProcessor extends ExecutionProcessor {
     }
     const info = stepInfo;
 
-    if (info.getStep()) {
-      const step = info.getStep() as ExecuteStepRequest;
+    if (info.step) {
+      const step = info.step as ExecuteStepRequest;
 
       return new StepInfo(
-        step.getParsedsteptext(),
-        step.getActualsteptext(),
-        stepInfo.getIsfailed(),
-        stepInfo.getErrormessage(),
-        stepInfo.getStacktrace(),
+        step.parsedStepText,
+        step.actualStepText,
+        stepInfo.isFailed,
+        stepInfo.errorMessage,
+        stepInfo.stackTrace,
       );
     }
 
     return new StepInfo(
       null,
       null,
-      info.getIsfailed(),
-      stepInfo.getErrormessage(),
-      stepInfo.getStacktrace(),
+      info.isFailed,
+      stepInfo.errorMessage,
+      stepInfo.stackTrace,
     );
   }
 }

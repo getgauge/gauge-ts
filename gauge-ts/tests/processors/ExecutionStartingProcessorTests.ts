@@ -2,7 +2,7 @@ import * as inspector from "node:inspector";
 import {
   ExecutionInfo,
   ExecutionStartingRequest,
-} from "../../src/gen/messages_pb";
+} from "../../src/gen/messages";
 import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
@@ -27,13 +27,13 @@ describe("ExecutionStartingProcessor", () => {
         new HookMethod(async () => {}, "Hooks.ts"),
       );
 
-      const req = new ExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(new ExecutionInfo());
+      const req = ExecutionStartingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({}),
+      });
 
       const res = await processor.process(req);
 
-      expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+      expect(res?.executionResult?.failed).toBe(false);
     });
 
     it("should process ExecutionStartingRequest and start debugger", async () => {
@@ -47,9 +47,9 @@ describe("ExecutionStartingProcessor", () => {
         new HookMethod(async () => {}, "Hooks.ts"),
       );
 
-      const req = new ExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(new ExecutionInfo());
+      const req = ExecutionStartingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({}),
+      });
 
       await processor.process(req);
 

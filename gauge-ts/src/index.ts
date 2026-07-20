@@ -1,4 +1,4 @@
-import { Parameter } from "./gen/spec_pb";
+import { Parameter } from "./gen/spec";
 import { ParameterParser } from "./processors/params/ParameterParser";
 import { Gauge } from "./public/Gauge";
 import { Operator } from "./public/Operator";

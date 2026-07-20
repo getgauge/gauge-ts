@@ -1,25 +1,20 @@
-import { ProtoTable, ProtoTableRow } from "../../src/gen/spec_pb";
+import { ProtoTable, ProtoTableRow } from "../../src/gen/spec";
 import { Table } from "../../src/public/Table";
 
 describe("Table", () => {
   describe(".from", () => {
     it("should throw error for invalid prototable", () => {
-      const protoTable = new ProtoTable();
+      const protoTable = ProtoTable.create({});
 
       expect(() => {
         Table.from(protoTable);
       }).toThrowError("Invalid table passed");
     });
     it("should throw error for given prototable", () => {
-      const protoTable = new ProtoTable();
-      const headers = new ProtoTableRow();
-
-      headers.setCellsList(["name"]);
-      const row1 = new ProtoTableRow();
-
-      row1.setCellsList(["gauge"]);
-      protoTable.setHeaders(headers);
-      protoTable.setRowsList([row1]);
+      const protoTable = ProtoTable.create({
+        headers: ProtoTableRow.create({ cells: ["name"] }),
+        rows: [ProtoTableRow.create({ cells: ["gauge"] })],
+      });
 
       expect(
         Table.from(protoTable).getTableRows()[0].getCellValues(),

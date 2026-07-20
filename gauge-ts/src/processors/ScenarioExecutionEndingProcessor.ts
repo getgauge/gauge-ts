@@ -3,7 +3,7 @@ import type {
   ScenarioExecutionEndingRequest,
   ScenarioInfo,
   SpecInfo,
-} from "../gen/messages_pb";
+} from "../gen/messages";
 import type { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
@@ -18,19 +18,16 @@ export class ScenarioExecutionEndingProcessor extends HookExecutionProcessor {
   protected getExecutionInfo(hookExecreq: HookExectionRequest): ExecutionInfo {
     const req = hookExecreq as ScenarioExecutionEndingRequest;
 
-    return req.getCurrentexecutioninfo() as ExecutionInfo;
+    return req.currentExecutionInfo as ExecutionInfo;
   }
 
   protected getApplicableHooks(
     hookExecReq: HookExectionRequest,
   ): Array<HookMethod> {
     const execInfo = this.getExecutionInfo(hookExecReq);
-    const specInfo = execInfo.getCurrentspec() as SpecInfo;
-    const scenInfo = execInfo.getCurrentscenario() as ScenarioInfo;
+    const specInfo = execInfo.currentSpec as SpecInfo;
+    const scenInfo = execInfo.currentScenario as ScenarioInfo;
 
-    return hookRegistry.get(
-      this.hookType,
-      specInfo.getTagsList().concat(scenInfo.getTagsList()),
-    );
+    return hookRegistry.get(this.hookType, specInfo.tags.concat(scenInfo.tags));
   }
 }

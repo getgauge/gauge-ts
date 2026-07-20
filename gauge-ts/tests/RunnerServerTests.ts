@@ -10,6 +10,7 @@ import { start, stop } from "../src/RunnerServer";
 import RunnerServer from "../src/RunnerServer";
 import {
   CacheFileRequest as CFReq,
+  CacheFileRequest_FileStatus,
   type ExecutionStatusResponse as ESR,
   Empty,
   ExecuteStepRequest,
@@ -43,9 +44,9 @@ import {
   StepExecutionStartingRequest,
   StepInfo,
   SuiteDataStoreInitRequest,
-} from "../src/gen/messages_pb";
-import { RunnerClient } from "../src/gen/services_grpc_pb";
-import { ProtoStepValue } from "../src/gen/spec_pb";
+} from "../src/gen/messages";
+import { RunnerClient } from "../src/gen/services";
+import { ProtoStepValue } from "../src/gen/spec";
 import StaticLoader from "../src/loaders/StaticLoader";
 import { Position } from "../src/models/Position";
 import { Range } from "../src/models/Range";
@@ -82,10 +83,10 @@ describe("RunnerServer", () => {
   describe(".initializeSuiteDataStore", () => {
     it("should initialise suite data store", (done) => {
       client.initializeScenarioDataStore(
-        new ScenarioDataStoreInitRequest(),
+        ScenarioDataStoreInitRequest.create({}),
         (err: error, res: ESR | null | undefined) => {
           expect(err).toBe(null);
-          expect(res?.getExecutionresult()?.getFailed()).toBeFalsy();
+          expect(res?.executionResult?.failed).toBeFalsy();
           expect(DataStoreFactory.getSuiteDataStore().length).toBe(0);
           done();
         },
@@ -99,7 +100,7 @@ describe("RunnerServer", () => {
         throw new Error("Error while initialising suite data store");
       });
       client.initializeSuiteDataStore(
-        new SuiteDataStoreInitRequest(),
+        SuiteDataStoreInitRequest.create({}),
         (err: error) => {
           expect(err).not.toBeNull();
           done();
@@ -111,7 +112,7 @@ describe("RunnerServer", () => {
   describe(".initializeSpecDataStore", () => {
     it("should initialise spec data store", (done) => {
       client.initializeSpecDataStore(
-        new SpecDataStoreInitRequest(),
+        SpecDataStoreInitRequest.create({}),
         (err: error) => {
           expect(err).toBe(null);
           expect(DataStoreFactory.getSpecDataStore().length).toBe(0);
@@ -127,7 +128,7 @@ describe("RunnerServer", () => {
         throw new Error();
       });
       client.initializeSpecDataStore(
-        new SpecDataStoreInitRequest(),
+        SpecDataStoreInitRequest.create({}),
         (err: error) => {
           expect(err).not.toBe(null);
           done();
@@ -139,7 +140,7 @@ describe("RunnerServer", () => {
   describe(".initializeScenarioDataStore", () => {
     it("should initialise scenario data store", (done) => {
       client.initializeScenarioDataStore(
-        new ScenarioDataStoreInitRequest(),
+        ScenarioDataStoreInitRequest.create({}),
         (err: error) => {
           expect(err).toBe(null);
           expect(DataStoreFactory.getScenarioDataStore().length).toBe(0);
@@ -158,7 +159,7 @@ describe("RunnerServer", () => {
         });
 
       client.initializeScenarioDataStore(
-        new ScenarioDataStoreInitRequest(),
+        ScenarioDataStoreInitRequest.create({}),
         (err: error) => {
           expect(err).not.toBe(null);
           done();
@@ -169,20 +170,24 @@ describe("RunnerServer", () => {
 
   describe(".startExecution", () => {
     it("should start suite execution", (done) => {
-      client.startExecution(new ExecutionStartingRequest(), (err: error) => {
-        expect(err).toBe(null);
-        done();
-      });
+      client.startExecution(
+        ExecutionStartingRequest.create({}),
+        (err: error) => {
+          expect(err).toBe(null);
+          done();
+        },
+      );
     });
   });
 
   describe(".startSpecExecution", () => {
     it("should start spec execution", (done) => {
-      const req = new SpecExecutionStartingRequest();
-      const info = new ExecutionInfo();
+      const req = SpecExecutionStartingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+        }),
+      });
 
-      info.setCurrentspec(new SpecInfo());
-      req.setCurrentexecutioninfo(info);
       client.startSpecExecution(req, (err: error) => {
         expect(err).toBe(null);
         done();
@@ -192,12 +197,12 @@ describe("RunnerServer", () => {
 
   describe(".startScenarioExecution", () => {
     it("should start scenario execution", (done) => {
-      const req = new ScenarioExecutionStartingRequest();
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentscenario(new ScenarioInfo());
-      req.setCurrentexecutioninfo(info);
+      const req = ScenarioExecutionStartingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+          currentScenario: ScenarioInfo.create({}),
+        }),
+      });
 
       client.startScenarioExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -208,14 +213,13 @@ describe("RunnerServer", () => {
 
   describe(".startStepExecution", () => {
     it("should start step execution", (done) => {
-      const req = new StepExecutionStartingRequest();
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentscenario(new ScenarioInfo());
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentstep(new StepInfo());
-      req.setCurrentexecutioninfo(info);
+      const req = StepExecutionStartingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+          currentScenario: ScenarioInfo.create({}),
+          currentStep: StepInfo.create({}),
+        }),
+      });
 
       client.startStepExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -226,7 +230,7 @@ describe("RunnerServer", () => {
 
   describe(".executeStep", () => {
     it("should execute step", (done) => {
-      const req = new ExecuteStepRequest();
+      const req = ExecuteStepRequest.create({});
 
       client.executeStep(req, (err: error) => {
         expect(err).toBe(null);
@@ -237,14 +241,13 @@ describe("RunnerServer", () => {
 
   describe(".finishStepExecution", () => {
     it("should finish step execution", (done) => {
-      const req = new StepExecutionEndingRequest();
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentscenario(new ScenarioInfo());
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentstep(new StepInfo());
-      req.setCurrentexecutioninfo(info);
+      const req = StepExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+          currentScenario: ScenarioInfo.create({}),
+          currentStep: StepInfo.create({}),
+        }),
+      });
 
       client.finishStepExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -255,12 +258,12 @@ describe("RunnerServer", () => {
 
   describe(".finishScenarioExecution", () => {
     it("should finish scenario execution", (done) => {
-      const req = new ScenarioExecutionEndingRequest();
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(new SpecInfo());
-      info.setCurrentscenario(new ScenarioInfo());
-      req.setCurrentexecutioninfo(info);
+      const req = ScenarioExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+          currentScenario: ScenarioInfo.create({}),
+        }),
+      });
 
       client.finishScenarioExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -271,11 +274,11 @@ describe("RunnerServer", () => {
 
   describe(".finishSpecExecution", () => {
     it("should finish spec execution", (done) => {
-      const req = new SpecExecutionEndingRequest();
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(new SpecInfo());
-      req.setCurrentexecutioninfo(info);
+      const req = SpecExecutionEndingRequest.create({
+        currentExecutionInfo: ExecutionInfo.create({
+          currentSpec: SpecInfo.create({}),
+        }),
+      });
 
       client.finishSpecExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -286,7 +289,7 @@ describe("RunnerServer", () => {
 
   describe(".finishExecution", () => {
     it("should finish suite execution", (done) => {
-      const req = new ExecutionEndingRequest();
+      const req = ExecutionEndingRequest.create({});
 
       client.finishExecution(req, (err: error) => {
         expect(err).toBe(null);
@@ -299,10 +302,10 @@ describe("RunnerServer", () => {
     it("should give all patterns", (done) => {
       Util.getImplDirs = jest.fn().mockReturnValue(["src", "tests"]);
       client.getGlobPatterns(
-        new Empty(),
+        Empty.create({}),
         (err: error, res: IFGPRes | null | undefined) => {
           expect(err).toBe(null);
-          const patterns = res?.getGlobpatternsList();
+          const patterns = res?.globPatterns;
           expect(patterns).toStrictEqual(["src/**/*.ts", "tests/**/*.ts"]);
           done();
         },
@@ -312,11 +315,11 @@ describe("RunnerServer", () => {
 
   describe(".cacheFile", () => {
     it("should update the registry", (done) => {
-      const req = new CFReq();
-
-      req.setContent(text1);
-      req.setFilepath("StepImpl.ts");
-      req.setStatus(CFReq.FileStatus.OPENED);
+      const req = CFReq.create({
+        content: text1,
+        filePath: "StepImpl.ts",
+        status: CacheFileRequest_FileStatus.OPENED,
+      });
 
       client.cacheFile(req, (err: error) => {
         expect(err).toBe(null);
@@ -330,10 +333,10 @@ describe("RunnerServer", () => {
     it("should give all the step names", (done) => {
       registry.getStepTexts = jest.fn().mockReturnValue(["foo"]);
       client.getStepNames(
-        new SNsReq(),
+        SNsReq.create({}),
         (err: error, res: SNsRes | null | undefined) => {
           expect(err).toBe(null);
-          expect(res?.getStepsList()).toStrictEqual(["foo"]);
+          expect(res?.steps).toStrictEqual(["foo"]);
           done();
         },
       );
@@ -342,9 +345,8 @@ describe("RunnerServer", () => {
 
   describe(".getStepPositions", () => {
     it("should give step positions", (done) => {
-      const req = new SPReq();
+      const req = SPReq.create({ filePath: "StepImpl.ts" });
 
-      req.setFilepath("StepImpl.ts");
       registry.getStepPositions = jest.fn().mockReturnValue([
         {
           stepValue: "foo",
@@ -356,16 +358,16 @@ describe("RunnerServer", () => {
         req,
         (err: error, res: SPRes | null | undefined) => {
           expect(err).toBe(null);
-          const positions = res?.getSteppositionsList() ?? [];
+          const positions = res?.stepPositions ?? [];
 
           expect(positions.length).toBe(1);
-          expect(positions[0].getStepvalue()).toBe("foo");
-          const span = positions[0].getSpan();
+          expect(positions[0].stepValue).toBe("foo");
+          const span = positions[0].span;
 
-          expect(span?.getStart()).toBe(3);
-          expect(span?.getStartchar()).toBe(5);
-          expect(span?.getEnd()).toBe(8);
-          expect(span?.getEndchar()).toBe(5);
+          expect(span?.start).toBe("3");
+          expect(span?.startChar).toBe("5");
+          expect(span?.end).toBe("8");
+          expect(span?.endChar).toBe("5");
           done();
         },
       );
@@ -376,12 +378,10 @@ describe("RunnerServer", () => {
     it("should give all the step impl files", (done) => {
       Util.getListOfFiles = jest.fn().mockReturnValue(["StepImpl.ts"]);
       client.getImplementationFiles(
-        new Empty(),
+        Empty.create({}),
         (err: error, res: IFLRes | null | undefined) => {
           expect(err).toBe(null);
-          expect(res?.getImplementationfilepathsList()).toStrictEqual([
-            "StepImpl.ts",
-          ]);
+          expect(res?.implementationFilePaths).toStrictEqual(["StepImpl.ts"]);
           done();
         },
       );
@@ -393,15 +393,16 @@ describe("RunnerServer", () => {
       Util.exists = jest.fn().mockReturnValue(true);
       Util.readFile = jest.fn().mockReturnValue(text1);
       const code = `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
-      const req = new SICReq();
+      const req = SICReq.create({
+        implementationFilePath: "StepImpl.ts",
+        codes: [code],
+      });
 
-      req.setImplementationfilepath("StepImpl.ts");
-      req.setCodesList([code]);
       client.implementStub(
         req,
         (err: error, res: FileDiff | null | undefined) => {
           expect(err).toBe(null);
-          expect(res?.getFilepath()).toStrictEqual("StepImpl.ts");
+          expect(res?.filePath).toStrictEqual("StepImpl.ts");
           const expected =
             code
               .split(EOL)
@@ -410,7 +411,7 @@ describe("RunnerServer", () => {
               })
               .join(EOL) + EOL;
 
-          expect(res?.getTextdiffsList()[0].getContent()).toBe(expected);
+          expect(res?.textDiffs[0].content).toBe(expected);
           done();
         },
       );
@@ -421,18 +422,17 @@ describe("RunnerServer", () => {
     it("should valiadate a step", (done) => {
       registry.isImplemented = jest.fn().mockReturnValue(true);
 
-      const req = new SVReq();
-
-      req.setSteptext("foo");
-      const stepValue = new ProtoStepValue();
-
-      stepValue.setStepvalue("foo");
-      stepValue.setParameterizedstepvalue("foo");
-      req.setStepvalue(stepValue);
+      const req = SVReq.create({
+        stepText: "foo",
+        stepValue: ProtoStepValue.create({
+          stepValue: "foo",
+          parameterizedStepValue: "foo",
+        }),
+      });
 
       client.validateStep(req, (err: error, res: SVRes | null | undefined) => {
         expect(err).toBe(null);
-        expect(res?.getIsvalid()).toBe(true);
+        expect(res?.isValid).toBe(true);
         done();
       });
     });
@@ -441,22 +441,20 @@ describe("RunnerServer", () => {
   describe(".refactor", () => {
     it("should refactor a step", (done) => {
       loader.loadStepsFromText("StepImpl.ts", text1);
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("foo");
-      oldStepValue.setParameterizedstepvalue("foo");
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("bar");
-      newStepValue.setParameterizedstepvalue("bar");
-      const req = new RReq();
-
-      req.setOldstepvalue(oldStepValue);
-      req.setNewstepvalue(newStepValue);
+      const req = RReq.create({
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "foo",
+          parameterizedStepValue: "foo",
+        }),
+        newStepValue: ProtoStepValue.create({
+          stepValue: "bar",
+          parameterizedStepValue: "bar",
+        }),
+      });
 
       client.refactor(req, (err: error, res: RRes | null | undefined) => {
         expect(err).toBe(null);
-        expect(res?.getSuccess()).toBe(true);
+        expect(res?.success).toBe(true);
         done();
       });
     });
@@ -465,14 +463,12 @@ describe("RunnerServer", () => {
   describe(".getStepName", () => {
     it("should give a step info", (done) => {
       loader.loadStepsFromText("StepImpl.ts", text1);
-      const req = new SNReq();
-
-      req.setStepvalue("foo");
+      const req = SNReq.create({ stepValue: "foo" });
 
       client.getStepName(req, (err: error, res: SNRes | null | undefined) => {
         expect(err).toBe(null);
-        expect(res?.getFilename()).toBe("StepImpl.ts");
-        expect(res?.getIssteppresent()).toBe(true);
+        expect(res?.fileName).toBe("StepImpl.ts");
+        expect(res?.isStepPresent).toBe(true);
         done();
       });
     });
@@ -484,7 +480,7 @@ describe("RunnerServer", () => {
 
       mockProcessExit();
       const mockShutdown = jest.spyOn(s, "forceShutdown");
-      const req = new KPReq();
+      const req = KPReq.create({});
 
       client.kill(req, (err: error) => {
         expect(err).toBe(null);

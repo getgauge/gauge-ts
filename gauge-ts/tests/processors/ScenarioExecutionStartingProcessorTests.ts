@@ -3,7 +3,7 @@ import {
   ScenarioExecutionStartingRequest,
   ScenarioInfo,
   SpecInfo,
-} from "../../src/gen/messages_pb";
+} from "../../src/gen/messages";
 import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
@@ -27,26 +27,23 @@ describe("ScenarioExecutionStartingProcessor", () => {
         HookType.BeforeScenario,
         new HookMethod(async () => {}, "Hooks.ts"),
       );
-      const currentSpec = new SpecInfo();
+      const currentSpec = SpecInfo.create({
+        name: "Foo",
+        fileName: "foo.ts",
+        tags: [],
+      });
+      const currentScen = ScenarioInfo.create({ name: "scenario", tags: [] });
+      const info = ExecutionInfo.create({
+        currentSpec,
+        currentScenario: currentScen,
+      });
+      const req = ScenarioExecutionStartingRequest.create({
+        currentExecutionInfo: info,
+      });
 
-      currentSpec.setName("Foo");
-      currentSpec.setFilename("foo.ts");
-      currentSpec.setTagsList([]);
-      const currentScen = new ScenarioInfo();
+      const res = (await processor.process(req)).executionResult;
 
-      currentScen.setName("scenario");
-      currentScen.setTagsList([]);
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(currentSpec);
-      info.setCurrentscenario(currentScen);
-      const req = new ScenarioExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(info);
-
-      const res = (await processor.process(req)).getExecutionresult();
-
-      expect(res?.getFailed()).toBe(false);
+      expect(res?.failed).toBe(false);
     });
   });
 });

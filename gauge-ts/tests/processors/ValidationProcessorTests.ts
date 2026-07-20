@@ -1,8 +1,8 @@
 import {
   StepValidateRequest,
-  StepValidateResponse,
-} from "../../src/gen/messages_pb";
-import { ProtoStepValue } from "../../src/gen/spec_pb";
+  StepValidateResponse_ErrorType,
+} from "../../src/gen/messages";
+import { ProtoStepValue } from "../../src/gen/spec";
 import registry from "../../src/models/StepRegistry";
 import { ValidationProcessor } from "../../src/processors/ValidationProcessor";
 
@@ -16,87 +16,87 @@ describe("ValidationProcessor", () => {
   describe(".process", () => {
     it("should process StepValidateRequest request", () => {
       registry.isImplemented = jest.fn().mockReturnValue(true);
-      const stepValue = new ProtoStepValue();
+      const stepValue = ProtoStepValue.create({
+        parameterizedStepValue: "foo",
+        parameters: [],
+        stepValue: "foo",
+      });
 
-      stepValue.setParameterizedstepvalue("foo");
-      stepValue.setParametersList([]);
-      stepValue.setStepvalue("foo");
-
-      const req = new StepValidateRequest();
-
-      req.setSteptext("foo");
-      req.setNumberofparameters(0);
-      req.setStepvalue(stepValue);
+      const req = StepValidateRequest.create({
+        stepText: "foo",
+        numberOfParameters: 0,
+        stepValue,
+      });
 
       const res = processor.process(req);
 
-      expect(res.getIsvalid()).toBe(true);
+      expect(res.isValid).toBe(true);
     });
 
     it("should process StepValidateRequest request when step is not implemented", () => {
       registry.isImplemented = jest.fn().mockReturnValue(false);
 
-      const stepValue = new ProtoStepValue();
+      const stepValue = ProtoStepValue.create({
+        parameterizedStepValue: "hello",
+        stepValue: "hello",
+      });
 
-      stepValue.setParameterizedstepvalue("hello");
-      stepValue.setStepvalue("hello");
-
-      const req = new StepValidateRequest();
-
-      req.setSteptext("hello");
-      req.setStepvalue(stepValue);
+      const req = StepValidateRequest.create({
+        stepText: "hello",
+        stepValue,
+      });
 
       const res = processor.process(req);
 
-      expect(res.getIsvalid()).toBe(false);
-      expect(res.getErrortype()).toBe(
-        StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND,
+      expect(res.isValid).toBe(false);
+      expect(res.errorType).toBe(
+        StepValidateResponse_ErrorType.STEP_IMPLEMENTATION_NOT_FOUND,
       );
     });
 
     it("should process StepValidateRequest request and give suggestion when step is not implemented", () => {
       registry.isImplemented = jest.fn().mockReturnValue(false);
 
-      const stepValue = new ProtoStepValue();
+      const stepValue = ProtoStepValue.create({
+        parameterizedStepValue: "say {} to {}",
+        parameters: ["hello", "world"],
+        stepValue: "say <hello> to <world>",
+      });
 
-      stepValue.setParameterizedstepvalue("say {} to {}");
-      stepValue.setParametersList(["hello", "world"]);
-      stepValue.setStepvalue("say <hello> to <world>");
-
-      const req = new StepValidateRequest();
-
-      req.setSteptext("say <hello> to <world>");
-      req.setNumberofparameters(2);
-      req.setStepvalue(stepValue);
+      const req = StepValidateRequest.create({
+        stepText: "say <hello> to <world>",
+        numberOfParameters: 2,
+        stepValue,
+      });
 
       const res = processor.process(req);
 
-      expect(res.getIsvalid()).toBe(false);
-      expect(res.getErrortype()).toBe(
-        StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND,
+      expect(res.isValid).toBe(false);
+      expect(res.errorType).toBe(
+        StepValidateResponse_ErrorType.STEP_IMPLEMENTATION_NOT_FOUND,
       );
     });
 
     it("should process StepValidateRequest request when step is implemented more than once", () => {
       registry.isImplemented = jest.fn().mockReturnValue(true);
       registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
-      const stepValue = new ProtoStepValue();
+      const stepValue = ProtoStepValue.create({
+        parameterizedStepValue: "hello {}",
+        parameters: ["world"],
+        stepValue: "hello <world>",
+      });
 
-      stepValue.setParameterizedstepvalue("hello {}");
-      stepValue.setParametersList(["world"]);
-      stepValue.setStepvalue("hello <world>");
-
-      const req = new StepValidateRequest();
-
-      req.setSteptext("hello <world>");
-      req.setNumberofparameters(1);
-      req.setStepvalue(stepValue);
+      const req = StepValidateRequest.create({
+        stepText: "hello <world>",
+        numberOfParameters: 1,
+        stepValue,
+      });
 
       const res = processor.process(req);
 
-      expect(res.getIsvalid()).toBe(false);
-      expect(res.getErrortype()).toBe(
-        StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION,
+      expect(res.isValid).toBe(false);
+      expect(res.errorType).toBe(
+        StepValidateResponse_ErrorType.DUPLICATE_STEP_IMPLEMENTATION,
       );
     });
   });

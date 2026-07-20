@@ -3,34 +3,32 @@ import { EOL } from "node:os";
 import {
   type StepValidateRequest,
   StepValidateResponse,
-} from "../gen/messages_pb";
-import type { ProtoStepValue } from "../gen/spec_pb";
+  StepValidateResponse_ErrorType,
+} from "../gen/messages";
+import type { ProtoStepValue } from "../gen/spec";
 import registry from "../models/StepRegistry";
 
 export class ValidationProcessor {
   public process(req: StepValidateRequest): StepValidateResponse {
-    const step = req.getStepvalue() as ProtoStepValue;
-    const stepValue = step.getParameterizedstepvalue();
+    const step = req.stepValue as ProtoStepValue;
+    const stepValue = step.parameterizedStepValue;
 
-    const res = new StepValidateResponse();
+    const res = StepValidateResponse.create({
+      isValid: true,
+      errorMessage: "",
+    });
 
-    res.setIsvalid(true);
-    res.setErrormessage("");
-    if (!registry.isImplemented(req.getSteptext())) {
-      res.setIsvalid(false);
-      res.setErrormessage(`No step implementation found for ${stepValue}`);
-      res.setErrortype(
-        StepValidateResponse.ErrorType.STEP_IMPLEMENTATION_NOT_FOUND,
-      );
-      res.setSuggestion(this.getSuggestion(step));
-    } else if (registry.hasMultipleImplementations(req.getSteptext())) {
-      res.setIsvalid(false);
-      res.setErrormessage(
-        `Multiple step implementation found for ${stepValue}`,
-      );
-      res.setErrortype(
-        StepValidateResponse.ErrorType.DUPLICATE_STEP_IMPLEMENTATION,
-      );
+    if (!registry.isImplemented(req.stepText)) {
+      res.isValid = false;
+      res.errorMessage = `No step implementation found for ${stepValue}`;
+      res.errorType =
+        StepValidateResponse_ErrorType.STEP_IMPLEMENTATION_NOT_FOUND;
+      res.suggestion = this.getSuggestion(step);
+    } else if (registry.hasMultipleImplementations(req.stepText)) {
+      res.isValid = false;
+      res.errorMessage = `Multiple step implementation found for ${stepValue}`;
+      res.errorType =
+        StepValidateResponse_ErrorType.DUPLICATE_STEP_IMPLEMENTATION;
     }
 
     return res;
@@ -38,12 +36,13 @@ export class ValidationProcessor {
 
   private getSuggestion(step: ProtoStepValue): string {
     let argCount = 0;
-    const stepText = step
-      .getParameterizedstepvalue()
-      .replace(/{}/g, () => `<arg${argCount++}>`);
+    const stepText = step.parameterizedStepValue.replace(
+      /{}/g,
+      () => `<arg${argCount++}>`,
+    );
 
     return `@Step("${stepText}")${EOL}public async ${this.getMethodName()}(${this.getParamsList(
-      step.getParametersList(),
+      step.parameters,
     )}) {${EOL}\tthrow new Error("Method not implemented.");${EOL}}`;
   }
 

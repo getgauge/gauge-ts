@@ -1,4 +1,4 @@
-import type { Parameter } from "../../gen/spec_pb";
+import type { Parameter } from "../../gen/spec";
 import type { ParameterParser } from "./ParameterParser";
 import { PrimitiveParser } from "./PrimitiveParser";
 import { TableParameterParser } from "./TableParameterParser";
@@ -17,7 +17,7 @@ export class ParameterParsingChain {
         return parser.parse(parameter);
       }
     }
-    return parameter.getValue();
+    return parameter.value;
   }
 
   public addCustomParser(parser: ParameterParser): void {

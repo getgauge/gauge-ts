@@ -1,8 +1,8 @@
 import type {
   ExecuteStepRequest,
   ExecutionStatusResponse,
-} from "../gen/messages_pb";
-import { ProtoExecutionResult } from "../gen/spec_pb";
+} from "../gen/messages";
+import { ProtoExecutionResult } from "../gen/spec";
 import registry from "../models/StepRegistry";
 import { Screenshot } from "../screenshot/Screenshot";
 import { MessageStore } from "../stores/MessageStore";
@@ -20,7 +20,7 @@ export class StepExecutionProcessor extends ExecutionProcessor {
   public async process(
     req: ExecuteStepRequest,
   ): Promise<ExecutionStatusResponse> {
-    if (!registry.isImplemented(req.getParsedsteptext())) {
+    if (!registry.isImplemented(req.parsedStepText)) {
       return Promise.resolve(
         this.executionError("Step Implementation not found"),
       );
@@ -34,20 +34,16 @@ export class StepExecutionProcessor extends ExecutionProcessor {
     req: ExecuteStepRequest,
   ): Promise<ProtoExecutionResult> {
     const start = Date.now();
-    const result = new ProtoExecutionResult();
-
-    result.setFailed(false);
-    const mi = registry.get(req.getParsedsteptext());
-    const params = req
-      .getParametersList()
-      .map((p) => this.parsingChain.parse(p));
+    const result = ProtoExecutionResult.create({ failed: false });
+    const mi = registry.get(req.parsedStepText);
+    const params = req.parameters.map((p) => this.parsingChain.parse(p));
 
     const method = mi.getMethod() as CommonFunction;
 
     try {
       if (method.length !== params.length) {
         throw new Error(
-          `Argument length mismatch for \`${req.getActualsteptext()}\`.` +
+          `Argument length mismatch for \`${req.actualStepText}\`.` +
             ` Actual Count: [${method.length}], Expected Count: [${params.length}]`,
         );
       }
@@ -59,34 +55,34 @@ export class StepExecutionProcessor extends ExecutionProcessor {
     } catch (err) {
       const error = err as Error;
 
-      result.setFailed(true);
+      result.failed = true;
       const cofErrors = registry.getContinueOnFailureFunctions(method);
 
       if (cofErrors?.includes(error.constructor.name)) {
-        result.setRecoverableerror(true);
+        result.recoverableError = true;
       }
-      result.setErrormessage(error.message);
-      result.setStacktrace(error.stack ?? "");
+      result.errorMessage = error.message;
+      result.stackTrace = error.stack ?? "";
       if (process.env.screenshot_on_failure !== "false") {
         const s = await Screenshot.capture();
 
-        result.setFailurescreenshotfile(s);
+        result.failureScreenshotFile = s;
       }
     }
-    result.setExecutiontime(Date.now() - start);
-    result.setMessageList(MessageStore.pendingMessages());
-    result.setScreenshotfilesList(ScreenshotStore.pendingScreenshots());
+    result.executionTime = String(Date.now() - start);
+    result.message = MessageStore.pendingMessages();
+    result.screenshotFiles = ScreenshotStore.pendingScreenshots();
 
     return result;
   }
 
   private executionError(message: string): ExecutionStatusResponse {
-    const result = new ProtoExecutionResult();
-
-    result.setFailed(true);
-    result.setRecoverableerror(false);
-    result.setExecutiontime(0);
-    result.setErrormessage(message);
+    const result = ProtoExecutionResult.create({
+      failed: true,
+      recoverableError: false,
+      executionTime: "0",
+      errorMessage: message,
+    });
 
     return this.createExecutionResponse(result);
   }
