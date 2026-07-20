@@ -6,6 +6,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "preclean:build": "node -e \"['dist','deploy','artifacts'].forEach((dir) => require('fs').rmSync(dir, { recursive: true, force: true }))\"",
+    "prebuild": "npm run gen-proto",
+    "pretest": "npm run gen-proto",
     "build": "tsc",
     "clean:build": "npm run build",
     "postbuild": "copyfiles -f \"./src/gen/**\" \"./dist/gen\"",
@@ -13,7 +15,7 @@
     "precommit": " npm run format && npm run lint",
     "test": "jest --verbose --detectOpenHandles --forceExit",
     "gen-proto": "sh genproto.sh",
-    "prepublishOnly": "tsc"
+    "prepublishOnly": "npm run gen-proto && tsc"
   },
   "repository": {
     "type": "git",
