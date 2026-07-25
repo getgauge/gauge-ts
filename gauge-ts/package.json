@@ -19,7 +19,12 @@
     "type": "git",
     "url": "git+https://github.com/getgauge/gauge-ts.git"
   },
-  "keywords": ["gauge", "Acceptance Test", "Typescript", "Automation"],
+  "keywords": [
+    "gauge",
+    "Acceptance Test",
+    "Typescript",
+    "Automation"
+  ],
   "author": "Gauge <getgauge@outlook.com>",
   "license": "MIT",
   "bugs": {
@@ -29,7 +34,7 @@
     "@bufbuild/protobuf": "^2.12.1",
     "@grpc/grpc-js": "^1.14.4",
     "ts-node": "^10.9.0",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.3"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
