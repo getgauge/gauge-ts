@@ -5,7 +5,7 @@ import {
   SpecInfo,
   StepExecutionStartingRequest,
   StepInfo,
-} from "../../src/gen/messages_pb";
+} from "../../src/gen/messages";
 import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
@@ -29,28 +29,23 @@ describe("StepExecutionStartingProcessor", () => {
         HookType.BeforeStep,
         new HookMethod(async () => {}, "Hooks.ts"),
       );
-      const currentSpec = new SpecInfo();
-
-      currentSpec.setName("Foo");
-      currentSpec.setFilename("foo.ts");
-      currentSpec.setTagsList([]);
-      const currentScen = new ScenarioInfo();
-
-      currentScen.setName("scenario");
-      currentScen.setTagsList([]);
-
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(currentSpec);
-      info.setCurrentscenario(currentScen);
-      info.setCurrentstep();
-      const req = new StepExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(info);
+      const currentSpec = SpecInfo.create({
+        name: "Foo",
+        fileName: "foo.ts",
+        tags: [],
+      });
+      const currentScen = ScenarioInfo.create({ name: "scenario", tags: [] });
+      const info = ExecutionInfo.create({
+        currentSpec,
+        currentScenario: currentScen,
+      });
+      const req = StepExecutionStartingRequest.create({
+        currentExecutionInfo: info,
+      });
 
       const res = await processor.process(req);
 
-      expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+      expect(res?.executionResult?.failed).toBe(false);
     });
 
     it("should process StepExecutionStartingRequest and run BeforeStep hooks with step in context", async () => {
@@ -59,31 +54,27 @@ describe("StepExecutionStartingProcessor", () => {
         HookType.BeforeStep,
         new HookMethod(async () => {}, "Hooks.ts"),
       );
-      const currentSpec = new SpecInfo();
-
-      currentSpec.setName("Foo");
-      currentSpec.setFilename("foo.ts");
-      currentSpec.setTagsList([]);
-      const currentScen = new ScenarioInfo();
-
-      currentScen.setName("scenario");
-      currentScen.setTagsList([]);
-
-      const currentStep = new StepInfo();
-
-      currentStep.setStep(new ExecuteStepRequest());
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(currentSpec);
-      info.setCurrentscenario(currentScen);
-      info.setCurrentstep(currentStep);
-      const req = new StepExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(info);
+      const currentSpec = SpecInfo.create({
+        name: "Foo",
+        fileName: "foo.ts",
+        tags: [],
+      });
+      const currentScen = ScenarioInfo.create({ name: "scenario", tags: [] });
+      const currentStep = StepInfo.create({
+        step: ExecuteStepRequest.create({}),
+      });
+      const info = ExecutionInfo.create({
+        currentSpec,
+        currentScenario: currentScen,
+        currentStep,
+      });
+      const req = StepExecutionStartingRequest.create({
+        currentExecutionInfo: info,
+      });
 
       const res = await processor.process(req);
 
-      expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+      expect(res?.executionResult?.failed).toBe(false);
     });
 
     it("should process StepExecutionStartingRequest and run BeforeStep hooks with step without request in context", async () => {
@@ -92,30 +83,25 @@ describe("StepExecutionStartingProcessor", () => {
         HookType.BeforeStep,
         new HookMethod(async () => {}, "Hooks.ts"),
       );
-      const currentSpec = new SpecInfo();
-
-      currentSpec.setName("Foo");
-      currentSpec.setFilename("foo.ts");
-      currentSpec.setTagsList([]);
-      const currentScen = new ScenarioInfo();
-
-      currentScen.setName("scenario");
-      currentScen.setTagsList([]);
-
-      const currentStep = new StepInfo();
-
-      const info = new ExecutionInfo();
-
-      info.setCurrentspec(currentSpec);
-      info.setCurrentscenario(currentScen);
-      info.setCurrentstep(currentStep);
-      const req = new StepExecutionStartingRequest();
-
-      req.setCurrentexecutioninfo(info);
+      const currentSpec = SpecInfo.create({
+        name: "Foo",
+        fileName: "foo.ts",
+        tags: [],
+      });
+      const currentScen = ScenarioInfo.create({ name: "scenario", tags: [] });
+      const currentStep = StepInfo.create({});
+      const info = ExecutionInfo.create({
+        currentSpec,
+        currentScenario: currentScen,
+        currentStep,
+      });
+      const req = StepExecutionStartingRequest.create({
+        currentExecutionInfo: info,
+      });
 
       const res = await processor.process(req);
 
-      expect(res?.getExecutionresult()?.getFailed()).toBe(false);
+      expect(res?.executionResult?.failed).toBe(false);
     });
   });
 });

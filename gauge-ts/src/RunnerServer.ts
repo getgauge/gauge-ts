@@ -1,7 +1,7 @@
 import { EOL } from "node:os";
 import { sep } from "node:path";
 import { Server, ServerCredentials } from "@grpc/grpc-js";
-import { RunnerService } from "./gen/services_grpc_pb";
+import { RunnerService } from "./gen/services";
 
 import type {
   ServerUnaryCall as SUC,
@@ -15,7 +15,7 @@ import {
   ImplementationFileGlobPatternResponse as IFGPR,
   ImplementationFileListResponse as IFLR,
   StepNamesResponse,
-} from "./gen/messages_pb";
+} from "./gen/messages";
 
 import type {
   CacheFileRequest,
@@ -44,10 +44,10 @@ import type {
   StepValidateResponse,
   StubImplementationCodeRequest,
   SuiteDataStoreInitRequest,
-} from "./gen/messages_pb";
+} from "./gen/messages";
 
-import type { IRunnerServer } from "./gen/services_grpc_pb";
-import { ProtoExecutionResult } from "./gen/spec_pb";
+import type { RunnerServer as IRunnerServer } from "./gen/services";
+import { ProtoExecutionResult } from "./gen/spec";
 import { ImplLoader } from "./loaders/ImplLoader";
 import StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
@@ -267,7 +267,7 @@ export default class RunnerServer implements IRunnerServer {
   ): void {
     try {
       RunnerServer.cacheFileProcessor.process(call.request as CacheFileRequest);
-      callback(null, new Empty());
+      callback(null, Empty.create({}));
     } catch (error) {
       callback(createRpcError(error as Error), null);
     }
@@ -292,10 +292,7 @@ export default class RunnerServer implements IRunnerServer {
       const patterns = Util.getImplDirs().map((dir: string) => {
         return dir.split(sep).concat(["**", "*.ts"]).join("/");
       });
-      const res = new IFGPR();
-
-      res.setGlobpatternsList(patterns);
-      callback(null, res);
+      callback(null, IFGPR.create({ globPatterns: patterns }));
     } catch (error) {
       callback(createRpcError(error as Error), null);
     }
@@ -306,10 +303,10 @@ export default class RunnerServer implements IRunnerServer {
     callback: sUD<StepNamesResponse>,
   ): void {
     try {
-      const res = new StepNamesResponse();
-
-      res.setStepsList(registry.getStepTexts());
-      callback(null, res);
+      callback(
+        null,
+        StepNamesResponse.create({ steps: registry.getStepTexts() }),
+      );
     } catch (error) {
       callback(createRpcError(error as Error), null);
     }
@@ -336,10 +333,10 @@ export default class RunnerServer implements IRunnerServer {
     callback: sUD<IFLR>,
   ): void {
     try {
-      const res = new IFLR();
-
-      res.setImplementationfilepathsList(Util.getListOfFiles());
-      callback(null, res);
+      callback(
+        null,
+        IFLR.create({ implementationFilePaths: Util.getListOfFiles() }),
+      );
     } catch (error) {
       callback(createRpcError(error as Error), null);
     }
@@ -379,7 +376,7 @@ export default class RunnerServer implements IRunnerServer {
     _call: SUC<KillProcessRequest, Empty>,
     callback: sUD<Empty>,
   ): void {
-    callback(null, new Empty());
+    callback(null, Empty.create({}));
     setTimeout(() => {
       stop();
       process.exit(0);
@@ -387,13 +384,9 @@ export default class RunnerServer implements IRunnerServer {
   }
 
   private getEmptExecutionResponse(): ESR {
-    const res = new ExecutionStatusResponse();
-    const result = new ProtoExecutionResult();
-
-    result.setFailed(false);
-    res.setExecutionresult(result);
-
-    return res;
+    return ExecutionStatusResponse.create({
+      executionResult: ProtoExecutionResult.create({ failed: false }),
+    });
     // eslint-disable-next-line padded-blocks
   }
   // eslint-disable-next-line no-multiple-empty-lines

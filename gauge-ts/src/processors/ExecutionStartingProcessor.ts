@@ -1,8 +1,5 @@
 import { open } from "node:inspector";
-import type {
-  ExecutionInfo,
-  ExecutionStartingRequest,
-} from "../gen/messages_pb";
+import type { ExecutionInfo, ExecutionStartingRequest } from "../gen/messages";
 import type { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
@@ -34,7 +31,7 @@ export class ExecutionStartingProcessor extends HookExecutionProcessor {
     }
     const req = message as ExecutionStartingRequest;
 
-    return req.getCurrentexecutioninfo() as ExecutionInfo;
+    return req.currentExecutionInfo as ExecutionInfo;
   }
 
   protected getApplicableHooks(): Array<HookMethod> {

@@ -1,4 +1,7 @@
-import { CacheFileRequest } from "../gen/messages_pb";
+import {
+  type CacheFileRequest,
+  CacheFileRequest_FileStatus,
+} from "../gen/messages";
 import type StaticLoader from "../loaders/StaticLoader";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
@@ -11,21 +14,21 @@ export class CacheFileProcessor {
   }
 
   public process(req: CacheFileRequest): void {
-    switch (req.getStatus()) {
-      case CacheFileRequest.FileStatus.CHANGED:
-      case CacheFileRequest.FileStatus.OPENED:
-        this._loader.reloadSteps(req.getContent(), req.getFilepath());
+    switch (req.status) {
+      case CacheFileRequest_FileStatus.CHANGED:
+      case CacheFileRequest_FileStatus.OPENED:
+        this._loader.reloadSteps(req.content, req.filePath);
         break;
-      case CacheFileRequest.FileStatus.CREATED:
-        if (!registry.isFileCached(req.getFilepath())) {
-          this.loadFromDisk(req.getFilepath());
+      case CacheFileRequest_FileStatus.CREATED:
+        if (!registry.isFileCached(req.filePath)) {
+          this.loadFromDisk(req.filePath);
         }
         break;
-      case CacheFileRequest.FileStatus.CLOSED:
-        this.loadFromDisk(req.getFilepath());
+      case CacheFileRequest_FileStatus.CLOSED:
+        this.loadFromDisk(req.filePath);
         break;
-      case CacheFileRequest.FileStatus.DELETED:
-        this._loader.removeSteps(req.getFilepath());
+      case CacheFileRequest_FileStatus.DELETED:
+        this._loader.removeSteps(req.filePath);
         break;
     }
   }

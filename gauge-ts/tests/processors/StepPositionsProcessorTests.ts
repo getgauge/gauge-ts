@@ -1,4 +1,4 @@
-import { StepPositionsRequest } from "../../src/gen/messages_pb";
+import { StepPositionsRequest } from "../../src/gen/messages";
 import { Position } from "../../src/models/Position";
 import { Range } from "../../src/models/Range";
 import registry from "../../src/models/StepRegistry";
@@ -28,13 +28,11 @@ describe("StepPositionsProcessor", () => {
           span: new Range(new Position(11, 3), new Position(15, 3)),
         },
       ]);
-      const req = new StepPositionsRequest();
-
-      req.setFilepath("foo.js");
+      const req = StepPositionsRequest.create({ filePath: "foo.js" });
       const res = processor.process(req);
 
-      expect(res.getError()).toBe("");
-      expect(res.getSteppositionsList().length).toBe(3);
+      expect(res.error).toBe("");
+      expect(res.stepPositions.length).toBe(3);
     });
   });
 });

@@ -1,4 +1,4 @@
-import type { ProtoTable } from "../gen/spec_pb";
+import type { ProtoTable } from "../gen/spec";
 import { TableRow } from "./TableRow";
 
 export class Table {
@@ -7,14 +7,14 @@ export class Table {
   private readonly _rows: string[][];
 
   public static from(table: ProtoTable): Table {
-    if (!table.getHeaders()) {
+    if (!table.headers) {
       throw new Error("Invalid table passed");
     }
-    const header = table.getHeaders();
-    const gaugeTable = new Table(header?.getCellsList() ?? []);
+    const header = table.headers;
+    const gaugeTable = new Table(header?.cells ?? []);
 
-    for (const row of table.getRowsList()) {
-      gaugeTable.addRow(row.getCellsList());
+    for (const row of table.rows) {
+      gaugeTable.addRow(row.cells);
     }
 
     return gaugeTable;

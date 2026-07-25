@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { strictEqual } from "node:assert";
-import { ExecuteStepRequest } from "../../src/gen/messages_pb";
-import { Parameter, ProtoTable, ProtoTableRow } from "../../src/gen/spec_pb";
+import { ExecuteStepRequest } from "../../src/gen/messages";
+import {
+  Parameter,
+  Parameter_ParameterType,
+  ProtoTable,
+  ProtoTableRow,
+} from "../../src/gen/spec";
 import registry from "../../src/models/StepRegistry";
 import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { StepExecutionProcessor } from "../../src/processors/StepExecutionProcessor";
@@ -24,15 +29,16 @@ describe("StepExecutionProcessor", () => {
 
   describe(".process", () => {
     it("should process step execution request when step is unimplemented", async () => {
-      const req = new ExecuteStepRequest();
+      const req = ExecuteStepRequest.create({
+        actualStepText: "foo",
+        parsedStepText: "foo",
+      });
 
-      req.setActualsteptext("foo");
-      req.setParsedsteptext("foo");
       const response = await processor.process(req);
-      const result = response.getExecutionresult();
+      const result = response.executionResult;
 
-      expect(result?.getFailed()).toBe(true);
-      expect(result?.getErrormessage()).toBe("Step Implementation not found");
+      expect(result?.failed).toBe(true);
+      expect(result?.errorMessage).toBe("Step Implementation not found");
     });
 
     it("should process step execution request when there is param lenght mismatch", async () => {
@@ -51,16 +57,16 @@ describe("StepExecutionProcessor", () => {
           ),
         );
 
-      const req = new ExecuteStepRequest();
-
-      req.setActualsteptext("hello");
-      req.setParsedsteptext("hello");
+      const req = ExecuteStepRequest.create({
+        actualStepText: "hello",
+        parsedStepText: "hello",
+      });
 
       const response = await processor.process(req);
-      const result = response.getExecutionresult();
+      const result = response.executionResult;
 
-      expect(result?.getFailed()).toBe(true);
-      expect(result?.getErrormessage()).toBe(
+      expect(result?.failed).toBe(true);
+      expect(result?.errorMessage).toBe(
         "Argument length mismatch for `hello`. Actual Count: [1], Expected Count: [0]",
       );
       expect(capture).toBeCalled();
@@ -78,37 +84,32 @@ describe("StepExecutionProcessor", () => {
         ),
       );
 
-      const p1 = new Parameter();
+      const table = ProtoTable.create({
+        headers: ProtoTableRow.create({ cells: ["header"] }),
+        rows: [ProtoTableRow.create({ cells: ["value"] })],
+      });
+      const p1 = Parameter.create({
+        name: "world",
+        value: "world",
+        parameterType: Parameter_ParameterType.Static,
+      });
+      const p2 = Parameter.create({
+        name: "table",
+        table,
+        parameterType: Parameter_ParameterType.Table,
+      });
 
-      p1.setName("world");
-      p1.setValue("world");
-      p1.setParametertype(Parameter.ParameterType.STATIC);
-      const p2 = new Parameter();
-
-      const table = new ProtoTable();
-      const row1 = new ProtoTableRow();
-
-      row1.setCellsList(["header"]);
-      const row2 = new ProtoTableRow();
-
-      row2.setCellsList(["value"]);
-      table.setHeaders(row1);
-      table.setRowsList([row2]);
-      p2.setName("table");
-      p2.setTable(table);
-      p2.setParametertype(Parameter.ParameterType.TABLE);
-
-      const req = new ExecuteStepRequest();
-
-      req.setParsedsteptext("hello {} to {}");
-      req.setActualsteptext("hello <world> to <table>");
-      req.setParametersList([p1, p2]);
+      const req = ExecuteStepRequest.create({
+        parsedStepText: "hello {} to {}",
+        actualStepText: "hello <world> to <table>",
+        parameters: [p1, p2],
+      });
 
       const resMess = await processor.process(req);
-      const result = resMess.getExecutionresult();
+      const result = resMess.executionResult;
 
-      expect(result?.getFailed()).toBe(false);
-      expect(result?.getErrormessage()).toBe("");
+      expect(result?.failed).toBe(false);
+      expect(result?.errorMessage).toBe("");
     });
 
     it("should process step execution request when step is recoverable", async () => {
@@ -130,18 +131,18 @@ describe("StepExecutionProcessor", () => {
         .fn()
         .mockReturnValue(["AssertionError"]);
 
-      const req = new ExecuteStepRequest();
-
-      req.setActualsteptext("hello");
-      req.setParsedsteptext("hello");
+      const req = ExecuteStepRequest.create({
+        actualStepText: "hello",
+        parsedStepText: "hello",
+      });
 
       const resMess = await processor.process(req);
 
-      const result = resMess.getExecutionresult();
+      const result = resMess.executionResult;
 
-      expect(result?.getFailed()).toBe(true);
-      expect(result?.getErrormessage()).toContain("1 !== 2");
-      expect(result?.getRecoverableerror()).toBe(true);
+      expect(result?.failed).toBe(true);
+      expect(result?.errorMessage).toContain("1 !== 2");
+      expect(result?.recoverableError).toBe(true);
       expect(capture).toBeCalledTimes(0);
     });
 
@@ -163,18 +164,18 @@ describe("StepExecutionProcessor", () => {
         .mockReturnValue(
           new StepRegistryEntry("hello", "hello", "StepImpl.ts", method),
         );
-      const req = new ExecuteStepRequest();
-
-      req.setActualsteptext("hello");
-      req.setParsedsteptext("hello");
+      const req = ExecuteStepRequest.create({
+        actualStepText: "hello",
+        parsedStepText: "hello",
+      });
 
       const resMess = await processor.process(req);
 
-      const result = resMess.getExecutionresult();
+      const result = resMess.executionResult;
 
-      expect(result?.getFailed()).toBe(true);
-      expect(result?.getErrormessage()).toBe("failed");
-      expect(result?.getStacktrace()).toBe("");
+      expect(result?.failed).toBe(true);
+      expect(result?.errorMessage).toBe("failed");
+      expect(result?.stackTrace).toBe("");
       expect(capture).toBeCalledTimes(0);
     });
   });

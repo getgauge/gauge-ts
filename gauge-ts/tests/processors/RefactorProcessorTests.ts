@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { EOL } from "node:os";
-import { ParameterPosition, RefactorRequest } from "../../src/gen/messages_pb";
-import { ProtoStepValue } from "../../src/gen/spec_pb";
+import { ParameterPosition, RefactorRequest } from "../../src/gen/messages";
+import { ProtoStepValue } from "../../src/gen/spec";
 import registry from "../../src/models/StepRegistry";
 import { StepRegistryEntry } from "../../src/models/StepRegistryEntry";
 import { RefactorProcessor } from "../../src/processors/RefactorProcessor";
@@ -23,24 +23,22 @@ describe("RefactorProcessor", () => {
     it("should process RefactorRequest when step has mutiple impl and return response with error", () => {
       registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
 
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("foo");
-      newStepValue.setParameterizedstepvalue("foo");
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("bar");
-      oldStepValue.setParameterizedstepvalue("bar");
-      const request = new RefactorRequest();
-
-      request.setNewstepvalue(newStepValue);
-      request.setOldstepvalue(oldStepValue);
-      request.setSavechanges(false);
+      const request = RefactorRequest.create({
+        newStepValue: ProtoStepValue.create({
+          stepValue: "foo",
+          parameterizedStepValue: "foo",
+        }),
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "bar",
+          parameterizedStepValue: "bar",
+        }),
+        saveChanges: false,
+      });
 
       const res = processor.process(request);
 
-      expect(res?.getSuccess()).toBe(false);
-      expect(res?.getError()).toBe("Multiple Implementation found for bar");
+      expect(res?.success).toBe(false);
+      expect(res?.error).toBe("Multiple Implementation found for bar");
     });
 
     it("should process RefactorRequest for a step and return response", () => {
@@ -50,39 +48,37 @@ describe("RefactorProcessor", () => {
         .mockReturnValue(new StepRegistryEntry("foo", "foo", "StepImpl.ts"));
       Util.readFile = jest.fn().mockReturnValue(text1);
 
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("foo");
-      oldStepValue.setParameterizedstepvalue("foo");
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("bar");
-      newStepValue.setParameterizedstepvalue("bar");
-      const request = new RefactorRequest();
-
-      request.setNewstepvalue(newStepValue);
-      request.setOldstepvalue(oldStepValue);
-      request.setSavechanges(false);
+      const request = RefactorRequest.create({
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "foo",
+          parameterizedStepValue: "foo",
+        }),
+        newStepValue: ProtoStepValue.create({
+          stepValue: "bar",
+          parameterizedStepValue: "bar",
+        }),
+        saveChanges: false,
+      });
 
       const res = processor.process(request);
 
-      expect(res?.getSuccess()).toBe(true);
-      expect(res?.getError()).toBe("");
-      expect(res?.getFileschangedList()).toStrictEqual(["StepImpl.ts"]);
-      expect(res?.getFilechangesList().length).toBe(2);
-      const changes = res?.getFilechangesList();
+      expect(res?.success).toBe(true);
+      expect(res?.error).toBe("");
+      expect(res?.filesChanged).toStrictEqual(["StepImpl.ts"]);
+      expect(res?.fileChanges.length).toBe(2);
+      const changes = res?.fileChanges;
 
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      expect(changes?.[0].getFilename()).toBe("StepImpl.ts");
-      const diff = changes?.[0].getDiffsList()[0];
+      expect(changes?.[0].fileName).toBe("StepImpl.ts");
+      const diff = changes?.[0].diffs[0];
 
-      expect(diff?.getContent()).toBe('"bar"');
-      const span = diff?.getSpan();
+      expect(diff?.content).toBe('"bar"');
+      const span = diff?.span;
 
-      expect(span?.getStart()).toBe(3);
-      expect(span?.getStartchar()).toBe(10);
-      expect(span?.getEnd()).toBe(3);
-      expect(span?.getEndchar()).toBe(17);
+      expect(span?.start).toBe("3");
+      expect(span?.startChar).toBe("10");
+      expect(span?.end).toBe("3");
+      expect(span?.endChar).toBe("17");
     });
 
     it("should process RefactorRequest for a step with params and return response", () => {
@@ -99,69 +95,57 @@ describe("RefactorProcessor", () => {
       Util.readFile = jest.fn().mockReturnValue(text2);
       Util.writeFile = jest.fn();
 
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("The word {} has {} vowels.");
-      oldStepValue.setParameterizedstepvalue(
-        "The word <word> has <number> vowels.",
-      );
-      oldStepValue.setParametersList(["word", "number"]);
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("This English word {} has {} vowels.");
-      newStepValue.setParameterizedstepvalue(
-        "This English word <word_en> has <numbers> vowels.",
-      );
-      newStepValue.setParametersList(["word_en", "numbers"]);
-
-      const pp1 = new ParameterPosition();
-
-      pp1.setOldposition(-1);
-      pp1.setNewposition(0);
-      const pp2 = new ParameterPosition();
-
-      pp2.setOldposition(-1);
-      pp2.setNewposition(1);
-
-      const request = new RefactorRequest();
-
-      request.setNewstepvalue(newStepValue);
-      request.setOldstepvalue(oldStepValue);
-      request.setParampositionsList([pp1, pp2]);
+      const request = RefactorRequest.create({
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "The word {} has {} vowels.",
+          parameterizedStepValue: "The word <word> has <number> vowels.",
+          parameters: ["word", "number"],
+        }),
+        newStepValue: ProtoStepValue.create({
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue:
+            "This English word <word_en> has <numbers> vowels.",
+          parameters: ["word_en", "numbers"],
+        }),
+        paramPositions: [
+          ParameterPosition.create({ oldPosition: -1, newPosition: 0 }),
+          ParameterPosition.create({ oldPosition: -1, newPosition: 1 }),
+        ],
+      });
 
       const res = processor.process(request);
 
-      expect(res?.getSuccess()).toBe(true);
-      expect(res?.getError()).toBe("");
-      expect(res?.getFilechangesList().length).toBe(2);
+      expect(res?.success).toBe(true);
+      expect(res?.error).toBe("");
+      expect(res?.fileChanges.length).toBe(2);
 
-      const changes = res?.getFilechangesList();
+      const changes = res?.fileChanges;
 
-      expect(changes?.[0].getFilename()).toBe("StepImpl.ts");
+      expect(changes?.[0].fileName).toBe("StepImpl.ts");
 
-      const diff1 = changes?.[0]?.getDiffsList()[0];
+      const diff1 = changes?.[0]?.diffs[0];
 
-      expect(diff1?.getContent()).toBe(
+      expect(diff1?.content).toBe(
         '"This English word <word_en> has <numbers> vowels."',
       );
 
-      const span1 = diff1?.getSpan();
+      const span1 = diff1?.span;
 
-      expect(span1?.getStart()).toBe(3);
-      expect(span1?.getStartchar()).toBe(10);
-      expect(span1?.getEnd()).toBe(3);
-      expect(span1?.getEndchar()).toBe(48);
+      expect(span1?.start).toBe("3");
+      expect(span1?.startChar).toBe("10");
+      expect(span1?.end).toBe("3");
+      expect(span1?.endChar).toBe("48");
 
-      const diff2 = changes?.[1].getDiffsList()[0];
+      const diff2 = changes?.[1].diffs[0];
 
-      expect(diff2?.getContent()).toBe("arg0: any, arg1: any");
+      expect(diff2?.content).toBe("arg0: any, arg1: any");
 
-      const span2 = diff2?.getSpan();
+      const span2 = diff2?.span;
 
-      expect(span2?.getStart()).toBe(4);
-      expect(span2?.getStartchar()).toBe(21);
-      expect(span2?.getEnd()).toBe(4);
-      expect(span2?.getEndchar()).toBe(43);
+      expect(span2?.start).toBe("4");
+      expect(span2?.startChar).toBe("21");
+      expect(span2?.end).toBe("4");
+      expect(span2?.endChar).toBe("43");
     });
 
     it("should process RefactorRequest for a step with params and return response", () => {
@@ -178,67 +162,57 @@ describe("RefactorProcessor", () => {
       Util.readFile = jest.fn().mockReturnValue(text3);
       Util.writeFile = jest.fn();
 
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("The word {} has");
-      oldStepValue.setParameterizedstepvalue("The word <word>");
-      oldStepValue.setParametersList(["word"]);
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("This English word {} has {} vowels.");
-      newStepValue.setParameterizedstepvalue(
-        "This English word <word> has <number> vowels.",
-      );
-      newStepValue.setParametersList(["word", "number"]);
-
-      const pp1 = new ParameterPosition();
-
-      pp1.setOldposition(0);
-      pp1.setNewposition(0);
-      const pp2 = new ParameterPosition();
-
-      pp2.setOldposition(-1);
-      pp2.setNewposition(1);
-
-      const request = new RefactorRequest();
-
-      request.setNewstepvalue(newStepValue);
-      request.setOldstepvalue(oldStepValue);
-      request.setParampositionsList([pp1, pp2]);
+      const request = RefactorRequest.create({
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "The word {} has",
+          parameterizedStepValue: "The word <word>",
+          parameters: ["word"],
+        }),
+        newStepValue: ProtoStepValue.create({
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue:
+            "This English word <word> has <number> vowels.",
+          parameters: ["word", "number"],
+        }),
+        paramPositions: [
+          ParameterPosition.create({ oldPosition: 0, newPosition: 0 }),
+          ParameterPosition.create({ oldPosition: -1, newPosition: 1 }),
+        ],
+      });
 
       const res = processor.process(request);
 
-      expect(res?.getSuccess()).toBe(true);
-      expect(res?.getError()).toBe("");
-      expect(res?.getFilechangesList().length).toBe(2);
+      expect(res?.success).toBe(true);
+      expect(res?.error).toBe("");
+      expect(res?.fileChanges.length).toBe(2);
 
-      const changes = res?.getFilechangesList();
+      const changes = res?.fileChanges;
       expect(changes).toBeDefined();
 
-      expect(changes?.[0].getFilename()).toBe("StepImpl.ts");
+      expect(changes?.[0].fileName).toBe("StepImpl.ts");
 
-      const diff1 = changes?.[0].getDiffsList()[0];
-      const diff2 = changes?.[1].getDiffsList()[0];
+      const diff1 = changes?.[0].diffs[0];
+      const diff2 = changes?.[1].diffs[0];
 
-      expect(diff1?.getContent()).toBe(
+      expect(diff1?.content).toBe(
         '"This English word <word> has <number> vowels."',
       );
 
-      const span1 = diff1?.getSpan();
+      const span1 = diff1?.span;
 
-      expect(span1?.getStart()).toBe(3);
-      expect(span1?.getStartchar()).toBe(10);
-      expect(span1?.getEnd()).toBe(3);
-      expect(span1?.getEndchar()).toBe(31);
+      expect(span1?.start).toBe("3");
+      expect(span1?.startChar).toBe("10");
+      expect(span1?.end).toBe("3");
+      expect(span1?.endChar).toBe("31");
 
-      expect(diff2?.getContent()).toBe("word: any, arg1: any");
+      expect(diff2?.content).toBe("word: any, arg1: any");
 
-      const span2 = diff2?.getSpan();
+      const span2 = diff2?.span;
 
-      expect(span2?.getStart()).toBe(4);
-      expect(span2?.getStartchar()).toBe(21);
-      expect(span2?.getEnd()).toBe(4);
-      expect(span2?.getEndchar()).toBe(30);
+      expect(span2?.start).toBe("4");
+      expect(span2?.startChar).toBe("21");
+      expect(span2?.end).toBe("4");
+      expect(span2?.endChar).toBe("30");
     });
 
     it("should process RefactorRequest for a step and return response is fails", () => {
@@ -250,38 +224,28 @@ describe("RefactorProcessor", () => {
         throw error;
       });
 
-      const oldStepValue = new ProtoStepValue();
-
-      oldStepValue.setStepvalue("The word {} has");
-      oldStepValue.setParameterizedstepvalue("The word <word>");
-      oldStepValue.setParametersList(["word"]);
-      const newStepValue = new ProtoStepValue();
-
-      newStepValue.setStepvalue("This English word {} has {} vowels.");
-      newStepValue.setParameterizedstepvalue(
-        "This English word <word> has <number> vowels.",
-      );
-      newStepValue.setParametersList(["word", "number"]);
-
-      const pp1 = new ParameterPosition();
-
-      pp1.setOldposition(0);
-      pp1.setNewposition(0);
-      const pp2 = new ParameterPosition();
-
-      pp2.setOldposition(-1);
-      pp2.setNewposition(1);
-
-      const request = new RefactorRequest();
-
-      request.setNewstepvalue(newStepValue);
-      request.setOldstepvalue(oldStepValue);
-      request.setParampositionsList([pp1, pp2]);
+      const request = RefactorRequest.create({
+        oldStepValue: ProtoStepValue.create({
+          stepValue: "The word {} has",
+          parameterizedStepValue: "The word <word>",
+          parameters: ["word"],
+        }),
+        newStepValue: ProtoStepValue.create({
+          stepValue: "This English word {} has {} vowels.",
+          parameterizedStepValue:
+            "This English word <word> has <number> vowels.",
+          parameters: ["word", "number"],
+        }),
+        paramPositions: [
+          ParameterPosition.create({ oldPosition: 0, newPosition: 0 }),
+          ParameterPosition.create({ oldPosition: -1, newPosition: 1 }),
+        ],
+      });
 
       const res = processor.process(request);
 
-      expect(res?.getSuccess()).toBe(false);
-      expect(res?.getError()).toBe(`fail to refactor${EOL}stacktrace`);
+      expect(res?.success).toBe(false);
+      expect(res?.error).toBe(`fail to refactor${EOL}stacktrace`);
     });
   });
 });

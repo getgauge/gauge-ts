@@ -1,4 +1,4 @@
-import type { ExecutionEndingRequest, ExecutionInfo } from "../gen/messages_pb";
+import type { ExecutionEndingRequest, ExecutionInfo } from "../gen/messages";
 import type { HookMethod } from "../models/HookMethod";
 import hookRegistry from "../models/HookRegistry";
 import { HookType } from "../models/HookType";
@@ -17,6 +17,6 @@ export class ExecutionEndingProcessor extends HookExecutionProcessor {
   protected getExecutionInfo(message: HookExectionRequest): ExecutionInfo {
     const req = message as ExecutionEndingRequest;
 
-    return req.getCurrentexecutioninfo() as ExecutionInfo;
+    return req.currentExecutionInfo as ExecutionInfo;
   }
 }

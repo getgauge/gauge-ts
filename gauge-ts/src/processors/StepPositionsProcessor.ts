@@ -1,14 +1,15 @@
 import {
   type StepPositionsRequest,
   StepPositionsResponse,
-} from "../gen/messages_pb";
-import { Span } from "../gen/spec_pb";
+  StepPositionsResponse_StepPosition,
+} from "../gen/messages";
+import { Span } from "../gen/spec";
 import type { Range } from "../models/Range";
 import registry from "../models/StepRegistry";
 
 export class StepPositionsProcessor {
   public process(req: StepPositionsRequest): StepPositionsResponse {
-    const positions = registry.getStepPositions(req.getFilepath());
+    const positions = registry.getStepPositions(req.filePath);
 
     return this.createStepPostionsResponse(positions);
   }
@@ -16,31 +17,23 @@ export class StepPositionsProcessor {
   private createStepPostionsResponse(
     positions: { stepValue: string; span: Range }[],
   ): StepPositionsResponse {
-    const res = new StepPositionsResponse();
-
-    res.setError("");
-    res.setSteppositionsList(
-      positions.map((p) => {
-        const sp = new StepPositionsResponse.StepPosition();
-
-        sp.setStepvalue(p.stepValue);
-        sp.setSpan(this.getSpan(p.span));
-
-        return sp;
-      }),
-    );
-
-    return res;
+    return StepPositionsResponse.create({
+      error: "",
+      stepPositions: positions.map((p) =>
+        StepPositionsResponse_StepPosition.create({
+          stepValue: p.stepValue,
+          span: this.getSpan(p.span),
+        }),
+      ),
+    });
   }
 
   private getSpan(range: Range): Span {
-    const span = new Span();
-
-    span.setStart(range.getStart().getLine());
-    span.setEnd(range.getEnd().getLine());
-    span.setStartchar(range.getStart().getChar());
-    span.setEndchar(range.getEnd().getChar());
-
-    return span;
+    return Span.create({
+      start: String(range.getStart().getLine()),
+      end: String(range.getEnd().getLine()),
+      startChar: String(range.getStart().getChar()),
+      endChar: String(range.getEnd().getChar()),
+    });
   }
 }
