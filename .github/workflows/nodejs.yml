@@ -35,6 +35,8 @@ jobs:
       matrix:
         node-version: [20, 22, 24]
         os: [ubuntu-latest, macOS-latest, windows-latest]
+      fail-fast: false
+
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -88,6 +90,8 @@ jobs:
       matrix:
         node-version: [20, 22, 24]
         os: [macOS-latest, ubuntu-latest, windows-latest]
+      fail-fast: false
+
     runs-on: ${{ matrix.os }}
 
     steps:
