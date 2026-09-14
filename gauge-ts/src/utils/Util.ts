@@ -8,8 +8,13 @@ import {
   writeFileSync,
 } from "node:fs";
 import { extname, join } from "node:path";
-import { Extension } from "typescript";
 import type { ParameterParser } from "../processors/params/ParameterParser";
+
+/**
+ * TypeScript 7 exposes only `version` from its main entry point, so the
+ * `Extension` enum this used to come from is no longer importable.
+ */
+export const TS_EXTENSION = ".ts";
 
 // biome-ignore lint/suspicious/noExplicitAny: accepts class methods with arbitrary parameter signatures
 export type CommonFunction<T = unknown> = (...args: any[]) => T;
@@ -63,7 +68,7 @@ export class Util {
   }
 
   public static isTSFile(file: string): boolean {
-    return extname(file) === Extension.Ts;
+    return extname(file) === TS_EXTENSION;
   }
 
   private static walkSync(dir: string, fileList: string[] = []): string[] {
@@ -104,7 +109,7 @@ export class Util {
     let fileName: string;
 
     do {
-      const tmpl = `StepImplementation${counter || ""}${Extension.Ts}`;
+      const tmpl = `StepImplementation${counter || ""}${TS_EXTENSION}`;
       fileName = join(dir, tmpl);
       counter++;
     } while (existsSync(fileName));

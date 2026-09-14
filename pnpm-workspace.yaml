@@ -1,0 +1,29 @@
+packages:
+  - gauge-ts
+  - e2e
+
+# handlebars <4.7.9 has a prototype-pollution advisory; taiko pulls an old one in.
+overrides:
+  handlebars: ^4.7.9
+
+# pnpm blocks dependency lifecycle scripts by default. These fetch or link the
+# binaries the workspace actually shells out to. taiko is denied because it
+# downloads a Chromium build on install and nothing here drives a browser --
+# flip it to true if you add browser specs.
+allowBuilds:
+  "@biomejs/biome": true
+  "@getgauge/cli": true
+  esbuild: true
+  grpc-tools: true
+  protobufjs: true
+  taiko: false
+
+minimumReleaseAgeExclude:
+  - '@vitest/expect@4.1.11'
+  - '@vitest/mocker@4.1.11'
+  - '@vitest/pretty-format@4.1.11'
+  - '@vitest/runner@4.1.11'
+  - '@vitest/snapshot@4.1.11'
+  - '@vitest/spy@4.1.11'
+  - '@vitest/utils@4.1.11'
+  - vitest@4.1.11

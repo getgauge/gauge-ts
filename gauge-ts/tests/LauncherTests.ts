@@ -1,4 +1,9 @@
-const { getPackageRunner, getTsNodeArgs } = require("../launcher-runner.cjs");
+const {
+  BOOTSTRAP,
+  getNodeArgs,
+  getPackageRunner,
+  getPackageRunnerArgs,
+} = require("../launcher-runner.cjs");
 
 describe("launcher package runner", () => {
   test.each([
@@ -22,34 +27,41 @@ describe("launcher package runner", () => {
   );
 });
 
-describe("ts-node arguments", () => {
-  test("preloads tsconfig-paths when it is installed", () => {
-    expect(getTsNodeArgs({ hasTsconfigPaths: true, useShell: false })).toEqual([
-      "ts-node",
-      "--esm",
-      "-r",
-      "tsconfig-paths/register",
-      "-e",
-      "import { start } from 'gauge-ts/dist/RunnerServer'; start();",
+describe("bootstrap script", () => {
+  test("imports the runner without static ESM syntax", () => {
+    // A dynamic import keeps the eval script valid CommonJS, so no
+    // --input-type=module is needed and the quoting stays shell-safe.
+    expect(BOOTSTRAP).toContain("import('gauge-ts/dist/RunnerServer.js')");
+    expect(BOOTSTRAP).not.toContain("import {");
+    expect(BOOTSTRAP).not.toContain('"');
+  });
+});
+
+describe("node arguments", () => {
+  test("preloads tsx from an absolute file URL", () => {
+    const tsxUrl = "file:///project/node_modules/tsx/dist/loader.mjs";
+
+    expect(getNodeArgs({ tsxUrl })).toEqual([
+      "--import",
+      tsxUrl,
+      "--eval",
+      BOOTSTRAP,
+    ]);
+  });
+});
+
+describe("package runner arguments", () => {
+  test("runs tsx through the package runner", () => {
+    expect(getPackageRunnerArgs({ useShell: false })).toEqual([
+      "tsx",
+      "--eval",
+      BOOTSTRAP,
     ]);
   });
 
-  test("does not preload tsconfig-paths when it is not installed", () => {
-    expect(getTsNodeArgs({ hasTsconfigPaths: false, useShell: false })).toEqual(
-      [
-        "ts-node",
-        "--esm",
-        "-e",
-        "import { start } from 'gauge-ts/dist/RunnerServer'; start();",
-      ],
-    );
-  });
-
   test("quotes the eval script when using a shell", () => {
-    const args = getTsNodeArgs({ hasTsconfigPaths: false, useShell: true });
+    const args = getPackageRunnerArgs({ useShell: true });
 
-    expect(args.at(-1)).toBe(
-      "\"import { start } from 'gauge-ts/dist/RunnerServer'; start();\"",
-    );
+    expect(args.at(-1)).toBe(`"${BOOTSTRAP}"`);
   });
 });

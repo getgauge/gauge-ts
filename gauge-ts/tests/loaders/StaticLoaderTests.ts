@@ -11,7 +11,7 @@ describe("StaticLoaderTests", () => {
   const TEXT_3 = `import { Step } from "gauge-ts";${EOL}export default class StepImpl {${EOL}    @Step(["hello","hi"])${EOL}    public async bar() {${EOL}        console.log("Hello World");${EOL}    }${EOL}}`;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     loader = new StaticLoader();
     registry.clear();
   });
@@ -70,12 +70,12 @@ describe("StaticLoaderTests", () => {
       const file1 = "StepImpl.ts";
       const file2 = "StepImpl2.ts";
 
-      const mockFn = jest.fn().mockImplementation((file: string) => {
+      const mockFn = vi.fn().mockImplementation((file: string) => {
         return file === file1 ? TEXT_1 : TEXT_2;
       });
 
       Util.readFile = mockFn;
-      Util.getListOfFiles = jest.fn().mockReturnValue([file1, file2]);
+      Util.getListOfFiles = vi.fn().mockReturnValue([file1, file2]);
 
       loader.loadImplementations();
 

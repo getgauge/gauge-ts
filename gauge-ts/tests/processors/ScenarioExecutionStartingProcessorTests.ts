@@ -8,13 +8,13 @@ import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
 import { ScenarioExecutionStartingProcessor } from "../../src/processors/ScenarioExecutionStartingProcessor";
-jest.mock("inspector");
+vi.mock("inspector");
 
 describe("ScenarioExecutionStartingProcessor", () => {
   let processor: ScenarioExecutionStartingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new ScenarioExecutionStartingProcessor();

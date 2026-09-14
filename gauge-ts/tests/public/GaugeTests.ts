@@ -6,7 +6,7 @@ import { ScreenshotStore } from "../../src/stores/ScreenshotStore";
 describe("Gauge", () => {
   describe("captureScreenshot", () => {
     it("should capture", async () => {
-      Screenshot.capture = jest.fn();
+      Screenshot.capture = vi.fn();
       await Gauge.captureScreenshot();
       expect(ScreenshotStore.pendingScreenshots().length).toBe(1);
     });

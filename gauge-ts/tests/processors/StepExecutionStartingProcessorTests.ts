@@ -10,13 +10,13 @@ import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
 import { StepExecutionStartingProcessor } from "../../src/processors/StepExecutionStartingProcessor";
-jest.mock("inspector");
+vi.mock("inspector");
 
 describe("StepExecutionStartingProcessor", () => {
   let processor: StepExecutionStartingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new StepExecutionStartingProcessor();

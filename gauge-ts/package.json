@@ -1,17 +1,16 @@
 {
   "name": "gauge-ts",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "description": "Typescript runner for Gauge",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
     "preclean:build": "node -e \"['dist','deploy','artifacts'].forEach((dir) => require('fs').rmSync(dir, { recursive: true, force: true }))\"",
     "build": "tsc",
-    "clean:build": "npm run build",
-    "postbuild": "copyfiles -f \"./src/gen/**\" \"./dist/gen\"",
+    "clean:build": "pnpm run build",
     "package": "./build.sh package",
-    "precommit": " npm run format && npm run lint",
-    "test": "jest --verbose --detectOpenHandles --forceExit",
+    "precommit": "pnpm run format && pnpm run lint",
+    "test": "vitest run",
     "gen-proto": "sh genproto.sh",
     "prepublishOnly": "tsc"
   },
@@ -28,20 +27,15 @@
   "dependencies": {
     "@bufbuild/protobuf": "^2.12.1",
     "@grpc/grpc-js": "^1.14.4",
-    "ts-node": "^10.9.0",
-    "typescript": "^6.0.3"
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
   },
   "devDependencies": {
     "@biomejs/biome": "1.7.3",
-    "@types/jest": "^24.9.1",
-    "@types/node": "~20.17.9",
-    "copyfiles": "2.4.1",
+    "@types/node": "^26.2.0",
     "grpc-tools": "^1.12.4",
     "husky": "^9.0.11",
-    "jest": "^29.7.0",
-    "jest-mock-process": "^2.0.0",
-    "jest-silent-reporter": "^0.6.0",
-    "ts-jest": "^29.1.4",
-    "ts-proto": "^2.12.0"
+    "ts-proto": "^2.12.0",
+    "vitest": "^4.1.11"
   }
 }

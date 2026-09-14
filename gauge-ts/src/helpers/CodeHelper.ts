@@ -1,73 +1,77 @@
-import { createPrinter, getDecorators } from "typescript";
+import {
+  isArrayLiteralExpression,
+  isCallExpression,
+  isDecorator,
+  isIdentifier,
+  isStringLiteral,
+} from "typescript/unstable/ast";
 
 import type {
   Decorator,
+  Expression,
   MethodDeclaration,
-  Printer,
-  TextRange,
-} from "typescript";
-
-export type ExpressionElementType = {
-  text: string;
-};
-
-export interface ExpressionArgumentType extends TextRange {
-  text: string;
-  elements: Array<ExpressionElementType>;
-}
-
-export type ExpressionType = {
-  expression: {
-    escapedText: string;
-  };
-  arguments: Array<ExpressionArgumentType>;
-};
+  ModifierLike,
+} from "typescript/unstable/ast";
 
 export abstract class CodeHelper {
-  protected printer: Printer = createPrinter();
+  /**
+   * TypeScript keeps decorators in the modifier list rather than in a field of
+   * their own, so there is no `getDecorators` to call.
+   */
+  protected static getDecorators(method: MethodDeclaration): Array<Decorator> {
+    const modifiers: readonly ModifierLike[] = method.modifiers ?? [];
 
-  protected getStepTexts(method: MethodDeclaration): Array<string> {
-    const dec = getDecorators(method) as unknown as Array<Decorator>;
-    const stepDecExp = dec.filter(CodeHelper.isStepDecorator)[0]
-      .expression as unknown as ExpressionType;
-    const arg = stepDecExp.arguments[0];
-
-    if (!arg.text && arg.elements) {
-      return arg.elements.map((e) => {
-        return e.text;
-      });
-    }
-
-    return [arg.text];
+    return modifiers.filter((modifier) => isDecorator(modifier));
   }
 
-  protected static isStepDecorator(d: Decorator): boolean {
-    const decExp = d.expression as unknown as ExpressionType;
+  protected static isStepDecorator(decorator: Decorator): boolean {
+    const { expression } = decorator;
 
-    return decExp.expression.escapedText === "Step";
+    return (
+      isCallExpression(expression) &&
+      isIdentifier(expression.expression) &&
+      expression.expression.text === "Step"
+    );
+  }
+
+  /** The first argument of `@Step(...)`: either a string or an array of them. */
+  protected static getStepArgument(
+    method: MethodDeclaration,
+  ): Expression | undefined {
+    const decorator = CodeHelper.getDecorators(method).find(
+      CodeHelper.isStepDecorator,
+    );
+
+    if (!decorator || !isCallExpression(decorator.expression)) {
+      return undefined;
+    }
+
+    return decorator.expression.arguments[0];
+  }
+
+  protected getStepTexts(method: MethodDeclaration): Array<string> {
+    const arg = CodeHelper.getStepArgument(method);
+
+    if (!arg) {
+      return [];
+    }
+
+    if (isStringLiteral(arg)) {
+      return [arg.text];
+    }
+
+    if (isArrayLiteralExpression(arg)) {
+      return arg.elements.filter(isStringLiteral).map((e) => e.text);
+    }
+
+    return [];
   }
 
   protected hasStepDecorator(method: MethodDeclaration): boolean {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const decorators = getDecorators(method);
-
-    // eslint-disable-next-line padding-line-between-statements
-    return !!decorators && decorators.some(CodeHelper.isStepDecorator);
+    return CodeHelper.getDecorators(method).some(CodeHelper.isStepDecorator);
   }
 
   protected hasStepText(method: MethodDeclaration, stepText: string): boolean {
-    const dec = getDecorators(method) as unknown as Array<Decorator>;
-    const stepDecExp = dec.filter(CodeHelper.isStepDecorator)[0]
-      .expression as unknown as ExpressionType;
-    const arg = stepDecExp.arguments[0];
-
-    if (!arg.text && arg.elements) {
-      return arg.elements.some((e) => {
-        return e.text === stepText;
-      });
-    }
-
-    return arg.text === stepText;
-    // eslint-disable-next-line padded-blocks
+    return this.getStepTexts(method).includes(stepText);
   }
 }

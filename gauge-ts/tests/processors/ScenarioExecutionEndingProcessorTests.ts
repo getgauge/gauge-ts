@@ -13,7 +13,7 @@ describe("ScenarioExecutionEndingProcessor", () => {
   let processor: ScenarioExecutionEndingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new ScenarioExecutionEndingProcessor();

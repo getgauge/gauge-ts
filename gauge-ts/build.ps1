@@ -9,7 +9,7 @@ $tasks.Add('build', @{
         description = "Compiles typescript files to js with diclaration, add generated code to dist";
         script      = {
             clean
-            npm run build
+            pnpm run build
             Copy-Item -Recurse .\src\gen .\dist
         }
     })
@@ -19,7 +19,7 @@ $tasks.Add('package', @{
         description = "Generate gauge-ts plugin zip file";
         script      = {
             Invoke-Command $tasks.Get_Item("build").script
-            npm run clean:build
+            pnpm run clean:build
             mkdir -p deploy
             Copy-Item launcher.* deploy
             Copy-Item launcher-runner.cjs deploy

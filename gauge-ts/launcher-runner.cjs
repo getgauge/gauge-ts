@@ -6,6 +6,13 @@ const PACKAGE_RUNNERS = Object.freeze({
   bun: ["bun", "x"],
 });
 
+// Loading the runner through a dynamic import keeps this a plain CommonJS eval
+// script: no --input-type is needed, and the single quotes survive cmd.exe.
+const BOOTSTRAP =
+  "import('gauge-ts/dist/RunnerServer.js')" +
+  ".then((runner) => runner.start())" +
+  ".catch((err) => { console.error(err); process.exit(1); });";
+
 function getPackageRunner(value = process.env.GAUGE_TS_PACKAGE_RUNNER) {
   const name = value ?? "npx";
   const runner = PACKAGE_RUNNERS[name];
@@ -20,16 +27,24 @@ function getPackageRunner(value = process.env.GAUGE_TS_PACKAGE_RUNNER) {
   return runner;
 }
 
-function getTsNodeArgs({ hasTsconfigPaths, useShell }) {
-  const shellQuote = useShell ? '"' : "";
-
-  return [
-    "ts-node",
-    "--esm",
-    ...(hasTsconfigPaths ? ["-r", "tsconfig-paths/register"] : []),
-    "-e",
-    `${shellQuote}import { start } from 'gauge-ts/dist/RunnerServer'; start();${shellQuote}`,
-  ];
+// Default path: run the bootstrap on this Node with tsx preloaded from an
+// absolute file URL. Nothing has to be linked into the project's
+// node_modules/.bin, which is what makes it work under pnpm's isolated layout.
+function getNodeArgs({ tsxUrl }) {
+  return ["--import", tsxUrl, "--eval", BOOTSTRAP];
 }
 
-module.exports = { getPackageRunner, getTsNodeArgs };
+// Opt-in path for GAUGE_TS_PACKAGE_RUNNER: delegate to the project's package
+// manager, which then has to resolve the `tsx` binary itself.
+function getPackageRunnerArgs({ useShell }) {
+  const shellQuote = useShell ? '"' : "";
+
+  return ["tsx", "--eval", `${shellQuote}${BOOTSTRAP}${shellQuote}`];
+}
+
+module.exports = {
+  BOOTSTRAP,
+  getNodeArgs,
+  getPackageRunner,
+  getPackageRunnerArgs,
+};

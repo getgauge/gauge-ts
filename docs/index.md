@@ -19,8 +19,8 @@ Gauge Typescript allows you to use typescript [decorators](https://www.typescrip
 ### Pre-requisite
 
 - [Gauge](https://docs.gauge.org/installing.html#installation) > v1.0.0
-- [Node js](https://nodejs.org/en/) > v10.0.0
-- [Npm](https://www.npmjs.com/) > v6.0.0
+- [Node js](https://nodejs.org/en/) > v20.19.0 (or > v22.12.0)
+- [pnpm](https://pnpm.io/) > v10.0.0 (or any npm-compatible package manager)
 
 
 The plugin has two components which has to install to run a gauge typescript project.
@@ -57,25 +57,61 @@ gauge init ts
 
 ## Run a Project
 
-Once the initialization is done run `npm install` to get all the required dependencies.
+Once the initialization is done run `pnpm install` to get all the required dependencies.
 Now you can run `gauge run specs` to run your project.
 Open the project in your favorite editor and start adding some new tests.
 
+### TypeScript support
+
+gauge-ts transpiles your step implementations at run time with
+[tsx](https://tsx.is), which replaces the unmaintained `ts-node`. tsx does not
+use the TypeScript compiler API, so your project is free to depend on any
+TypeScript version, **including TypeScript 7** — the native compiler exposes
+only `version` from its main entry point, which is what `ts-node` used to
+crash on:
+
+```
+TypeError: Cannot read properties of undefined (reading 'fileExists')
+```
+
+Two things to know when moving a project to TypeScript 7:
+
+* `baseUrl` and `moduleResolution: "node"` were **removed**. Use
+  `moduleResolution: "bundler"` and drop `baseUrl` — `paths` are resolved
+  relative to the `tsconfig.json` that declares them, and tsx honours them
+  natively, so the `tsconfig-paths` package is no longer needed.
+* TypeScript 7 does not pick `@types/*` packages up implicitly. Name them:
+  `"types": ["node"]`.
+
+tsx transpiles but does not type check. Run `tsc --noEmit` as its own step (the
+project template ships a `typecheck` script for this).
+
 ### Configure the package runner
 
-By default, gauge-ts starts `ts-node` with `npx`. To use the package manager
-configured for your project, set `GAUGE_TS_PACKAGE_RUNNER` to one of `npm`,
-`pnpm`, `yarn`, or `bun`. For example, in a Gauge environment properties file:
+By default gauge-ts resolves tsx itself and runs it on the Node.js that started
+the plugin, so nothing has to be linked into your project's
+`node_modules/.bin`. This is the option that works unchanged under pnpm's
+isolated `node_modules` layout.
+
+To start the runner through your project's package manager instead, set
+`GAUGE_TS_PACKAGE_RUNNER` to one of `npx`, `npm`, `pnpm`, `yarn`, or `bun` in a
+Gauge environment properties file:
 
 ```properties
 GAUGE_TS_PACKAGE_RUNNER = pnpm
 ```
 
-The corresponding commands are `npm exec --`, `pnpm exec`, `yarn exec`, and
-`bun x`. You can also set the value to `npx` explicitly.
+The corresponding commands are `npx`, `npm exec --`, `pnpm exec`, `yarn exec`,
+and `bun x`. The selected package runner must be available on `PATH` in the
+environment where Gauge is started.
 
-The selected package runner must be available on `PATH` in the environment
-where Gauge is started.
+**With pnpm, add `tsx` to your project's own dependencies when you use this
+setting.** pnpm only links direct dependencies into `node_modules/.bin`, so
+`pnpm exec tsx` cannot see the copy that came in through `gauge-ts`:
+
+```bash
+pnpm add tsx
+```
 
 The `yarn` option targets modern Yarn releases (Yarn 2 and later).
 

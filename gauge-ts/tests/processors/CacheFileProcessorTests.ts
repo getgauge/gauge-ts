@@ -27,7 +27,7 @@ describe("CacheFileProcessor", () => {
     }`;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     loader = new StaticLoader();
     processor = new CacheFileProcessor(loader);
     registry.clear();
@@ -59,8 +59,8 @@ describe("CacheFileProcessor", () => {
     });
 
     it("should process cacheFileRequest when a file is created", () => {
-      Util.exists = jest.fn().mockReturnValue(true);
-      Util.readFile = jest.fn().mockReturnValue(text1);
+      Util.exists = vi.fn().mockReturnValue(true);
+      Util.readFile = vi.fn().mockReturnValue(text1);
       const req = CacheFileRequest.create({
         status: CacheFileRequest_FileStatus.CREATED,
         filePath: file1,
@@ -71,7 +71,7 @@ describe("CacheFileProcessor", () => {
     });
 
     it("should process cacheFileRequest when a file is created and cached", () => {
-      registry.isFileCached = jest.fn().mockReturnValue(true);
+      registry.isFileCached = vi.fn().mockReturnValue(true);
 
       const req = CacheFileRequest.create({
         status: CacheFileRequest_FileStatus.CREATED,
@@ -87,8 +87,8 @@ describe("CacheFileProcessor", () => {
 
       expect(registry.isImplemented("foo")).toBe(true);
 
-      Util.exists = jest.fn().mockReturnValue(true);
-      Util.readFile = jest.fn().mockReturnValue(text2);
+      Util.exists = vi.fn().mockReturnValue(true);
+      Util.readFile = vi.fn().mockReturnValue(text2);
 
       const req = CacheFileRequest.create({
         status: CacheFileRequest_FileStatus.CLOSED,
@@ -101,7 +101,7 @@ describe("CacheFileProcessor", () => {
     });
 
     it("should process cacheFileRequest when a file closed and dont exists anymore", () => {
-      Util.exists = jest.fn().mockReturnValue(false);
+      Util.exists = vi.fn().mockReturnValue(false);
       const req = CacheFileRequest.create({
         status: CacheFileRequest_FileStatus.CLOSED,
         filePath: file1,

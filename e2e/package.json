@@ -2,17 +2,17 @@
   "name": "e2e",
   "description": "Starter template for writing TypeScript tests for Gauge",
   "scripts": {
-    "test": "gauge run specs"
+    "test": "gauge run specs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "gauge-ts": "*",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.4.5"
+    "gauge-ts": "workspace:*",
+    "tsx": "^4.23.12",
+    "typescript": "^7.0.2"
   },
   "devDependencies": {
     "@getgauge/cli": "^1.6.34",
-    "@types/node": "*",
-    "taiko": "^1.4.0",
-    "tsconfig-paths": "^4.2.0"
+    "@types/node": "^26.2.0",
+    "taiko": "^1.4.0"
   }
 }

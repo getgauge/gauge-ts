@@ -10,7 +10,7 @@ describe("StepNameProcessor", () => {
     let processor: StepNameProcessor;
 
     beforeEach(() => {
-      jest.clearAllMocks();
+      vi.clearAllMocks();
       registry.clear();
       process.env.screenshot_on_failure = "";
       processor = new StepNameProcessor();

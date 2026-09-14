@@ -1,21 +1,18 @@
 {
   "name": "gauge",
-  "workspaces": ["gauge-ts", "e2e"],
   "description": "Gauge ts workspace",
   "scripts": {
     "prepare": "husky",
-    "build": "npm run build --workspaces --if-present",
-    "test": "npm test --workspaces --if-present",
-    "format": "npx @biomejs/biome format . --write",
-    "lint": "npx @biomejs/biome lint . --write",
-    "precommit": "npm run format && npm run lint",
-    "check": "npx @biomejs/biome check ."
-  },
-  "overrides": {
-    "handlebars": "^4.7.9"
+    "build": "pnpm -r --if-present run build",
+    "test": "pnpm -r --if-present run test",
+    "format": "pnpm exec biome format . --write",
+    "lint": "pnpm exec biome lint . --write",
+    "precommit": "pnpm run format && pnpm run lint",
+    "check": "pnpm exec biome check ."
   },
   "devDependencies": {
     "@biomejs/biome": "1.8.0",
     "husky": "^9.0.11"
-  }
+  },
+  "packageManager": "pnpm@11.18.0"
 }

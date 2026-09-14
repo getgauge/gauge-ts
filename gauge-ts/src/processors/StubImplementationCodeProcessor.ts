@@ -1,21 +1,20 @@
 import { EOL } from "node:os";
 import { basename } from "node:path";
 import {
-  Extension,
-  type Node,
-  ScriptTarget,
-  createSourceFile,
-  forEachChild,
   isClassDeclaration,
   isMethodDeclaration,
-} from "typescript";
+} from "typescript/unstable/ast";
+
+import type { Node } from "typescript/unstable/ast";
+
 import {
   FileDiff,
   type StubImplementationCodeRequest,
   TextDiff,
 } from "../gen/messages";
 import { Span } from "../gen/spec";
-import { Util } from "../utils/Util";
+import tsProject from "../helpers/TsProject";
+import { TS_EXTENSION, Util } from "../utils/Util";
 
 export class StubImplementationCodeProcessor {
   public process(req: StubImplementationCodeRequest): FileDiff {
@@ -25,7 +24,7 @@ export class StubImplementationCodeProcessor {
 
     if (!Util.exists(filePath)) {
       const newFilePath = Util.getNewTSFileName(Util.getImplDirs()[0]);
-      const className = basename(newFilePath).replace(Extension.Ts, "");
+      const className = basename(newFilePath).replace(TS_EXTENSION, "");
 
       textDiffs.push(this.diffForImplementationInNewClass(content, className));
     } else {
@@ -44,12 +43,16 @@ export class StubImplementationCodeProcessor {
     const fileContent = Util.readFile(filePath)
       .toString()
       .replace("\r\n", "\n");
-    const source = createSourceFile(filePath, fileContent, ScriptTarget.Latest);
+    const source = tsProject.parse(filePath, fileContent);
+
+    if (!source) {
+      throw new Error(`Failed to parse ${filePath}`);
+    }
     let lastMethod: Node | null = null;
 
-    forEachChild(source, (childNode: Node) => {
+    source.forEachChild((childNode: Node) => {
       if (isClassDeclaration(childNode)) {
-        forEachChild(childNode, (node: Node) => {
+        childNode.forEachChild((node: Node) => {
           if (isMethodDeclaration(node)) {
             lastMethod = node;
           }

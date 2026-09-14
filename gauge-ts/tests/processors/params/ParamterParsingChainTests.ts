@@ -9,7 +9,7 @@ import { ParameterParsingChain } from "../../../src/processors/params/ParameterP
 describe("ParameterParsingChain", () => {
   let parameterParsingChain: ParameterParsingChain;
   beforeEach(() => {
-    jest.resetModules();
+    vi.resetModules();
     parameterParsingChain = new ParameterParsingChain();
   });
 
@@ -52,8 +52,8 @@ describe("ParameterParsingChain", () => {
   describe(".addCustomParser", () => {
     it("should add custom parser to the chain", () => {
       const customParser = {
-        canParse: jest.fn().mockReturnValue(true),
-        parse: jest.fn().mockReturnValue("custom"),
+        canParse: vi.fn().mockReturnValue(true),
+        parse: vi.fn().mockReturnValue("custom"),
       };
       parameterParsingChain.addCustomParser(customParser);
       const param = Parameter.create({

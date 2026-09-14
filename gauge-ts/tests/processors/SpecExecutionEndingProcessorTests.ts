@@ -12,7 +12,7 @@ describe("SpecExecutionEndingProcessor", () => {
   let processor: SpecExecutionEndingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new SpecExecutionEndingProcessor();

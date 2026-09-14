@@ -16,12 +16,12 @@ describe("RefactorProcessor", () => {
   let processor: RefactorProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     processor = new RefactorProcessor();
   });
   describe(".process", () => {
     it("should process RefactorRequest when step has mutiple impl and return response with error", () => {
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(true);
 
       const request = RefactorRequest.create({
         newStepValue: ProtoStepValue.create({
@@ -42,11 +42,11 @@ describe("RefactorProcessor", () => {
     });
 
     it("should process RefactorRequest for a step and return response", () => {
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
-      registry.get = jest
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(false);
+      registry.get = vi
         .fn()
         .mockReturnValue(new StepRegistryEntry("foo", "foo", "StepImpl.ts"));
-      Util.readFile = jest.fn().mockReturnValue(text1);
+      Util.readFile = vi.fn().mockReturnValue(text1);
 
       const request = RefactorRequest.create({
         oldStepValue: ProtoStepValue.create({
@@ -82,8 +82,8 @@ describe("RefactorProcessor", () => {
     });
 
     it("should process RefactorRequest for a step with params and return response", () => {
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
-      registry.get = jest
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(false);
+      registry.get = vi
         .fn()
         .mockReturnValue(
           new StepRegistryEntry(
@@ -92,8 +92,8 @@ describe("RefactorProcessor", () => {
             "StepImpl.ts",
           ),
         );
-      Util.readFile = jest.fn().mockReturnValue(text2);
-      Util.writeFile = jest.fn();
+      Util.readFile = vi.fn().mockReturnValue(text2);
+      Util.writeFile = vi.fn();
 
       const request = RefactorRequest.create({
         oldStepValue: ProtoStepValue.create({
@@ -149,8 +149,8 @@ describe("RefactorProcessor", () => {
     });
 
     it("should process RefactorRequest for a step with params and return response", () => {
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
-      registry.get = jest
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(false);
+      registry.get = vi
         .fn()
         .mockReturnValue(
           new StepRegistryEntry(
@@ -159,8 +159,8 @@ describe("RefactorProcessor", () => {
             "StepImpl.ts",
           ),
         );
-      Util.readFile = jest.fn().mockReturnValue(text3);
-      Util.writeFile = jest.fn();
+      Util.readFile = vi.fn().mockReturnValue(text3);
+      Util.writeFile = vi.fn();
 
       const request = RefactorRequest.create({
         oldStepValue: ProtoStepValue.create({
@@ -216,11 +216,11 @@ describe("RefactorProcessor", () => {
     });
 
     it("should process RefactorRequest for a step and return response is fails", () => {
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(false);
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(false);
       const error = new Error("fail to refactor");
 
       error.stack = "stacktrace";
-      registry.get = jest.fn().mockImplementation(() => {
+      registry.get = vi.fn().mockImplementation(() => {
         throw error;
       });
 

@@ -1,23 +1,16 @@
 import { EOL } from "node:os";
 import {
-  type Decorator,
-  type MethodDeclaration,
-  type Node,
-  type NodeArray,
-  type ParameterDeclaration,
-  type SourceFile,
-  getDecorators,
-} from "typescript";
-import {
-  EmitHint,
-  ScriptKind,
-  ScriptTarget,
-  createSourceFile,
-  factory,
-  forEachChild,
   isClassDeclaration,
   isMethodDeclaration,
-} from "typescript";
+} from "typescript/unstable/ast";
+
+import type {
+  MethodDeclaration,
+  Node,
+  SourceFile,
+  TextRange,
+} from "typescript/unstable/ast";
+
 import {
   FileChanges,
   ParameterPosition,
@@ -27,16 +20,15 @@ import {
 
 import type { RefactorRequest } from "../gen/messages";
 import { Span } from "../gen/spec";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import type { ProtoStepValue } from "../gen/spec";
 import { CodeHelper } from "../helpers/CodeHelper";
+import tsProject from "../helpers/TsProject";
 import registry from "../models/StepRegistry";
 import { Util } from "../utils/Util";
 
 export class RefactorProcessor extends CodeHelper {
   public process(req: RefactorRequest): RefactorResponse | undefined {
     const oldStep = req.oldStepValue;
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     const newStep = req.newStepValue;
 
     if (!oldStep || !newStep) {
@@ -69,13 +61,11 @@ export class RefactorProcessor extends CodeHelper {
     try {
       const info = registry.get(oldStep.stepValue);
       const filePath = info.getFilePath();
-      const source = createSourceFile(
-        filePath,
-        Util.readFile(filePath),
-        ScriptTarget.Latest,
-        false,
-        ScriptKind.TS,
-      );
+      const source = tsProject.parse(filePath, Util.readFile(filePath));
+
+      if (!source) {
+        throw new Error(`Failed to parse ${filePath}`);
+      }
       const change1 = FileChanges.create({
         fileName: filePath,
         diffs: [],
@@ -85,9 +75,9 @@ export class RefactorProcessor extends CodeHelper {
         diffs: [],
       });
 
-      forEachChild(source, (childNode: Node) => {
+      source.forEachChild((childNode: Node) => {
         if (isClassDeclaration(childNode)) {
-          forEachChild(childNode, (node: Node) => {
+          childNode.forEachChild((node: Node) => {
             if (
               isMethodDeclaration(node) &&
               this.hasStepDecorator(node) &&
@@ -101,42 +91,28 @@ export class RefactorProcessor extends CodeHelper {
 
               change1.diffs.push(diff1);
 
-              const oldParams = node.parameters;
-              const newParams = new Array<ParameterDeclaration>();
+              // Existing parameters are carried over as the source text that
+              // declared them, which keeps their original types and formatting.
+              const oldParams = node.parameters.map((p) =>
+                RefactorProcessor.textOf(source, p),
+              );
+              const newParams = new Array<string>();
 
               for (const p of paramPositions) {
                 if (p.oldPosition < 0) {
-                  const pName = this.getParamName(
+                  const pName = RefactorProcessor.getParamName(
                     paramPositions.indexOf(p),
                     oldParams,
-                    source,
                   );
 
-                  newParams.splice(
-                    p.newPosition,
-                    0,
-                    factory.createParameterDeclaration(
-                      undefined,
-                      undefined,
-                      `${pName}: any`,
-                    ),
-                  );
+                  newParams.splice(p.newPosition, 0, `${pName}: any`);
                 } else {
                   newParams.splice(p.newPosition, 0, oldParams[p.oldPosition]);
                 }
               }
-              const content = newParams
-                .map((p) => {
-                  return this.printer.printNode(
-                    EmitHint.Unspecified,
-                    p,
-                    source,
-                  );
-                })
-                .join(", ");
 
               const diff2 = TextDiff.create({
-                content,
+                content: newParams.join(", "),
                 span: this.createSpan(source, node.parameters),
               });
 
@@ -158,39 +134,31 @@ export class RefactorProcessor extends CodeHelper {
     return response;
   }
 
-  private getParamName(
-    index: number,
-    params: NodeArray<ParameterDeclaration>,
-    source: SourceFile,
-  ): string {
-    const name = `arg${index}`;
-    const p = params.map((p) => {
-      return this.printer.printNode(EmitHint.Unspecified, p, source);
-    });
+  private static textOf(source: SourceFile, range: TextRange): string {
+    return source.text.slice(range.pos, range.end).trim();
+  }
 
-    return !p.includes(name)
+  private static getParamName(index: number, params: string[]): string {
+    const name = `arg${index}`;
+
+    return !params.includes(name)
       ? name
-      : this.getParamName(index + 1, params, source);
+      : RefactorProcessor.getParamName(index + 1, params);
   }
 
   private getStepTextRange(source: SourceFile, node: MethodDeclaration): Span {
-    const dec = getDecorators(node) as unknown as Array<Decorator>;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-explicit-any
-    const stepDecExp =
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-      dec.filter(CodeHelper.isStepDecorator)[0].expression as any;
+    const arg = CodeHelper.getStepArgument(node);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    return this.createSpan(source, stepDecExp.arguments[0]);
+    if (!arg) {
+      throw new Error("Step decorator has no step text");
+    }
+
+    return this.createSpan(source, arg);
   }
 
-  // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-  private createSpan(source: SourceFile, node: any): Span {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const start = source.getLineAndCharacterOfPosition(node.pos);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    const end = source.getLineAndCharacterOfPosition(node.end);
+  private createSpan(source: SourceFile, range: TextRange): Span {
+    const start = source.getLineAndCharacterOfPosition(range.pos);
+    const end = source.getLineAndCharacterOfPosition(range.end);
 
     return Span.create({
       start: String(start.line + 1),
@@ -198,6 +166,5 @@ export class RefactorProcessor extends CodeHelper {
       end: String(end.line + 1),
       endChar: String(end.character),
     });
-    // eslint-disable-next-line padded-blocks
   }
 }

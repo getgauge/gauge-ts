@@ -15,10 +15,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - uses: pnpm/action-setup@v4
+
       - uses: actions/setup-node@v6
         with:
           node-version: 24
           check-latest: true
+          cache: pnpm
           registry-url: 'https://registry.npmjs.org'
 
       - name: Setup git
@@ -28,12 +31,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm install
+          pnpm install --frozen-lockfile
 
       - name: Package
         working-directory: gauge-ts
         run: |
-          npm run build
+          pnpm run build
           ./build.sh package
 
       - name: Deploy on github
@@ -54,6 +57,9 @@ jobs:
 
       - name: Deploy npm
         working-directory: gauge-ts
+        # Kept on the npm CLI on purpose: OIDC trusted publishing (the
+        # id-token permission above) is an npm feature that `pnpm publish`
+        # does not implement.
         run: |
           npm publish --access=public
 

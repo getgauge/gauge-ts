@@ -9,10 +9,15 @@ artifacts
 coverage
 tests
 .vscode
-jest*
+vitest*
 TODO*
-ts*
+# NOT `ts*`. npm matches ignore patterns case-INSENSITIVELY, so `ts*` also
+# matched `dist/helpers/TsProject.js` and shipped a 0.6.0 tarball whose runner
+# died on `Cannot find module './helpers/TsProject'`. Name the two files meant.
+ts.json
+tsconfig.json
 launcher.mjs
+launcher-runner.cjs
 azure*
 .gitmodules
 *.ps1

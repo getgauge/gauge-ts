@@ -2,6 +2,8 @@
   "files": {
     "ignore": [
       "dist/**",
+      "deploy/**",
+      "artifacts/**",
       "coverage/**",
       "node_modules",
       "src/gen",

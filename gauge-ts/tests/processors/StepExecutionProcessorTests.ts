@@ -17,12 +17,12 @@ describe("StepExecutionProcessor", () => {
   let processor: StepExecutionProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
-    Screenshot.capture = jest.fn();
+    vi.clearAllMocks();
+    Screenshot.capture = vi.fn();
     const chain = {
-      parse: jest.fn(),
-      canParse: jest.fn(),
-      addCustomParser: jest.fn(),
+      parse: vi.fn(),
+      canParse: vi.fn(),
+      addCustomParser: vi.fn(),
     } as unknown as ParameterParsingChain;
     processor = new StepExecutionProcessor(chain);
   });
@@ -42,11 +42,11 @@ describe("StepExecutionProcessor", () => {
     });
 
     it("should process step execution request when there is param lenght mismatch", async () => {
-      const capture = jest.spyOn(Screenshot, "capture");
+      const capture = vi.spyOn(Screenshot, "capture");
 
-      registry.isImplemented = jest.fn().mockReturnValue(true);
+      registry.isImplemented = vi.fn().mockReturnValue(true);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      registry.get = jest
+      registry.get = vi
         .fn()
         .mockReturnValue(
           new StepRegistryEntry(
@@ -73,8 +73,8 @@ describe("StepExecutionProcessor", () => {
     });
 
     it("should process step execution request", async () => {
-      registry.isImplemented = jest.fn().mockReturnValue(true);
-      registry.get = jest.fn().mockReturnValue(
+      registry.isImplemented = vi.fn().mockReturnValue(true);
+      registry.get = vi.fn().mockReturnValue(
         new StepRegistryEntry(
           "hello <world> to <table>",
           "hello {} to {}",
@@ -113,21 +113,21 @@ describe("StepExecutionProcessor", () => {
     });
 
     it("should process step execution request when step is recoverable", async () => {
-      const capture = jest.spyOn(Screenshot, "capture");
+      const capture = vi.spyOn(Screenshot, "capture");
 
       process.env.screenshot_on_failure = "false";
 
-      registry.isImplemented = jest.fn().mockReturnValue(true);
+      registry.isImplemented = vi.fn().mockReturnValue(true);
       const method = () => {
         strictEqual(1, 2);
       };
 
-      registry.get = jest
+      registry.get = vi
         .fn()
         .mockReturnValue(
           new StepRegistryEntry("hello", "hello", "StepImpl.ts", method),
         );
-      registry.getContinueOnFailureFunctions = jest
+      registry.getContinueOnFailureFunctions = vi
         .fn()
         .mockReturnValue(["AssertionError"]);
 
@@ -147,11 +147,11 @@ describe("StepExecutionProcessor", () => {
     });
 
     it("should process step execution request when step fails", async () => {
-      const capture = jest.spyOn(Screenshot, "capture");
+      const capture = vi.spyOn(Screenshot, "capture");
 
       process.env.screenshot_on_failure = "false";
 
-      registry.isImplemented = jest.fn().mockReturnValue(true);
+      registry.isImplemented = vi.fn().mockReturnValue(true);
       const method = () => {
         const err = new Error("failed");
 
@@ -159,7 +159,7 @@ describe("StepExecutionProcessor", () => {
         throw err;
       };
 
-      registry.get = jest
+      registry.get = vi
         .fn()
         .mockReturnValue(
           new StepRegistryEntry("hello", "hello", "StepImpl.ts", method),

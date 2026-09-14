@@ -48,6 +48,7 @@ import type {
 
 import type { RunnerServer as IRunnerServer } from "./gen/services";
 import { ProtoExecutionResult } from "./gen/spec";
+import tsProject from "./helpers/TsProject";
 import { ImplLoader } from "./loaders/ImplLoader";
 import StaticLoader from "./loaders/StaticLoader";
 import registry from "./models/StepRegistry";
@@ -426,6 +427,8 @@ export const start = (
 };
 
 export const stop = (server = serverInstance): void => {
+  // Releases the tsgo server that backs static analysis.
+  tsProject.dispose();
   if (!serverInstance) {
     console.debug("Server is not running.");
     return;

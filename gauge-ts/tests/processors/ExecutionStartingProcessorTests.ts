@@ -7,13 +7,13 @@ import { HookMethod } from "../../src/models/HookMethod";
 import hookRegistry from "../../src/models/HookRegistry";
 import { HookType } from "../../src/models/HookType";
 import { ExecutionStartingProcessor } from "../../src/processors/ExecutionStartingProcessor";
-jest.mock("node:inspector");
+vi.mock("node:inspector");
 
 describe("ExecutionStartingProcessor", () => {
   let processor: ExecutionStartingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new ExecutionStartingProcessor();
@@ -37,8 +37,8 @@ describe("ExecutionStartingProcessor", () => {
     });
 
     it("should process ExecutionStartingRequest and start debugger", async () => {
-      console.log = jest.fn();
-      const open = jest.spyOn(inspector, "open");
+      console.log = vi.fn();
+      const open = vi.spyOn(inspector, "open");
 
       process.env.DEBUGGING = "true";
       process.env.DEBUG_PORT = "1234";

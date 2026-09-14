@@ -20,7 +20,7 @@ describe("decorators", () => {
   beforeEach(() => {
     registry.clear();
     hookRegistry.clear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe("Step", () => {

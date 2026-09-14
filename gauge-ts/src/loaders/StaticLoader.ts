@@ -1,20 +1,16 @@
 import {
-  ScriptTarget,
-  createSourceFile,
-  forEachChild,
-  getDecorators,
   isClassDeclaration,
   isMethodDeclaration,
-} from "typescript";
+} from "typescript/unstable/ast";
 
 import type {
-  Decorator,
   MethodDeclaration,
   Node,
   SourceFile,
-} from "typescript";
+} from "typescript/unstable/ast";
 
 import { CodeHelper } from "../helpers/CodeHelper";
+import tsProject from "../helpers/TsProject";
 import { Position } from "../models/Position";
 import { Range } from "../models/Range";
 import registry from "../models/StepRegistry";
@@ -27,11 +23,15 @@ export default class StaticLoader extends CodeHelper {
   }
 
   public loadStepsFromText(file: string, text: string): void {
-    const source = createSourceFile(file, text, ScriptTarget.Latest);
+    const source = tsProject.parse(file, text);
 
-    forEachChild(source, (childNode: Node) => {
+    if (!source) {
+      return;
+    }
+
+    source.forEachChild((childNode: Node) => {
       if (isClassDeclaration(childNode)) {
-        forEachChild(childNode, (node: Node) => {
+        childNode.forEachChild((node: Node) => {
           if (isMethodDeclaration(node) && this.hasStepDecorator(node)) {
             this.processNode(node, file, source);
           }
@@ -47,6 +47,7 @@ export default class StaticLoader extends CodeHelper {
 
   public removeSteps(filePath: string): void {
     registry.removeSteps(filePath);
+    tsProject.remove(filePath);
   }
 
   private loadFiles() {
@@ -82,8 +83,7 @@ export default class StaticLoader extends CodeHelper {
   }
 
   private static getRange(node: MethodDeclaration, source: SourceFile): Range {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    const dec = getDecorators(node) as unknown as Array<Decorator>;
+    const dec = CodeHelper.getDecorators(node);
     const start = source.getLineAndCharacterOfPosition(dec[0].expression.pos);
     const end = source.getLineAndCharacterOfPosition(node.end);
 

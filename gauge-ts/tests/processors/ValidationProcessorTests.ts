@@ -10,12 +10,12 @@ describe("ValidationProcessor", () => {
   let processor: ValidationProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     processor = new ValidationProcessor();
   });
   describe(".process", () => {
     it("should process StepValidateRequest request", () => {
-      registry.isImplemented = jest.fn().mockReturnValue(true);
+      registry.isImplemented = vi.fn().mockReturnValue(true);
       const stepValue = ProtoStepValue.create({
         parameterizedStepValue: "foo",
         parameters: [],
@@ -34,7 +34,7 @@ describe("ValidationProcessor", () => {
     });
 
     it("should process StepValidateRequest request when step is not implemented", () => {
-      registry.isImplemented = jest.fn().mockReturnValue(false);
+      registry.isImplemented = vi.fn().mockReturnValue(false);
 
       const stepValue = ProtoStepValue.create({
         parameterizedStepValue: "hello",
@@ -55,7 +55,7 @@ describe("ValidationProcessor", () => {
     });
 
     it("should process StepValidateRequest request and give suggestion when step is not implemented", () => {
-      registry.isImplemented = jest.fn().mockReturnValue(false);
+      registry.isImplemented = vi.fn().mockReturnValue(false);
 
       const stepValue = ProtoStepValue.create({
         parameterizedStepValue: "say {} to {}",
@@ -78,8 +78,8 @@ describe("ValidationProcessor", () => {
     });
 
     it("should process StepValidateRequest request when step is implemented more than once", () => {
-      registry.isImplemented = jest.fn().mockReturnValue(true);
-      registry.hasMultipleImplementations = jest.fn().mockReturnValue(true);
+      registry.isImplemented = vi.fn().mockReturnValue(true);
+      registry.hasMultipleImplementations = vi.fn().mockReturnValue(true);
       const stepValue = ProtoStepValue.create({
         parameterizedStepValue: "hello {}",
         parameters: ["world"],

@@ -1,6 +1,6 @@
 import type { DataStore } from "./DataStore";
 
-export interface GlobalDataStore extends Global {
+export interface GlobalDataStore {
   gaugeSpecDataStore: DataStore;
   gaugeSuiteDataStore: DataStore;
   gaugeScenarioDataStore: DataStore;

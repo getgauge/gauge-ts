@@ -9,7 +9,7 @@ describe("ExecutionEndingProcessor", () => {
   let processor: ExecutionEndingProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new ExecutionEndingProcessor();
@@ -35,7 +35,7 @@ describe("ExecutionEndingProcessor", () => {
       hookRegistry.addHook(
         HookType.AfterSuite,
         new HookMethod(
-          jest.fn().mockImplementation(() => {
+          vi.fn().mockImplementation(() => {
             const err = new Error("failed");
 
             err.stack = undefined;
@@ -57,13 +57,13 @@ describe("ExecutionEndingProcessor", () => {
     });
 
     it("should process ExecutionEndingRequest and give error with screenshot if a hook fails", async () => {
-      Screenshot.capture = jest
+      Screenshot.capture = vi
         .fn()
         .mockReturnValue(new Uint8Array(new ArrayBuffer(10)));
       hookRegistry.addHook(
         HookType.AfterSuite,
         new HookMethod(
-          jest.fn().mockImplementation(() => {
+          vi.fn().mockImplementation(() => {
             throw new Error("failed");
           }),
           "Hooks.ts",

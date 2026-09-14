@@ -8,13 +8,13 @@ describe("StepPositionsProcessor", () => {
   let processor: StepPositionsProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     registry.clear();
     processor = new StepPositionsProcessor();
   });
   describe(".prcoess", () => {
     it("should StepPositionsRequest and give step positions for a given file", () => {
-      registry.getStepPositions = jest.fn().mockReturnValue([
+      registry.getStepPositions = vi.fn().mockReturnValue([
         {
           stepValue: "foo",
           span: new Range(new Position(3, 3), new Position(5, 3)),

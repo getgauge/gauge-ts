@@ -5,13 +5,13 @@ function checkCommand() {
 }
 
 function build() {
-    checkCommand "npm"
-    npm run build
+    checkCommand "pnpm"
+    pnpm run build
 }
 
 function test() {
-    checkCommand "npm"
-    npm test
+    checkCommand "pnpm"
+    pnpm test
 }
 
 function version() {
@@ -20,9 +20,9 @@ function version() {
 }
 
 function package() {
-    checkCommand "npm"
+    checkCommand "pnpm"
     checkCommand "zip"
-    npm run clean:build
+    pnpm run clean:build
     mkdir -p deploy
     cp launcher.* launcher-runner.cjs deploy
     cp ts.json deploy

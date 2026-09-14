@@ -10,7 +10,7 @@ describe("StubImplementationCodeProcessor", () => {
   let processor: StubImplementationCodeProcessor;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     hookRegistry.clear();
     process.env.screenshot_on_failure = "";
     processor = new StubImplementationCodeProcessor();
@@ -18,8 +18,8 @@ describe("StubImplementationCodeProcessor", () => {
 
   describe(".process", () => {
     it("should process StubImplementationCodeRequest and give the diff when file exists", () => {
-      Util.exists = jest.fn().mockReturnValue(true);
-      Util.readFile = jest.fn().mockReturnValue(text1);
+      Util.exists = vi.fn().mockReturnValue(true);
+      Util.readFile = vi.fn().mockReturnValue(text1);
       const code = `@Step("foo")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
 
       const req = StubImplementationCodeRequest.create({
@@ -51,9 +51,9 @@ describe("StubImplementationCodeProcessor", () => {
     });
 
     it("should process StubImplementationCodeRequest and give the diff when file does not exists", () => {
-      Util.exists = jest.fn().mockReturnValue(false);
-      Util.getNewTSFileName = jest.fn().mockReturnValue("StepImpl.ts");
-      Util.getImplDirs = jest.fn().mockReturnValue([]);
+      Util.exists = vi.fn().mockReturnValue(false);
+      Util.getNewTSFileName = vi.fn().mockReturnValue("StepImpl.ts");
+      Util.getImplDirs = vi.fn().mockReturnValue([]);
       const code1 = `@Step("foo")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
 
       const code2 = `@Step("bar")${EOL}public async foo() {${EOL}    console.log("Hello World");${EOL}}`;
